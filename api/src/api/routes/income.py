@@ -2,7 +2,7 @@
 
 from fastapi import APIRouter, Query
 from typing import List, Optional
-from api.models.schemas import IncomeData, Occupation, Region, StatsResponse
+from api.models.schemas import IncomeData, IncomeDispersion, Occupation, Region, StatsResponse
 from api.utils.database import get_data_access
 
 router = APIRouter()
@@ -37,6 +37,25 @@ async def get_income_data(
         records = [r for r in records if r.get("gender", "").lower() == gender.lower()]
     
     return records[:limit]
+
+
+@router.get("/income/dispersion", response_model=List[IncomeDispersion])
+async def get_income_dispersion(
+    occupation: Optional[str] = Query(None, description="Filter by occupation name"),
+    year: Optional[int] = Query(None, description="Filter by year (2023, 2024)"),
+    gender: Optional[str] = Query(None, description="Filter by gender (men/women)"),
+):
+    """Get salary distribution data with percentiles for box plots.
+    
+    Returns P10, P25, Median, P75, P90 percentiles for each occupation/gender.
+    Data sourced from Statistics Sweden (SCB).
+    """
+    data_access = get_data_access()
+    return data_access.get_income_dispersion(
+        occupation=occupation,
+        year=year,
+        gender=gender,
+    )
 
 
 @router.get("/occupations", response_model=List[Occupation])

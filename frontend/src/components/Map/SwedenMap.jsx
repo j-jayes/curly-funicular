@@ -2,34 +2,57 @@ import React, { useEffect, useRef, useState } from 'react';
 import { Box, Typography, CircularProgress } from '@mui/material';
 import * as d3 from 'd3';
 
-// GeoJSON URL for Swedish regions (NUTS-2 level)
-const GEOJSON_URL = 'https://raw.githubusercontent.com/okfse/sweden-geojson/master/swedish_regions.geojson';
+// Eurostat NUTS-2 GeoJSON - proper Swedish regions  
+const GEOJSON_URL = 'https://raw.githubusercontent.com/eurostat/Nuts2json/master/pub/v2/2021/4326/20M/nutsrg_2.json';
 
-// Mapping from NUTS region names to GeoJSON feature names
+// Dark2 Brewer color palette
+const DARK2 = ['#1b9e77','#d95f02','#7570b3','#e7298a','#66a61e','#e6ab02','#a6761d','#666666'];
+
+// Mapping from API region names (English) to GeoJSON region names (Swedish)
 const REGION_NAME_MAP = {
   'Sweden': null, // Skip national total
-  'Stockholm': 'Stockholm',
-  'East-Central Sweden': 'Östra Mellansverige',
-  'Småland and islands': 'Småland med öarna', 
-  'South Sweden': 'Sydsverige',
-  'West Sweden': 'Västsverige',
-  'North-Central Sweden': 'Norra Mellansverige',
-  'Central Norrland': 'Mellersta Norrland',
-  'Upper Norrland': 'Övre Norrland',
+  'Stockholm': 'SE11',
+  'East-Central Sweden': 'SE12',
+  'Småland and islands': 'SE21', 
+  'South Sweden': 'SE22',
+  'West Sweden': 'SE23',
+  'North-Central Sweden': 'SE31',
+  'Central Norrland': 'SE32',
+  'Upper Norrland': 'SE33',
+};
+
+// Reverse mapping for display: NUTS code to Swedish name
+const NUTS_TO_NAME = {
+  'SE11': 'Stockholm',
+  'SE12': 'Östra Mellansverige',
+  'SE21': 'Småland med öarna',
+  'SE22': 'Sydsverige',
+  'SE23': 'Västsverige',
+  'SE31': 'Norra Mellansverige',
+  'SE32': 'Mellersta Norrland',
+  'SE33': 'Övre Norrland',
 };
 
 const SwedenMap = ({ data, selectedRegion, onRegionClick }) => {
   const svgRef = useRef();
+  const containerRef = useRef();
   const [geoData, setGeoData] = useState(null);
   const [loading, setLoading] = useState(true);
 
-  // Load GeoJSON on mount
+  // Load GeoJSON on mount - filter to Sweden only
   useEffect(() => {
     const loadGeoJSON = async () => {
       try {
         const response = await fetch(GEOJSON_URL);
         const geojson = await response.json();
-        setGeoData(geojson);
+        // Filter to Swedish regions only (SE*)
+        const swedenFeatures = geojson.features.filter(f => 
+          f.properties.id && f.properties.id.startsWith('SE')
+        );
+        setGeoData({
+          type: 'FeatureCollection',
+          features: swedenFeatures
+        });
         setLoading(false);
       } catch (error) {
         console.error('Error loading GeoJSON:', error);
@@ -46,16 +69,16 @@ const SwedenMap = ({ data, selectedRegion, onRegionClick }) => {
     }
   }, [geoData, data, selectedRegion]);
 
-  // Aggregate income by region
+  // Aggregate income by region - map to NUTS codes
   const getRegionIncomeMap = () => {
     const regionIncome = {};
     if (data && data.length > 0) {
       data.forEach(item => {
         const region = item.region;
-        const mappedName = REGION_NAME_MAP[region];
-        if (mappedName && item.monthly_salary) {
-          if (!regionIncome[mappedName] || item.monthly_salary > regionIncome[mappedName]) {
-            regionIncome[mappedName] = item.monthly_salary;
+        const nutsCode = REGION_NAME_MAP[region];
+        if (nutsCode && item.monthly_salary) {
+          if (!regionIncome[nutsCode] || item.monthly_salary > regionIncome[nutsCode]) {
+            regionIncome[nutsCode] = item.monthly_salary;
           }
         }
       });
@@ -67,15 +90,16 @@ const SwedenMap = ({ data, selectedRegion, onRegionClick }) => {
     const svg = d3.select(svgRef.current);
     svg.selectAll('*').remove();
 
-    const width = 400;
-    const height = 500;
+    // Improved dimensions - Sweden is tall and narrow
+    const width = 320;
+    const height = 600;
 
     svg.attr('width', width).attr('height', height);
 
-    // Create projection for Sweden
+    // Create projection for Sweden - adjusted for NUTS-2 regions
     const projection = d3.geoMercator()
       .center([17, 62.5])
-      .scale(800)
+      .scale(1100)
       .translate([width / 2, height / 2]);
 
     const pathGenerator = d3.geoPath().projection(projection);
@@ -86,10 +110,10 @@ const SwedenMap = ({ data, selectedRegion, onRegionClick }) => {
     const minIncome = incomeValues.length > 0 ? Math.min(...incomeValues) : 40000;
     const maxIncome = incomeValues.length > 0 ? Math.max(...incomeValues) : 60000;
 
-    // Color scale
+    // Use Dark2-inspired sequential color scale (teal to orange)
     const colorScale = d3.scaleSequential()
       .domain([minIncome, maxIncome])
-      .interpolator(d3.interpolateBlues);
+      .interpolator(t => d3.interpolateRgb(DARK2[0], DARK2[1])(t));
 
     // Draw regions
     svg.selectAll('path')
@@ -98,50 +122,76 @@ const SwedenMap = ({ data, selectedRegion, onRegionClick }) => {
       .append('path')
       .attr('d', pathGenerator)
       .attr('fill', d => {
-        const regionName = d.properties.name;
-        const income = regionIncome[regionName];
-        return income ? colorScale(income) : '#e0e0e0';
+        const nutsCode = d.properties.id;
+        const income = regionIncome[nutsCode];
+        return income ? colorScale(income) : '#e5e7eb';
       })
-      .attr('stroke', '#333')
-      .attr('stroke-width', 0.5)
+      .attr('stroke', '#1f2937')
+      .attr('stroke-width', 1)
       .style('cursor', 'pointer')
       .on('mouseover', function(event, d) {
         d3.select(this)
-          .attr('stroke-width', 2)
-          .attr('stroke', '#1976d2');
+          .attr('stroke-width', 2.5)
+          .attr('stroke', DARK2[2]);
         
         // Show tooltip
-        const regionName = d.properties.name;
-        const income = regionIncome[regionName];
+        const nutsCode = d.properties.id;
+        const regionName = NUTS_TO_NAME[nutsCode] || d.properties.na;
+        const income = regionIncome[nutsCode];
+        
+        // Remove any existing tooltip
+        svg.select('#tooltip-bg').remove();
+        svg.select('#tooltip').remove();
+        
+        const tooltipText = `${regionName}: ${income ? `${Math.round(income).toLocaleString()} SEK` : 'No data'}`;
+        const tooltipX = width / 2;
+        const tooltipY = 30;
+        
+        // Add tooltip background
+        svg.append('rect')
+          .attr('id', 'tooltip-bg')
+          .attr('x', tooltipX - 80)
+          .attr('y', tooltipY - 15)
+          .attr('width', 160)
+          .attr('height', 24)
+          .attr('rx', 4)
+          .attr('fill', 'rgba(31, 41, 55, 0.9)');
         
         svg.append('text')
           .attr('id', 'tooltip')
-          .attr('x', event.offsetX || 200)
-          .attr('y', event.offsetY || 250)
+          .attr('x', tooltipX)
+          .attr('y', tooltipY)
           .attr('text-anchor', 'middle')
           .style('font-size', '12px')
-          .style('font-weight', 'bold')
-          .style('fill', '#333')
-          .text(`${regionName}: ${income ? `${Math.round(income).toLocaleString()} SEK` : 'No data'}`);
+          .style('font-weight', '500')
+          .style('fill', '#fff')
+          .style('font-family', '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif')
+          .text(tooltipText);
       })
       .on('mouseout', function() {
         d3.select(this)
-          .attr('stroke-width', 0.5)
-          .attr('stroke', '#333');
+          .attr('stroke-width', 1)
+          .attr('stroke', '#1f2937');
+        svg.select('#tooltip-bg').remove();
         svg.select('#tooltip').remove();
       })
       .on('click', function(event, d) {
         if (onRegionClick) {
-          onRegionClick(d.properties.name);
+          // Map back to English name for API
+          const nutsCode = d.properties.id;
+          const englishName = Object.keys(REGION_NAME_MAP).find(
+            key => REGION_NAME_MAP[key] === nutsCode
+          );
+          onRegionClick(englishName || d.properties.na);
         }
       });
 
     // Add legend
-    const legendWidth = 150;
-    const legendHeight = 10;
+    const legendWidth = 140;
+    const legendHeight = 12;
     
     const legend = svg.append('g')
-      .attr('transform', `translate(20, ${height - 40})`);
+      .attr('transform', `translate(${width - legendWidth - 20}, ${height - 50})`);
 
     const legendScale = d3.scaleLinear()
       .domain([minIncome, maxIncome])
@@ -160,40 +210,55 @@ const SwedenMap = ({ data, selectedRegion, onRegionClick }) => {
 
     gradient.append('stop')
       .attr('offset', '0%')
-      .attr('stop-color', colorScale(minIncome));
+      .attr('stop-color', DARK2[0]);
 
     gradient.append('stop')
       .attr('offset', '100%')
-      .attr('stop-color', colorScale(maxIncome));
+      .attr('stop-color', DARK2[1]);
 
     legend.append('rect')
       .attr('width', legendWidth)
       .attr('height', legendHeight)
+      .attr('rx', 2)
       .style('fill', 'url(#income-gradient)');
 
     legend.append('g')
       .attr('transform', `translate(0, ${legendHeight})`)
+      .style('font-family', '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif')
+      .style('font-size', '10px')
       .call(legendAxis);
 
     legend.append('text')
       .attr('x', legendWidth / 2)
-      .attr('y', -5)
+      .attr('y', -8)
       .attr('text-anchor', 'middle')
-      .style('font-size', '10px')
+      .style('font-size', '11px')
+      .style('font-weight', '500')
+      .style('fill', '#374151')
+      .style('font-family', '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif')
       .text('Monthly Salary (SEK)');
   };
 
   if (loading) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" height="100%">
-        <CircularProgress />
+        <CircularProgress sx={{ color: DARK2[0] }} />
       </Box>
     );
   }
 
   return (
-    <Box>
-      <Typography variant="h6" gutterBottom>
+    <Box ref={containerRef} sx={{ height: '100%' }}>
+      <Typography 
+        variant="h6" 
+        gutterBottom
+        sx={{ 
+          fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+          fontWeight: 600,
+          color: '#1f2937',
+          fontSize: '1.1rem'
+        }}
+      >
         Average Income by Region
       </Typography>
       <Box display="flex" justifyContent="center">

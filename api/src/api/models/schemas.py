@@ -24,6 +24,28 @@ class IncomeData(BaseModel):
         extra = "allow"
 
 
+class IncomeDispersion(BaseModel):
+    """Income dispersion data model for box plots.
+    
+    Represents salary distribution with percentiles from SCB.
+    """
+    
+    occupation: str = Field(..., description="Occupation name")
+    occupation_code: str = Field(default="", description="SSYK occupation code")
+    year: Optional[int] = Field(None, description="Year of data")
+    gender: Optional[str] = Field(None, description="Gender (men/women)")
+    mean: Optional[float] = Field(None, description="Mean monthly salary in SEK")
+    median: Optional[float] = Field(None, description="Median (P50) monthly salary in SEK")
+    p10: Optional[float] = Field(None, description="10th percentile salary in SEK")
+    p25: Optional[float] = Field(None, description="25th percentile (Q1) salary in SEK")
+    p75: Optional[float] = Field(None, description="75th percentile (Q3) salary in SEK")
+    p90: Optional[float] = Field(None, description="90th percentile salary in SEK")
+    
+    class Config:
+        """Pydantic config for flexible validation."""
+        extra = "allow"
+
+
 class JobAd(BaseModel):
     """Job advertisement model.
     

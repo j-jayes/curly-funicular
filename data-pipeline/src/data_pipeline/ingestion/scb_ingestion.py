@@ -50,6 +50,16 @@ CONTENTS_CODES = {
     "000007AP": "num_employees",
 }
 
+# Salary dispersion contents codes (from LoneSpridSektYrk4AN)
+DISPERSION_CONTENTS_CODES = {
+    "000007CD": "monthly_salary",
+    "000007CE": "median",
+    "000007CF": "p10",  # 10th percentile
+    "000007CG": "p25",  # 25th percentile (Q1)
+    "000007CH": "p75",  # 75th percentile (Q3)
+    "000007CI": "p90",  # 90th percentile
+}
+
 # SSYK 2012 occupation codes for ICT, data science, and related fields
 # Full 4-digit codes for software engineers, data scientists, and related
 DEFAULT_SSYK_CODES = [
@@ -95,6 +105,7 @@ class SCBIngestion:
     # Correct endpoint for regional salary by occupation
     BASE_URL = "https://api.scb.se/OV0104/v1/doris/en/ssd"
     INCOME_ENDPOINT = "/AM/AM0110/AM0110A/LonYrkeRegion4AN"
+    DISPERSION_ENDPOINT = "/AM/AM0110/AM0110A/LoneSpridSektYrk4AN"
     
     # Rate limiting: 3 requests per second (safe margin under 30/10 limit)
     MIN_REQUEST_INTERVAL = 0.35  # seconds between requests
@@ -261,6 +272,172 @@ class SCBIngestion:
         except Exception as e:
             logger.error(f"Error fetching data from SCB: {e}")
             raise
+    
+    def fetch_salary_dispersion(
+        self,
+        occupation_codes: Optional[List[str]] = None,
+        years: Optional[List[str]] = None,
+        genders: Optional[List[str]] = None,
+        sectors: Optional[List[str]] = None,
+    ) -> pd.DataFrame:
+        """Fetch salary dispersion data (percentiles) by occupation.
+        
+        This endpoint provides P10, P25, median, P75, P90 for salary distributions.
+        
+        Args:
+            occupation_codes: List of SSYK 2012 occupation codes (4-digit)
+            years: List of years as strings
+            genders: List of gender codes ("1"=men, "2"=women, "1+2"=total)
+            sectors: List of sector codes ("0"=all)
+            
+        Returns:
+            DataFrame with salary dispersion data including percentiles
+        """
+        if occupation_codes is None:
+            occupation_codes = DEFAULT_SSYK_CODES
+        if years is None:
+            years = ["2023", "2024"]
+        if genders is None:
+            genders = ["1", "2"]  # men, women
+        if sectors is None:
+            sectors = ["0"]  # All sectors
+        
+        logger.info(
+            f"Fetching salary dispersion data: occupations={occupation_codes}, years={years}"
+        )
+        
+        # Build query for dispersion endpoint
+        query = {
+            "query": [
+                {
+                    "code": "Sektor",
+                    "selection": {
+                        "filter": "item",
+                        "values": sectors
+                    }
+                },
+                {
+                    "code": "Yrke2012",
+                    "selection": {
+                        "filter": "item",
+                        "values": occupation_codes
+                    }
+                },
+                {
+                    "code": "Kon",
+                    "selection": {
+                        "filter": "item",
+                        "values": genders
+                    }
+                },
+                {
+                    "code": "ContentsCode",
+                    "selection": {
+                        "filter": "item",
+                        # Get all percentile measures
+                        "values": list(DISPERSION_CONTENTS_CODES.keys())
+                    }
+                },
+                {
+                    "code": "Tid",
+                    "selection": {
+                        "filter": "item",
+                        "values": years
+                    }
+                }
+            ],
+            "response": {
+                "format": "json-stat2"
+            }
+        }
+        
+        self._rate_limit()
+        url = f"{self.BASE_URL}{self.DISPERSION_ENDPOINT}"
+        
+        try:
+            logger.info(f"Posting dispersion query to {url}")
+            response = self.client.post(url, json=query)
+            response.raise_for_status()
+            
+            data = response.json()
+            df = self._parse_jsonstat2(data)
+            
+            # Add labels
+            df = self._add_dispersion_labels(df)
+            
+            # Pivot to wide format (one row per occupation/gender/year)
+            df = self._pivot_dispersion_data(df)
+            
+            # Add surrogate key
+            df["surrogate_key"] = df.apply(
+                lambda row: self._generate_surrogate_key(row), axis=1
+            )
+            
+            logger.info(f"Successfully fetched {len(df)} dispersion records from SCB")
+            return df
+            
+        except httpx.HTTPStatusError as e:
+            logger.error(f"HTTP error fetching dispersion data from SCB: {e}")
+            logger.error(f"Response: {e.response.text}")
+            raise
+        except Exception as e:
+            logger.error(f"Error fetching dispersion data from SCB: {e}")
+            raise
+    
+    def _add_dispersion_labels(self, df: pd.DataFrame) -> pd.DataFrame:
+        """Add human-readable labels to dispersion data."""
+        df = self._add_labels(df)
+        
+        # Map contents codes to measure names for dispersion
+        contents_col = None
+        for col in ["ContentsCode", "contents"]:
+            if col in df.columns:
+                contents_col = col
+                break
+        
+        if contents_col:
+            df["measure"] = df[contents_col].map(DISPERSION_CONTENTS_CODES)
+        
+        return df
+    
+    def _pivot_dispersion_data(self, df: pd.DataFrame) -> pd.DataFrame:
+        """Pivot dispersion data to wide format with one column per percentile."""
+        # Identify key columns
+        id_cols = []
+        for col in ["Tid", "year", "Yrke2012", "occupation", "Kon", "sex", 
+                    "Sektor", "sector", "gender"]:
+            if col in df.columns:
+                id_cols.append(col)
+        
+        # Keep only needed columns
+        measure_col = "measure" if "measure" in df.columns else "ContentsCode"
+        value_col = "value"
+        
+        if measure_col not in df.columns or value_col not in df.columns:
+            logger.warning("Cannot pivot dispersion data - missing columns")
+            return df
+        
+        # Pivot
+        try:
+            # Get unique ID columns
+            unique_id_cols = list(set(id_cols) - {"measure", "ContentsCode", "contents"})
+            pivot_df = df.pivot_table(
+                index=unique_id_cols,
+                columns=measure_col,
+                values=value_col,
+                aggfunc="first"
+            ).reset_index()
+            
+            # Add occupation names
+            for col in ["Yrke2012", "occupation"]:
+                if col in pivot_df.columns:
+                    pivot_df["occupation_name"] = pivot_df[col].map(SSYK_OCCUPATION_MAP)
+                    break
+            
+            return pivot_df
+        except Exception as e:
+            logger.warning(f"Pivot failed: {e}, returning long format")
+            return df
     
     def _parse_jsonstat2(self, data: Dict) -> pd.DataFrame:
         """Parse JSON-stat2 response into a tidy DataFrame.

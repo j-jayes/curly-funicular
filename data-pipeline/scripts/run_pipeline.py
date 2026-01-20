@@ -72,6 +72,7 @@ def run_pipeline(
     try:
         # Initialize processor
         processor = DataProcessor()
+        dispersion_raw = None  # Initialize outside with block
         
         # ===== STEP 1: Fetch income data from SCB =====
         logger.info("\n" + "="*40)
@@ -89,6 +90,22 @@ def run_pipeline(
                 income_raw,
                 processor.raw_dir / "scb_income_raw.parquet"
             )
+            
+            # Fetch salary dispersion data (percentiles)
+            logger.info("Fetching salary dispersion data (percentiles)...")
+            try:
+                dispersion_raw = scb_client.fetch_salary_dispersion(
+                    occupation_codes=ssyk_codes,
+                    years=years,
+                )
+                scb_client.save_to_parquet(
+                    dispersion_raw,
+                    processor.raw_dir / "scb_dispersion_raw.parquet"
+                )
+                logger.info(f"Fetched {len(dispersion_raw)} dispersion records from SCB")
+            except Exception as e:
+                logger.warning(f"Could not fetch dispersion data: {e}")
+                dispersion_raw = None
         
         logger.info(f"Fetched {len(income_raw)} income records from SCB")
         
@@ -128,6 +145,12 @@ def run_pipeline(
         jobs_aggregated = processor.aggregate_jobs_by_region(jobs_processed, period="year")
         logger.info(f"Aggregated jobs data: {len(jobs_aggregated)} records")
         
+        # Process dispersion data if available
+        dispersion_processed = None
+        if dispersion_raw is not None:
+            dispersion_processed = processor.process_dispersion_data(dispersion_raw)
+            logger.info(f"Processed dispersion data: {len(dispersion_processed)} records")
+        
         # ===== STEP 4: Save processed data =====
         logger.info("\n" + "="*40)
         logger.info("STEP 4: Saving processed data")
@@ -137,6 +160,7 @@ def run_pipeline(
             income_df=income_processed,
             jobs_df=jobs_processed,
             jobs_agg_df=jobs_aggregated,
+            dispersion_df=dispersion_processed,
         )
         
         for name, path in paths.items():

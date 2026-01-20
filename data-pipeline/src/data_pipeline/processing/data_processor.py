@@ -223,11 +223,55 @@ class DataProcessor:
         
         return stats
     
+    def process_dispersion_data(self, df: pd.DataFrame) -> pd.DataFrame:
+        """Process raw SCB salary dispersion data.
+        
+        The dispersion data contains percentiles (P10, P25, median, P75, P90)
+        for salary distributions by occupation and gender.
+        
+        Args:
+            df: Raw dispersion data from SCB
+            
+        Returns:
+            Processed DataFrame with percentile columns
+        """
+        logger.info(f"Processing {len(df)} dispersion records")
+        
+        df = df.copy()
+        
+        # Standardize column names
+        column_mapping = {
+            "Tid": "year",
+            "Yrke2012": "ssyk_code",
+            "Kon": "gender_code",
+            "Sektor": "sector_code",
+        }
+        
+        for old_name, new_name in column_mapping.items():
+            if old_name in df.columns and new_name not in df.columns:
+                df = df.rename(columns={old_name: new_name})
+        
+        # Add occupation labels
+        if "ssyk_code" in df.columns:
+            df["occupation"] = df["ssyk_code"].map(SSYK_LABELS)
+        
+        # Standardize gender column
+        if "gender" not in df.columns:
+            if "gender_code" in df.columns:
+                gender_map = {"1": "men", "2": "women", "1+2": "total"}
+                df["gender"] = df["gender_code"].map(gender_map)
+        
+        logger.info(f"Processed {len(df)} dispersion records")
+        logger.info(f"Columns: {list(df.columns)}")
+        
+        return df
+    
     def save_processed_data(
         self,
         income_df: pd.DataFrame,
         jobs_df: pd.DataFrame,
         jobs_agg_df: pd.DataFrame,
+        dispersion_df: Optional[pd.DataFrame] = None,
     ) -> Dict[str, Path]:
         """Save all processed data to parquet files.
         
@@ -235,6 +279,7 @@ class DataProcessor:
             income_df: Processed income data
             jobs_df: Processed job ads (detail)
             jobs_agg_df: Aggregated job ads
+            dispersion_df: Optional salary dispersion data
             
         Returns:
             Dictionary with paths to saved files
@@ -245,6 +290,7 @@ class DataProcessor:
             "income": income_df,
             "jobs_detail": jobs_df,
             "jobs_aggregated": jobs_agg_df,
+            "income_dispersion": dispersion_df,
         }
         
         for name, df in files.items():

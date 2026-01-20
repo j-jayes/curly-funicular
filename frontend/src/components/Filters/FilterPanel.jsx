@@ -8,6 +8,7 @@ import {
   Grid,
   Typography
 } from '@mui/material';
+import FilterListIcon from '@mui/icons-material/FilterList';
 
 const FilterPanel = ({ filters, occupations, regions, onFilterChange }) => {
   const genders = [
@@ -24,19 +25,44 @@ const FilterPanel = ({ filters, occupations, regions, onFilterChange }) => {
     onFilterChange({ [field]: event.target.value });
   };
 
+  const selectStyles = {
+    borderRadius: '8px',
+    '& .MuiOutlinedInput-notchedOutline': {
+      borderColor: '#e5e7eb',
+    },
+    '&:hover .MuiOutlinedInput-notchedOutline': {
+      borderColor: '#1b9e77',
+    },
+    '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+      borderColor: '#1b9e77',
+    },
+  };
+
   return (
     <Box>
-      <Typography variant="h6" gutterBottom>
-        Filters
-      </Typography>
+      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+        <FilterListIcon sx={{ color: '#1b9e77', fontSize: 20 }} />
+        <Typography 
+          variant="h6" 
+          sx={{ 
+            fontWeight: 600,
+            fontSize: '1rem',
+            color: '#374151',
+            fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif'
+          }}
+        >
+          Filter Data
+        </Typography>
+      </Box>
       <Grid container spacing={2}>
         <Grid item xs={12} sm={6} md={3}>
-          <FormControl fullWidth>
-            <InputLabel>Occupation</InputLabel>
+          <FormControl fullWidth size="small">
+            <InputLabel sx={{ fontSize: '0.875rem' }}>Occupation</InputLabel>
             <Select
               value={filters.occupation}
               label="Occupation"
               onChange={handleChange('occupation')}
+              sx={selectStyles}
             >
               <MenuItem value="">All Occupations</MenuItem>
               {occupations.map((occ) => (
@@ -49,12 +75,13 @@ const FilterPanel = ({ filters, occupations, regions, onFilterChange }) => {
         </Grid>
 
         <Grid item xs={12} sm={6} md={3}>
-          <FormControl fullWidth>
-            <InputLabel>Region</InputLabel>
+          <FormControl fullWidth size="small">
+            <InputLabel sx={{ fontSize: '0.875rem' }}>Region</InputLabel>
             <Select
               value={filters.region}
               label="Region"
               onChange={handleChange('region')}
+              sx={selectStyles}
             >
               <MenuItem value="">All Regions</MenuItem>
               {regions.map((region) => (
@@ -67,12 +94,13 @@ const FilterPanel = ({ filters, occupations, regions, onFilterChange }) => {
         </Grid>
 
         <Grid item xs={12} sm={6} md={3}>
-          <FormControl fullWidth>
-            <InputLabel>Year</InputLabel>
+          <FormControl fullWidth size="small">
+            <InputLabel sx={{ fontSize: '0.875rem' }}>Year</InputLabel>
             <Select
               value={filters.year || ''}
               label="Year"
               onChange={handleChange('year')}
+              sx={selectStyles}
             >
               <MenuItem value="">All Years</MenuItem>
               {years.map((year) => (
@@ -85,12 +113,13 @@ const FilterPanel = ({ filters, occupations, regions, onFilterChange }) => {
         </Grid>
 
         <Grid item xs={12} sm={6} md={3}>
-          <FormControl fullWidth>
-            <InputLabel>Gender</InputLabel>
+          <FormControl fullWidth size="small">
+            <InputLabel sx={{ fontSize: '0.875rem' }}>Gender</InputLabel>
             <Select
               value={filters.gender}
               label="Gender"
               onChange={handleChange('gender')}
+              sx={selectStyles}
             >
               <MenuItem value="">All Genders</MenuItem>
               {genders.map((gender) => (

@@ -84,4 +84,19 @@ export const fetchStats = async () => {
   }
 };
 
+export const fetchIncomeDispersion = async (filters = {}) => {
+  try {
+    const params = {};
+    if (filters.occupation) params.occupation = filters.occupation;
+    if (filters.year) params.year = filters.year;
+    if (filters.gender) params.gender = filters.gender;
+
+    const response = await api.get('/income/dispersion', { params });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching income dispersion:', error);
+    return [];
+  }
+};
+
 export default api;

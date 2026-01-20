@@ -63,6 +63,7 @@ class DataAccess:
         self._income_df: Optional[pd.DataFrame] = None
         self._jobs_df: Optional[pd.DataFrame] = None
         self._jobs_agg_df: Optional[pd.DataFrame] = None
+        self._dispersion_df: Optional[pd.DataFrame] = None
         
     def _load_income_data(self) -> pd.DataFrame:
         """Load income data from Parquet file."""
@@ -99,6 +100,18 @@ class DataAccess:
                 logger.warning(f"Aggregated jobs file not found at {jobs_agg_path}")
                 self._jobs_agg_df = pd.DataFrame()
         return self._jobs_agg_df
+    
+    def _load_dispersion_data(self) -> pd.DataFrame:
+        """Load salary dispersion data from Parquet file."""
+        if self._dispersion_df is None:
+            dispersion_path = self.data_path / "income_dispersion.parquet"
+            if dispersion_path.exists():
+                self._dispersion_df = pd.read_parquet(dispersion_path)
+                logger.info(f"Loaded {len(self._dispersion_df)} dispersion records")
+            else:
+                logger.warning(f"Dispersion file not found at {dispersion_path}")
+                self._dispersion_df = pd.DataFrame()
+        return self._dispersion_df
 
     def get_income_data(
         self,
@@ -356,6 +369,95 @@ class DataAccess:
             "total_job_ads": n_jobs,
             "avg_income": avg_salary,
         }
+    
+    def get_income_dispersion(
+        self,
+        occupation: Optional[str] = None,
+        year: Optional[int] = None,
+        gender: Optional[str] = None,
+    ) -> List[Dict[str, Any]]:
+        """Get salary dispersion data with percentiles for box plots.
+        
+        Returns data with P10, P25, Median, P75, P90 for each occupation/gender.
+        
+        Args:
+            occupation: Occupation name filter
+            year: Year filter
+            gender: Gender filter ("men", "women")
+            
+        Returns:
+            List of dispersion records with percentile columns
+        """
+        df = self._load_dispersion_data()
+        
+        if df.empty:
+            return []
+        
+        # Apply filters
+        mask = pd.Series([True] * len(df))
+        
+        if occupation:
+            occ_col = "occupation (SSYK 2012)" if "occupation (SSYK 2012)" in df.columns else "occupation"
+            if occ_col in df.columns:
+                mask &= df[occ_col].str.contains(occupation, case=False, na=False)
+        if year:
+            mask &= df["year"].astype(str) == str(year)
+        if gender:
+            mask &= df["sex"].str.lower() == gender.lower()
+        
+        filtered = df[mask]
+        
+        # Pivot the data to wide format (one row per occupation/year/gender)
+        occ_col = "occupation (SSYK 2012)" if "occupation (SSYK 2012)" in df.columns else "occupation"
+        id_cols = [c for c in [occ_col, "year", "sex"] if c in filtered.columns]
+        
+        if "observations" not in filtered.columns or "value" not in filtered.columns:
+            logger.warning("Missing required columns for dispersion pivot")
+            return []
+        
+        try:
+            pivot_df = filtered.pivot_table(
+                index=id_cols,
+                columns="observations",
+                values="value",
+                aggfunc="first"
+            ).reset_index()
+            
+            # Rename columns for API
+            column_map = {
+                "Monthly salary": "mean",
+                "Median": "median",
+                "10th percentile": "p10",
+                "25th percentile": "p25",
+                "75th percentile": "p75",
+                "90th percentile": "p90",
+            }
+            pivot_df = pivot_df.rename(columns=column_map)
+            
+            records = []
+            for _, row in pivot_df.iterrows():
+                occ_name = row.get(occ_col, "")
+                # Look up SSYK code from occupation name
+                occ_code = OCCUPATION_TO_SSYK.get(str(occ_name), "")
+                
+                records.append({
+                    "occupation": occ_name,
+                    "occupation_code": occ_code,
+                    "year": int(row.get("year", 0)) if pd.notna(row.get("year")) else None,
+                    "gender": row.get("sex", ""),
+                    "mean": float(row.get("mean")) if pd.notna(row.get("mean")) else None,
+                    "median": float(row.get("median")) if pd.notna(row.get("median")) else None,
+                    "p10": float(row.get("p10")) if pd.notna(row.get("p10")) else None,
+                    "p25": float(row.get("p25")) if pd.notna(row.get("p25")) else None,
+                    "p75": float(row.get("p75")) if pd.notna(row.get("p75")) else None,
+                    "p90": float(row.get("p90")) if pd.notna(row.get("p90")) else None,
+                })
+            
+            return records
+            
+        except Exception as e:
+            logger.error(f"Error pivoting dispersion data: {e}")
+            return []
 
 
 # Singleton instance
