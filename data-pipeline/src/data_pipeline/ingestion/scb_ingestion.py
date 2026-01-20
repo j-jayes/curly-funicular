@@ -63,35 +63,109 @@ DISPERSION_CONTENTS_CODES = {
 # SSYK 2012 occupation codes for ICT, data science, and related fields
 # Full 4-digit codes for software engineers, data scientists, and related
 DEFAULT_SSYK_CODES = [
-    # ICT Professionals (25xx)
-    "2511",  # System analysts and ICT-architects
-    "2512",  # Software- and system developers
-    "2513",  # Games and digital media developers
+    "0001",  # Other professions
+    "0210",  # Non-commissioned armed forces officers
+    "1113",  # Senior officials of special-interest organisations
+    "1120",  # Directors and chief executives
+    "1211",  # Finance managers, level 1
+    "1212",  # Finance managers, level 2
+    "1222",  # Human resource managers, level 2
+    "1230",  # Administration and planning managers
+    "1241",  # Information, communication and public relations managers, level 1
+    "1242",  # Information, communication and public relations managers, level 2
+    "1252",  # Sales and marketing managers, level 2
+    "1312",  # Information and communications technology service managers, level 2
+    "1331",  # Research and development managers, level 1
+    "1332",  # Research and development managers, level 2
+    "1351",  # Real estate and head of administration managers, level 1
+    "1352",  # Real estate and head of administration managers, level 2
+    "1361",  # Production managers in construction and mining, level 1
+    "1411",  # Primary and secondary schools and adult education managers, level 1
+    "1421",  # Department managers in pre-school, level 1
+    "1512",  # Department and unit managers in health care, level 2
+    "1531",  # Department managers in elderly care, level 1
+    "1532",  # Unit managers in elderly care, level 2
+    "1540",  # Managers and leaders within religious bodies
+    "1611",  # Financial and insurance managers, level 1
+    "1711",  # Hotel and conference managers, level 1
+    "1732",  # Retail and wholesale trade managers, level 2
+    "1741",  # Sports, leisure and wellness managers, level 1
+    "1742",  # Sports, leisure and wellness managers, level 2
+    "1791",  # Other services managers not elsewhere classified, level 1
+    "1792",  # Other services managers not elsewhere classified, level 2
+    "2113",  # Chemists
+    "2133",  # Pharmacologists and related professionals
+    "2135",  # Forestry professionals
+    "2141",  # Engineering professionals in logistics and production
+    "2149",  # Engineering professionals not elsewhere classified
+    "2221",  # Professional nurses
+    "2225",  # Psychiatry nurses
+    "2233",  # Nurses - school
+    "2241",  # Psychologists
+    "2242",  # Psychotherapists
+    "2281",  # Pharmacists
+    "2284",  # Opticians
+    "2314",  # PhD Students
+    "2341",  # Primary school teachers
+    "2342",  # Recreation leaders
+    "2351",  # Special teachers and special needs teachers
+    "2422",  # Policy administration professionals
+    "2432",  # Public relations professionals
     "2514",  # System testers and test managers
-    "2515",  # System administrators
-    "2516",  # Security specialists (ICT)
-    "2519",  # ICT-specialist professionals not elsewhere classified
-    # Data Science related (21xx)
-    "2121",  # Mathematicians and actuaries
-    "2122",  # Statisticians
-    # Design (21xx)
-    "2173",  # Game and digital media designers
-    # Electronics/Telecom Engineering (21xx)
-    "2143",  # Engineering professionals in electrical, electronics and telecommunications
+    "2519",  # ICT-specialist professionals not elsewhere classified "
 ]
 
 SSYK_OCCUPATION_MAP = {
-    "2511": "System analysts and ICT-architects",
-    "2512": "Software- and system developers",
-    "2513": "Games and digital media developers",
+    "0001": "Other professions",
+    "0210": "Non-commissioned armed forces officers",
+    "1113": "Senior officials of special-interest organisations",
+    "1120": "Directors and chief executives",
+    "1211": "Finance managers, level 1",
+    "1212": "Finance managers, level 2",
+    "1222": "Human resource managers, level 2",
+    "1230": "Administration and planning managers",
+    "1241": "Information, communication and public relations managers, level 1",
+    "1242": "Information, communication and public relations managers, level 2",
+    "1252": "Sales and marketing managers, level 2",
+    "1312": "Information and communications technology service managers, level 2",
+    "1331": "Research and development managers, level 1",
+    "1332": "Research and development managers, level 2",
+    "1351": "Real estate and head of administration managers, level 1",
+    "1352": "Real estate and head of administration managers, level 2",
+    "1361": "Production managers in construction and mining, level 1",
+    "1411": "Primary and secondary schools and adult education managers, level 1",
+    "1421": "Department managers in pre-school, level 1",
+    "1512": "Department and unit managers in health care, level 2",
+    "1531": "Department managers in elderly care, level 1",
+    "1532": "Unit managers in elderly care, level 2",
+    "1540": "Managers and leaders within religious bodies",
+    "1611": "Financial and insurance managers, level 1",
+    "1711": "Hotel and conference managers, level 1",
+    "1732": "Retail and wholesale trade managers, level 2",
+    "1741": "Sports, leisure and wellness managers, level 1",
+    "1742": "Sports, leisure and wellness managers, level 2",
+    "1791": "Other services managers not elsewhere classified, level 1",
+    "1792": "Other services managers not elsewhere classified, level 2",
+    "2113": "Chemists",
+    "2133": "Pharmacologists and related professionals",
+    "2135": "Forestry professionals",
+    "2141": "Engineering professionals in logistics and production",
+    "2149": "Engineering professionals not elsewhere classified",
+    "2221": "Professional nurses",
+    "2225": "Psychiatry nurses",
+    "2233": "Nurses - school",
+    "2241": "Psychologists",
+    "2242": "Psychotherapists",
+    "2281": "Pharmacists",
+    "2284": "Opticians",
+    "2314": "PhD Students",
+    "2341": "Primary school teachers",
+    "2342": "Recreation leaders",
+    "2351": "Special teachers and special needs teachers",
+    "2422": "Policy administration professionals",
+    "2432": "Public relations professionals",
     "2514": "System testers and test managers",
-    "2515": "System administrators",
-    "2516": "Security specialists (ICT)",
-    "2519": "ICT-specialist professionals not elsewhere classified",
-    "2121": "Mathematicians and actuaries",
-    "2122": "Statisticians",
-    "2173": "Game and digital media designers",
-    "2143": "Engineering professionals in electrical, electronics and telecommunications",
+    "2519": "ICT-specialist professionals not elsewhere classified ",
 }
 
 

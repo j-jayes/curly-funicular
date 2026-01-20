@@ -67,7 +67,7 @@ const FilterPanel = ({ filters, occupations, regions, onFilterChange }) => {
               <MenuItem value="">All Occupations</MenuItem>
               {occupations.map((occ) => (
                 <MenuItem key={occ.code} value={occ.code}>
-                  {occ.name}
+                  {`${occ.code} - ${occ.name}`}
                 </MenuItem>
               ))}
             </Select>
