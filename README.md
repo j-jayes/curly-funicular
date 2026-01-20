@@ -128,6 +128,16 @@ npm start
 
 ### Deployment Steps
 
+#### 0. Prepare Data for API
+
+**Important:** Before building the API image, sync the latest processed data from the pipeline:
+
+```bash
+make sync-data
+```
+
+This ensures your API image contains the initial dataset needed to run immediately.
+
 #### 1. Build and Push Docker Images
 
 ```bash

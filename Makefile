@@ -1,4 +1,4 @@
-.PHONY: help build up down clean test-pipeline test-api install-pipeline install-api install-frontend
+.PHONY: help build up down clean test-pipeline test-api install-pipeline install-api install-frontend sync-data
 
 help:
 	@echo "Swedish Labor Market Analytics - Development Commands"
@@ -8,6 +8,7 @@ help:
 	@echo "  make up             - Start all services"
 	@echo "  make down           - Stop all services"
 	@echo "  make clean          - Clean up containers and volumes"
+	@echo "  make sync-data      - Sync processed data to API for deployment"
 	@echo ""
 	@echo "Testing:"
 	@echo "  make test-pipeline  - Run pipeline tests"
@@ -49,6 +50,13 @@ install-api:
 
 install-frontend:
 	cd frontend && npm install
+
+sync-data:
+	@echo "Syncing processed data to API build context..."
+	mkdir -p api/data
+	rm -rf api/data/*
+	cp -r data-pipeline/data/processed/* api/data/
+	@echo "Data synced successfully. You can now build the API image."
 
 deploy-gcp:
 	@echo "Deploying to GCP..."

@@ -7,6 +7,9 @@ services:
       context: ./data-pipeline
       dockerfile: Dockerfile
     container_name: labor-market-pipeline
+    # Override the default command so it doesn't run the pipeline automatically on startup.
+    # To run the pipeline manually: docker compose exec data-pipeline python scripts/run_pipeline.py
+    command: tail -f /dev/null
     environment:
       - GCP_PROJECT_ID=${GCP_PROJECT_ID}
       - GCS_BUCKET_NAME=${GCS_BUCKET_NAME}
@@ -23,11 +26,15 @@ services:
       dockerfile: Dockerfile
     container_name: labor-market-api
     ports:
-      - "8000:8000"
+      # Map host port 8000 to container port 8080 (where uvicorn listens)
+      - "8000:8080"
     environment:
       - GCP_PROJECT_ID=${GCP_PROJECT_ID}
       - GCS_BUCKET_NAME=${GCS_BUCKET_NAME}
       - BIGQUERY_DATASET=${BIGQUERY_DATASET}
+      - DATA_PATH=/app/data
+    volumes:
+      - ./data-pipeline/data/processed:/app/data
     depends_on:
       - data-pipeline
     networks:
@@ -40,7 +47,7 @@ services:
       dockerfile: Dockerfile
     container_name: labor-market-frontend
     ports:
-      - "3000:80"
+      - "3000:8080"
     environment:
       - REACT_APP_API_URL=http://localhost:8000/api/v1
       - API_URL=http://api:8000
