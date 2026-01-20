@@ -1,0 +1,20 @@
+# Data Pipeline Configuration
+
+# GCP settings
+gcp_project_id: "swedish-labor-market"
+gcs_bucket_name: "labor-market-data"
+
+# SCB settings
+scb:
+  base_url: "https://api.scb.se/OV0104/v1/doris/en/ssd"
+  occupation_table: "AM/AM0110/AM0110A/LoneSpridSektorA"
+
+# Arbetsförmedlingen settings
+arbetsformedlingen:
+  base_url: "https://jobsearch.api.jobtechdev.se"
+  max_results: 1000
+
+# Processing settings
+processing:
+  batch_size: 1000
+  save_format: "parquet"

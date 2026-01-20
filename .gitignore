@@ -205,3 +205,27 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+# Add node_modules for frontend
+frontend/node_modules/
+frontend/build/
+frontend/.env.local
+frontend/.env.development.local
+frontend/.env.test.local
+frontend/.env.production.local
+
+# Add package-lock for frontend
+frontend/package-lock.json
+
+# Add temporary data files
+data-pipeline/data/raw/*
+data-pipeline/data/processed/*
+!data-pipeline/data/raw/.gitkeep
+!data-pipeline/data/processed/.gitkeep
+
+# Docker
+.dockerignore
+
+# OS files
+.DS_Store
+Thumbs.db
