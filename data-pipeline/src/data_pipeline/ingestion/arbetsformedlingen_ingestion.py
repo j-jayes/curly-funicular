@@ -22,7 +22,23 @@ logger = logging.getLogger(__name__)
 SSYK_CONCEPT_IDS = {
     "2511": "DJh5_yyF_hEM",  # Systems analysts and IT architects
     "2512": "UxT1_dNS_dLU",  # Software and systems developers
+    "2513": "dF8v_MFC_5dh",  # Games and digital media developers
+    "2514": "RfCH_4qV_XCB",  # System testers and test managers
+    "2515": "2fM5_zYK_7x5",  # System administrators
+    "2516": "Vhdd_K7y_xAC",  # Security specialists (ICT)
+    "2519": "oZE4_Ga3_2Aa",  # ICT-specialist professionals nec
+    "2121": "Z5BP_7yS_wD1",  # Mathematicians and actuaries
+    "2122": "MYGj_8Ht_NrT",  # Statisticians
+    "2173": "Ck5M_Jw9_MpV",  # Game and digital media designers
+    "2143": "Pb7Y_Mxa_C4q",  # Engineering professionals in electrical, electronics and telecom
 }
+
+# Default SSYK codes for job ads search
+DEFAULT_SSYK_CODES = [
+    "2511", "2512", "2513", "2514", "2515", "2516", "2519",  # ICT
+    "2121", "2122",  # Data Science related
+    "2173", "2143",  # Design and Electronics
+]
 
 
 class TaxonomyClient:
@@ -285,7 +301,7 @@ class ArbetsformedlingenIngestion:
             DataFrame with job advertisements
         """
         if ssyk_codes is None:
-            ssyk_codes = ["2511", "2512"]
+            ssyk_codes = DEFAULT_SSYK_CODES  # All ICT and data science occupations
         
         if end_date is None:
             end_date = datetime.now().strftime("%Y-%m-%dT00:00:00")

@@ -50,6 +50,40 @@ CONTENTS_CODES = {
     "000007AP": "num_employees",
 }
 
+# SSYK 2012 occupation codes for ICT, data science, and related fields
+# Full 4-digit codes for software engineers, data scientists, and related
+DEFAULT_SSYK_CODES = [
+    # ICT Professionals (25xx)
+    "2511",  # System analysts and ICT-architects
+    "2512",  # Software- and system developers
+    "2513",  # Games and digital media developers
+    "2514",  # System testers and test managers
+    "2515",  # System administrators
+    "2516",  # Security specialists (ICT)
+    "2519",  # ICT-specialist professionals not elsewhere classified
+    # Data Science related (21xx)
+    "2121",  # Mathematicians and actuaries
+    "2122",  # Statisticians
+    # Design (21xx)
+    "2173",  # Game and digital media designers
+    # Electronics/Telecom Engineering (21xx)
+    "2143",  # Engineering professionals in electrical, electronics and telecommunications
+]
+
+SSYK_OCCUPATION_MAP = {
+    "2511": "System analysts and ICT-architects",
+    "2512": "Software- and system developers",
+    "2513": "Games and digital media developers",
+    "2514": "System testers and test managers",
+    "2515": "System administrators",
+    "2516": "Security specialists (ICT)",
+    "2519": "ICT-specialist professionals not elsewhere classified",
+    "2121": "Mathematicians and actuaries",
+    "2122": "Statisticians",
+    "2173": "Game and digital media designers",
+    "2143": "Engineering professionals in electrical, electronics and telecommunications",
+}
+
 
 class SCBIngestion:
     """Handles data ingestion from Statistics Sweden (SCB) API.
@@ -130,7 +164,7 @@ class SCBIngestion:
         """
         # Default values
         if occupation_codes is None:
-            occupation_codes = ["2511", "2512"]  # Systems analysts, Software devs
+            occupation_codes = DEFAULT_SSYK_CODES  # All ICT and data science occupations
         if region_codes is None:
             region_codes = ALL_REGION_CODES
         if years is None:

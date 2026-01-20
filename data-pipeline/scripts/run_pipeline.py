@@ -19,7 +19,7 @@ from pathlib import Path
 # Add parent directory to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
-from data_pipeline.ingestion.scb_ingestion import SCBIngestion
+from data_pipeline.ingestion.scb_ingestion import SCBIngestion, DEFAULT_SSYK_CODES
 from data_pipeline.ingestion.arbetsformedlingen_ingestion import ArbetsformedlingenIngestion
 from data_pipeline.processing.data_processor import DataProcessor
 from data_pipeline.utils.config import get_settings
@@ -34,9 +34,6 @@ logging.basicConfig(
 )
 
 logger = logging.getLogger(__name__)
-
-# Default SSYK codes to fetch
-DEFAULT_SSYK_CODES = ["2511", "2512"]  # Systems analysts, Software developers
 
 
 def run_pipeline(
@@ -209,7 +206,7 @@ def main():
     parser.add_argument(
         "--max-ads",
         type=int,
-        default=2000,
+        default=500,  # 500 per occupation × 11 occupations = ~5,500 total
         help="Maximum job ads per occupation"
     )
     

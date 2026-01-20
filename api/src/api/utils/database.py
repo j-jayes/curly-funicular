@@ -18,10 +18,23 @@ logger = logging.getLogger(__name__)
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent.parent.parent
 DEFAULT_DATA_PATH = PROJECT_ROOT / "data-pipeline" / "data" / "processed"
 
-# SSYK code to occupation name mapping
+# SSYK code to occupation name mapping (ICT, data science, and related)
 SSYK_OCCUPATION_MAP = {
+    # ICT Professionals (25xx)
     "2511": "System analysts and ICT-architects",
     "2512": "Software- and system developers",
+    "2513": "Games and digital media developers",
+    "2514": "System testers and test managers",
+    "2515": "System administrators",
+    "2516": "Security specialists (ICT)",
+    "2519": "ICT-specialist professionals not elsewhere classified",
+    # Data Science related (21xx)
+    "2121": "Mathematicians and actuaries",
+    "2122": "Statisticians",
+    # Design (21xx)
+    "2173": "Game and digital media designers",
+    # Electronics/Telecom Engineering (21xx)
+    "2143": "Engineering professionals in electrical, electronics and telecommunications",
 }
 
 # Reverse mapping: name to code
