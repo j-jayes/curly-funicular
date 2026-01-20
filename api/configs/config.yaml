@@ -1,0 +1,13 @@
+# API Configuration
+
+# GCP settings
+gcp_project_id: "swedish-labor-market"
+gcs_bucket_name: "labor-market-data"
+bigquery_dataset: "labor_market"
+
+# API settings
+api:
+  title: "Swedish Labor Market API"
+  version: "0.1.0"
+  host: "0.0.0.0"
+  port: 8000

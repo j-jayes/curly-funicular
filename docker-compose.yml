@@ -1,0 +1,57 @@
+version: '3.8'
+
+services:
+  # Data Pipeline Service
+  data-pipeline:
+    build:
+      context: ./data-pipeline
+      dockerfile: Dockerfile
+    container_name: labor-market-pipeline
+    environment:
+      - GCP_PROJECT_ID=${GCP_PROJECT_ID}
+      - GCS_BUCKET_NAME=${GCS_BUCKET_NAME}
+      - SCB_API_KEY=${SCB_API_KEY}
+    volumes:
+      - ./data-pipeline/data:/app/data
+    networks:
+      - labor-market-network
+
+  # API Service
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    container_name: labor-market-api
+    ports:
+      - "8000:8000"
+    environment:
+      - GCP_PROJECT_ID=${GCP_PROJECT_ID}
+      - GCS_BUCKET_NAME=${GCS_BUCKET_NAME}
+      - BIGQUERY_DATASET=${BIGQUERY_DATASET}
+    depends_on:
+      - data-pipeline
+    networks:
+      - labor-market-network
+
+  # Frontend Service
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: labor-market-frontend
+    ports:
+      - "3000:80"
+    environment:
+      - REACT_APP_API_URL=http://localhost:8000/api/v1
+      - API_URL=http://api:8000
+    depends_on:
+      - api
+    networks:
+      - labor-market-network
+
+networks:
+  labor-market-network:
+    driver: bridge
+
+volumes:
+  pipeline-data:
