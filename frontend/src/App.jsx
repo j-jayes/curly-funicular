@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Container, Grid, Paper, ThemeProvider, createTheme } from '@mui/material';
 import Header from './components/Layout/Header';
+import Footer from './components/Layout/Footer';
 import FilterPanel from './components/Filters/FilterPanel';
 import SwedenMap from './components/Map/SwedenMap';
 import IncomeChart from './components/Charts/IncomeChart';
@@ -151,6 +152,7 @@ function App() {
             </Grid>
           </Grid>
         </Container>
+        <Footer />
       </div>
     </ThemeProvider>
   );
