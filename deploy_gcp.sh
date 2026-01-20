@@ -14,6 +14,13 @@ echo "========================================================"
 echo "      Swedish Labor Market Analytics Deployment       "
 echo "========================================================"
 
+# Load environment variables from .env if it exists
+if [ -f .env ]; then
+    echo "Loading environment variables from .env..."
+    # Only export lines that are not comments and contain an equals sign
+    export $(grep -v '^#' .env | grep '=' | xargs)
+fi
+
 # Check required environment variables
 check_var "GCP_PROJECT_ID"
 check_var "GCS_BUCKET_NAME"
@@ -82,7 +89,7 @@ gcloud run deploy labor-market-frontend \
   --platform managed \
   --region $REGION \
   --allow-unauthenticated \
-  --set-env-vars REACT_APP_API_URL=$API_URL,API_URL=$API_URL
+  --set-env-vars REACT_APP_API_URL=$API_URL/api/v1,API_URL=$API_URL/api/v1
 
 FRONTEND_URL=$(gcloud run services describe labor-market-frontend --region $REGION --format 'value(status.url)')
 

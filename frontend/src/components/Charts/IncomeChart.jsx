@@ -31,6 +31,11 @@ const IncomeChart = ({ data, loading }) => {
   // Aggregate data by occupation and gender
   const aggregated = {};
   
+  if (!Array.isArray(data)) {
+    console.warn('IncomeChart received non-array data:', data);
+    return null;
+  }
+  
   data.forEach(item => {
     const occupation = item.occupation || 'Unknown';
     const gender = item.gender || 'unknown';

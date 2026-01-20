@@ -29,7 +29,12 @@ const JobsChart = ({ data, loading }) => {
     );
   }
 
-  if (!data || data.length === 0) {
+  if (!Array.isArray(data)) {
+    console.warn('JobsChart received non-array data:', data);
+    return null;
+  }
+
+  if (data.length === 0) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" height="100%">
         <Typography color="textSecondary" sx={{ fontFamily: '-apple-system, BlinkMacSystemFont, sans-serif' }}>

@@ -72,7 +72,7 @@ const SwedenMap = ({ data, selectedRegion, onRegionClick }) => {
   // Aggregate income by region - map to NUTS codes
   const getRegionIncomeMap = () => {
     const regionIncome = {};
-    if (data && data.length > 0) {
+    if (Array.isArray(data) && data.length > 0) {
       data.forEach(item => {
         const region = item.region;
         const nutsCode = REGION_NAME_MAP[region];
