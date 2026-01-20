@@ -1,0 +1,6981 @@
+
+<!doctype html>
+<html lang="ko" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="FastAPI framework, high performance, easy to learn, fast to code, ready for production">
+      
+      
+      
+        <link rel="canonical" href="https://fastapi.tiangolo.com/ko/alternatives/">
+      
+      
+        <link rel="prev" href="../about/">
+      
+      
+        <link rel="next" href="../history-design-future/">
+      
+      
+        
+          <link rel="alternate" href="/" hreflang="ko">
+        
+          <link rel="alternate" href="/de/" hreflang="ko">
+        
+          <link rel="alternate" href="/es/" hreflang="ko">
+        
+          <link rel="alternate" href="/ko/" hreflang="ko">
+        
+          <link rel="alternate" href="/pt/" hreflang="ko">
+        
+          <link rel="alternate" href="/ru/" hreflang="ko">
+        
+          <link rel="alternate" href="/uk/" hreflang="ko">
+        
+      
+      
+      <link rel="icon" href="../img/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.0">
+    
+    
+      
+        <title>대안, 영감, 비교 - FastAPI</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.618322db.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+    
+      <link rel="stylesheet" href="../css/termynal.css">
+    
+      <link rel="stylesheet" href="../css/custom.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  
+<meta property="og:type" content="website" />
+<meta property="og:title" content="대안, 영감, 비교 - FastAPI" />
+<meta property="og:description" content="FastAPI framework, high performance, easy to learn, fast to code, ready for production" />
+<meta property="og:image" content="https://fastapi.tiangolo.com/ko/assets/images/social/alternatives.png" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:url" content="https://fastapi.tiangolo.com/ko/alternatives/" />
+<meta property="twitter:card" content="summary_large_image" />
+<meta property="twitter:title" content="대안, 영감, 비교 - FastAPI" />
+<meta property="twitter:description" content="FastAPI framework, high performance, easy to learn, fast to code, ready for production" />
+<meta property="twitter:image" content="https://fastapi.tiangolo.com/ko/assets/images/social/alternatives.png" />
+</head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#alternatives-inspiration-and-comparisons" class="md-skip">
+          콘텐츠로 이동
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+        <aside class="md-banner">
+          <div class="md-banner__inner md-grid md-typeset">
+            
+            
+<div class="announce-wrapper">
+  <div id="announce-left">
+    <div class="item">
+      <a class="announce-link" href="https://fastapicloud.com" target="_blank">
+        <span class="twemoji">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 19c0 .34.04.67.09 1H6.5c-1.5 0-2.81-.5-3.89-1.57C1.54 17.38 1 16.09 1 14.58q0-1.95 1.17-3.48C3.34 9.57 4 9.43 5.25 9.15c.42-1.53 1.25-2.77 2.5-3.72S10.42 4 12 4c1.95 0 3.6.68 4.96 2.04S19 9.05 19 11c1.15.13 2.1.63 2.86 1.5.51.57.84 1.21 1 1.92A5.9 5.9 0 0 0 19 13c-3.31 0-6 2.69-6 6m3-1h2v4h2v-4h2l-3-3z"/></svg>
+        </span> Join the <strong>FastAPI Cloud</strong> waiting list 🚀
+      </a>
+    </div>
+    <div class="item">
+      <a class="announce-link" href="https://x.com/fastapi" target="_blank">
+        <span class="twemoji">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M357.2 48h70.6L273.6 224.2 455 464H313L201.7 318.6 74.5 464H3.8l164.9-188.5L-5.2 48h145.6l100.5 132.9zm-24.8 373.8h39.1L119.1 88h-42z"/></svg>
+        </span> Follow <strong>@fastapi</strong> on <strong>X (Twitter)</strong> to stay updated
+      </a>
+    </div>
+    <div class="item">
+      <a class="announce-link" href="https://www.linkedin.com/company/fastapi" target="_blank">
+        <span class="twemoji linkedin">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3M135.4 416H69V202.2h66.5V416zM102.2 96a38.5 38.5 0 1 1 0 77 38.5 38.5 0 1 1 0-77m282.1 320h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9z"/></svg>
+        </span> Follow <strong>FastAPI</strong> on <strong>LinkedIn</strong> to stay updated
+      </a>
+    </div>
+    <div class="item">
+      <a class="announce-link" href="https://fastapi.tiangolo.com/newsletter/">
+        <span class="twemoji">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m20 8-8 5-8-5V6l8 5 8-5m0-2H4c-1.11 0-2 .89-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2"/></svg>
+        </span> Subscribe to the <strong>FastAPI and friends</strong> newsletter 🎉
+      </a>
+    </div>
+  </div>
+  <div id="announce-right" style="position: relative;">
+    <div class="item">
+      <a title="BlockBee Cryptocurrency Payment Gateway" style="display: block; position: relative;" href="https://blockbee.io?ref=fastapi" target="_blank">
+        <span class="sponsor-badge">sponsor</span>
+        <img class="sponsor-image" src="/img/sponsors/blockbee-banner.png" />
+      </a>
+    </div>
+    <div class="item">
+      <a title="Scalar: Beautiful Open-Source API References from Swagger/OpenAPI files" style="display: block; position: relative;" href="https://github.com/scalar/scalar/?utm_source=fastapi&utm_medium=website&utm_campaign=top-banner" target="_blank">
+        <span class="sponsor-badge">sponsor</span>
+        <img class="sponsor-image" src="/img/sponsors/scalar-banner.svg" />
+      </a>
+    </div>
+    <div class="item">
+      <a title="Auth, user management and more for your B2B product" style="display: block; position: relative;" href="https://www.propelauth.com/?utm_source=fastapi&utm_campaign=1223&utm_medium=topbanner" target="_blank">
+        <span class="sponsor-badge">sponsor</span>
+        <img class="sponsor-image" src="/img/sponsors/propelauth-banner.png" />
+      </a>
+    </div>
+    <div class="item">
+      <a title="Zuplo: Scale, Protect, Document, and Monetize your FastAPI" style="display: block; position: relative;" href="https://zuplo.link/fastapi-web" target="_blank">
+        <span class="sponsor-badge">sponsor</span>
+        <img class="sponsor-image" src="/img/sponsors/zuplo-banner.png" />
+      </a>
+    </div>
+    <div class="item">
+      <a title="liblab - Generate SDKs from FastAPI" style="display: block; position: relative;" href="https://liblab.com?utm_source=fastapi" target="_blank">
+        <span class="sponsor-badge">sponsor</span>
+        <img class="sponsor-image" src="/img/sponsors/liblab-banner.png" />
+      </a>
+    </div>
+    <div class="item">
+      <a title="Deploy & scale any full-stack web app on Render. Focus on building apps, not infra." style="display: block; position: relative;" href="https://docs.render.com/deploy-fastapi?utm_source=deploydoc&utm_medium=referral&utm_campaign=fastapi" target="_blank">
+        <span class="sponsor-badge">sponsor</span>
+        <img class="sponsor-image" src="/img/sponsors/render-banner.svg" />
+      </a>
+    </div>
+    <div class="item">
+      <a title="Cut Code Review Time & Bugs in Half with CodeRabbit" style="display: block; position: relative;" href="https://www.coderabbit.ai/?utm_source=fastapi&utm_medium=banner&utm_campaign=fastapi" target="_blank">
+        <span class="sponsor-badge">sponsor</span>
+        <img class="sponsor-image" src="/img/sponsors/coderabbit-banner.png" />
+      </a>
+    </div>
+    <div class="item">
+      <a title="Making Retail Purchases Actionable for Brands and Developers" style="display: block; position: relative;" href="https://subtotal.com/?utm_source=fastapi&utm_medium=sponsorship&utm_campaign=open-source" target="_blank">
+        <span class="sponsor-badge">sponsor</span>
+        <img class="sponsor-image" src="/img/sponsors/subtotal-banner.svg" />
+      </a>
+    </div>
+    <div class="item">
+      <a title="Deploy enterprise applications at startup speed" style="display: block; position: relative;" href="https://docs.railway.com/guides/fastapi?utm_medium=integration&utm_source=docs&utm_campaign=fastapi" target="_blank">
+        <span class="sponsor-badge">sponsor</span>
+        <img class="sponsor-image" src="/img/sponsors/railway-banner.png" />
+      </a>
+    </div>
+    <div class="item">
+      <a title="SerpApi: Web Search API" style="display: block; position: relative;" href="https://serpapi.com/?utm_source=fastapi_website" target="_blank">
+        <span class="sponsor-badge">sponsor</span>
+        <img class="sponsor-image" src="/img/sponsors/serpapi-banner.png" />
+      </a>
+    </div>
+    <div class="item">
+      <a title="Greptile: The AI Code Reviewer" style="display: block; position: relative;" href="https://www.greptile.com/?utm_source=fastapi&utm_medium=sponsorship&utm_campaign=fastapi_sponsor_page" target="_blank">
+        <span class="sponsor-badge">sponsor</span>
+        <img class="sponsor-image" src="/img/sponsors/greptile-banner.png" />
+      </a>
+    </div>
+  </div>
+</div>
+
+          </div>
+          
+        </aside>
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="상단/헤더">
+    <a href=".." title="FastAPI" class="md-header__button md-logo" aria-label="FastAPI" data-md-component="logo">
+      
+  <img src="../img/icon-white.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            FastAPI
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              대안, 영감, 비교
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9 2C5.13 2 2 5.13 2 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.87-3.13-7-7-7M6 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H6zm13-8h-2l-3.2 9h1.9l.7-2h3.2l.7 2h1.9zm-2.15 5.65L18 15l1.15 3.65z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent="amber"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 2.38 1.19 4.47 3 5.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26c1.81-1.27 3-3.36 3-5.74a7 7 0 0 0-7-7M9 21a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-1H9z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="teal" data-md-color-accent="amber"  aria-label="Switch to system preference"  type="radio" name="__palette" id="__palette_2">
+    
+      <label class="md-header__button md-icon" title="Switch to system preference" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 1 7 7c0 2.38-1.19 4.47-3 5.74V17a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 0 1 7-7M9 21v-1h6v1a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1m3-17a5 5 0 0 0-5 5c0 2.05 1.23 3.81 3 4.58V16h4v-2.42c1.77-.77 3-2.53 3-4.58a5 5 0 0 0-5-5"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+      <div class="md-header__option">
+  <div class="md-select">
+    
+    <button class="md-header__button md-icon" aria-label="언어설정">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12.87 15.07-2.54-2.51.03-.03A17.5 17.5 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2zm-2.62 7 1.62-4.33L19.12 17z"/></svg>
+    </button>
+    <div class="md-select__inner">
+      <ul class="md-select__list">
+        
+          <li class="md-select__item">
+            <a href="/" hreflang="" class="md-select__link">
+              en - English
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="/de/" hreflang="" class="md-select__link">
+              de - Deutsch
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="/es/" hreflang="" class="md-select__link">
+              es - español
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="/ko/" hreflang="" class="md-select__link">
+              ko - 한국어
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="/pt/" hreflang="" class="md-select__link">
+              pt - português
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="/ru/" hreflang="" class="md-select__link">
+              ru - русский язык
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="/uk/" hreflang="" class="md-select__link">
+              uk - українська мова
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="검색" placeholder="검색" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="검색">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="공유" aria-label="공유" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="지우기" aria-label="지우기" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            검색 초기화
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/fastapi/fastapi" title="저장소로 이동" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M202.1 328.7c0 20.9-10.9 55.1-36.7 55.1s-36.7-34.2-36.7-55.1 10.9-55.1 36.7-55.1 36.7 34.2 36.7 55.1M496 278.2c0 31.9-3.2 65.7-17.5 95-37.9 76.6-142.1 74.8-216.7 74.8-75.8 0-186.2 2.7-225.6-74.8-14.6-29-20.2-63.1-20.2-95 0-41.9 13.9-81.5 41.5-113.6-5.2-15.8-7.7-32.4-7.7-48.8 0-21.5 4.9-32.3 14.6-51.8 45.3 0 74.3 9 108.8 36 29-6.9 58.8-10 88.7-10 27 0 54.2 2.9 80.4 9.2 34-26.7 63-35.2 107.8-35.2 9.8 19.5 14.6 30.3 14.6 51.8 0 16.4-2.6 32.7-7.7 48.2 27.5 32.4 39 72.3 39 114.2m-64.3 50.5c0-43.9-26.7-82.6-73.5-82.6-18.9 0-37 3.4-56 6-14.9 2.3-29.8 3.2-45.1 3.2-15.2 0-30.1-.9-45.1-3.2-18.7-2.6-37-6-56-6-46.8 0-73.5 38.7-73.5 82.6 0 87.8 80.4 101.3 150.4 101.3h48.2c70.3 0 150.6-13.4 150.6-101.3m-82.6-55.1c-25.8 0-36.7 34.2-36.7 55.1s10.9 55.1 36.7 55.1 36.7-34.2 36.7-55.1-10.9-55.1-36.7-55.1"/></svg>
+  </div>
+  <div class="md-source__repository">
+    fastapi/fastapi
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="탭" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href=".." class="md-tabs__link">
+        
+  
+  
+    
+  
+  FastAPI
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../features/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  기능
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../learn/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  배우기 
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../reference/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Reference
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../fastapi-people/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  FastAPI People
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../resources/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  리소스 
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../about/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  소개 
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../release-notes/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Release Notes
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="네비게이션" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="FastAPI" class="md-nav__button md-logo" aria-label="FastAPI" data-md-component="logo">
+      
+  <img src="../img/icon-white.svg" alt="logo">
+
+    </a>
+    FastAPI
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/fastapi/fastapi" title="저장소로 이동" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M202.1 328.7c0 20.9-10.9 55.1-36.7 55.1s-36.7-34.2-36.7-55.1 10.9-55.1 36.7-55.1 36.7 34.2 36.7 55.1M496 278.2c0 31.9-3.2 65.7-17.5 95-37.9 76.6-142.1 74.8-216.7 74.8-75.8 0-186.2 2.7-225.6-74.8-14.6-29-20.2-63.1-20.2-95 0-41.9 13.9-81.5 41.5-113.6-5.2-15.8-7.7-32.4-7.7-48.8 0-21.5 4.9-32.3 14.6-51.8 45.3 0 74.3 9 108.8 36 29-6.9 58.8-10 88.7-10 27 0 54.2 2.9 80.4 9.2 34-26.7 63-35.2 107.8-35.2 9.8 19.5 14.6 30.3 14.6 51.8 0 16.4-2.6 32.7-7.7 48.2 27.5 32.4 39 72.3 39 114.2m-64.3 50.5c0-43.9-26.7-82.6-73.5-82.6-18.9 0-37 3.4-56 6-14.9 2.3-29.8 3.2-45.1 3.2-15.2 0-30.1-.9-45.1-3.2-18.7-2.6-37-6-56-6-46.8 0-73.5 38.7-73.5 82.6 0 87.8 80.4 101.3 150.4 101.3h48.2c70.3 0 150.6-13.4 150.6-101.3m-82.6-55.1c-25.8 0-36.7 34.2-36.7 55.1s10.9 55.1 36.7 55.1 36.7-34.2 36.7-55.1-10.9-55.1-36.7-55.1"/></svg>
+  </div>
+  <div class="md-source__repository">
+    fastapi/fastapi
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    FastAPI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      기능
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../learn/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    배우기 
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    배우기 
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../python-types/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      파이썬 타입 소개
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../async/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      동시성과 async / await
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../environment-variables/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      환경 변수
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../virtual-environments/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      가상 환경
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_6" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../tutorial/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    자습서 - 사용자 안내서 
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3_6" id="__nav_3_6_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    자습서 - 사용자 안내서 
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorial/first-steps/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      첫걸음
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorial/path-params/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      경로 매개변수
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorial/query-params/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      쿼리 매개변수
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorial/body/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      요청 본문
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorial/query-params-str-validations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      쿼리 매개변수와 문자열 검증
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorial/path-params-numeric-validations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      경로 매개변수와 숫자 검증
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorial/query-param-models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      쿼리 매개변수 모델
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorial/body-multiple-params/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      본문 - 다중 매개변수
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorial/body-fields/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      본문 - 필드
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorial/body-nested-models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      본문 - 중첩 모델
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorial/schema-extra-example/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      요청 예제 데이터 선언
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorial/extra-data-types/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      추가 데이터 자료형
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorial/cookie-params/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      쿠키 매개변수
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorial/header-params/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      헤더 매개변수
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorial/cookie-param-models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      쿠키 매개변수 모델
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorial/header-param-models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      헤더 매개변수 모델
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorial/response-model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      응답 모델 - 반환 타입
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorial/extra-models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      추가 모델
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorial/response-status-code/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      응답 상태 코드
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorial/request-forms/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      폼 데이터
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorial/request-form-models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      폼 모델
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorial/request-files/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      파일 요청
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorial/request-forms-and-files/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      폼 및 파일 요청
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorial/handling-errors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      오류 처리
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorial/path-operation-configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      경로 처리 설정
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorial/encoder/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      JSON 호환 가능 인코더
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorial/body-updates/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      Body - 업데이트
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_6_29" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../tutorial/dependencies/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    의존성 
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3_6_29" id="__nav_3_6_29_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_6_29_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_6_29">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    의존성 
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorial/dependencies/classes-as-dependencies/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      의존성으로서의 클래스
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorial/dependencies/sub-dependencies/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      하위 의존성
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorial/dependencies/dependencies-in-path-operation-decorators/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      경로 작동 데코레이터에서의 의존성
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorial/dependencies/global-dependencies/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      전역 의존성
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorial/dependencies/dependencies-with-yield/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      <code>yield</code>를 사용하는 의존성
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_6_30" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../tutorial/security/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    보안 
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3_6_30" id="__nav_3_6_30_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_6_30_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_6_30">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    보안 
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorial/security/first-steps/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      보안 - 첫 단계
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorial/security/get-current-user/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      현재 사용자 가져오기
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorial/security/simple-oauth2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      패스워드와 Bearer를 이용한 간단한 OAuth2
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorial/security/oauth2-jwt/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      패스워드(해싱 포함)를 사용하는 OAuth2, JWT 토큰을 사용하는 Bearer
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorial/middleware/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      미들웨어
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorial/cors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      CORS (교차-출처 리소스 공유)
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorial/sql-databases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      SQL (관계형) 데이터베이스
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorial/bigger-applications/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      더 큰 애플리케이션 - 여러 파일
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorial/background-tasks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      백그라운드 작업
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorial/metadata/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      메타데이터 및 문서화 URL
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorial/static-files/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      정적 파일
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorial/testing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      테스팅
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorial/debugging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      디버깅
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_7" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../advanced/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    심화 사용자 안내서 - 도입부 
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3_7" id="__nav_3_7_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    심화 사용자 안내서 - 도입부 
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced/path-operation-advanced-configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      경로 처리 고급 구성
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced/additional-status-codes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      추가 상태 코드
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced/response-directly/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      응답을 직접 반환하기
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced/custom-response/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      사용자 정의 응답 - HTML, Stream, 파일, 기타
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced/additional-responses/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      OpenAPI에서 추가 응답
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced/response-cookies/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      응답 쿠키
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced/response-headers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      응답 헤더
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced/response-change-status-code/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      응답 - 상태 코드 변경
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced/advanced-dependencies/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      고급 의존성
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_7_11" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../advanced/security/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    고급 보안 
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3_7_11" id="__nav_3_7_11_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_7_11_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_7_11">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    고급 보안 
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced/security/oauth2-scopes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      OAuth2 스코프
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced/security/http-basic-auth/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      HTTP Basic Auth
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced/using-request-directly/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      <code>Request</code> 직접 사용하기
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced/dataclasses/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      Dataclasses 사용하기
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced/middleware/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      고급 Middleware
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced/sub-applications/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      하위 응용프로그램 - 마운트
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced/behind-a-proxy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      프록시 뒤에서 실행하기
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced/templates/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      템플릿
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced/websockets/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      WebSockets
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced/events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      Lifespan 이벤트
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced/testing-websockets/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      WebSocket 테스트하기
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced/testing-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      이벤트 테스트: 라이프스팬 및 시작 - 종료
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced/testing-dependencies/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      오버라이드로 의존성 테스트하기
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced/async-tests/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      비동기 테스트
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced/settings/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      설정과 환경 변수
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced/openapi-callbacks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      OpenAPI 콜백
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced/openapi-webhooks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      OpenAPI Webhooks
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced/wsgi/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      WSGI 포함하기 - Flask, Django 그 외
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../advanced/generate-clients/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      SDK 생성하기
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../fastapi-cli/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      FastAPI CLI
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_9" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../deployment/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    배포 
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3_9" id="__nav_3_9_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_9_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    배포 
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../deployment/versions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      FastAPI 버전들에 대하여
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../deployment/fastapicloud/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      FastAPI Cloud
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../deployment/https/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      HTTPS 알아보기
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../deployment/manually/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      서버를 수동으로 실행하기
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../deployment/concepts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      배포 개념
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../deployment/cloud/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      클라우드 제공업체에서 FastAPI 배포하기
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../deployment/server-workers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      서버 워커 - 워커와 함께 사용하는 Uvicorn
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../deployment/docker/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      컨테이너의 FastAPI - 도커
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_10" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../how-to/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    How To - 레시피 
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3_10" id="__nav_3_10_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    How To - 레시피 
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../how-to/general/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      일반 - 사용 방법 - 레시피
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../how-to/migrate-from-pydantic-v1-to-pydantic-v2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      Pydantic v1에서 Pydantic v2로 마이그레이션하기
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../how-to/graphql/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      GraphQL
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../how-to/custom-request-and-route/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      커스텀 Request 및 APIRoute 클래스
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../how-to/conditional-openapi/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      조건부 OpenAPI
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../how-to/extending-openapi/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      OpenAPI 확장하기
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../how-to/separate-openapi-schemas/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      입력과 출력에 대해 OpenAPI 스키마를 분리할지 여부
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../how-to/custom-docs-ui-assets/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      커스텀 Docs UI 정적 에셋(자체 호스팅)
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../how-to/configure-swagger-ui/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      Swagger UI 구성
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../how-to/testing-database/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      데이터베이스 테스트하기
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../how-to/authentication-error-status-code/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      이전 403 인증 오류 상태 코드 사용하기
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../reference/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/fastapi/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      <code>FastAPI</code> class
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/parameters/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      Request Parameters
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/status/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      Status Codes
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/uploadfile/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      <code>UploadFile</code> class
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/exceptions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      Exceptions - <code>HTTPException</code> and <code>WebSocketException</code>
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/dependencies/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      Dependencies - <code>Depends()</code> and <code>Security()</code>
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/apirouter/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      <code>APIRouter</code> class
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/background/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      Background Tasks - <code>BackgroundTasks</code>
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/request/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      <code>Request</code> class
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/websockets/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      WebSockets
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/httpconnection/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      <code>HTTPConnection</code> class
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/response/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      <code>Response</code> class
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/responses/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      Custom Response Classes - File, HTML, Redirect, Streaming, etc.
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/middleware/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      Middleware
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_16" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../reference/openapi/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OpenAPI
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_16" id="__nav_4_16_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_16_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_16">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    OpenAPI
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/openapi/docs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      OpenAPI <code>docs</code>
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/openapi/models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      OpenAPI <code>models</code>
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/security/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      Security Tools
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/encoders/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      Encoders - <code>jsonable_encoder</code>
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/staticfiles/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      Static Files - <code>StaticFiles</code>
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/templating/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      Templating - <code>Jinja2Templates</code>
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../reference/testclient/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      Test Client - <code>TestClient</code>
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../fastapi-people/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      FastAPI People
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../resources/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    리소스 
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_6" id="__nav_6_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    리소스 
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../help-fastapi/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      FastAPI 지원 - 도움 받기
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../contributing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      Development - Contributing
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../project-generation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      Full Stack FastAPI 템플릿
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../external-links/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      External Links
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../newsletter/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      FastAPI and friends newsletter
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../management-tasks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      Repository Management Tasks
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../about/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    소개 
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_7" id="__nav_7_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    소개 
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      대안, 영감, 비교
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      대안, 영감, 비교
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="목차">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      목차
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#intro" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          소개
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#previous-tools" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          이전 도구들
+        </span>
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="이전 도구들">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#django" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Django
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#django-rest-framework" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Django REST Framework
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#flask" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Flask
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#requests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Requests
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#swagger-openapi" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Swagger / <a href="https://github.com/OAI/OpenAPI-Specification/" class="external-link" target="_blank">OpenAPI</a>
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#flask-rest-frameworks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Flask REST framework들
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#marshmallow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Marshmallow
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#webargs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Webargs
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#apispec" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          APISpec
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#flask-apispec" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Flask-apispec
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nestjs-and-angular" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          NestJS (그리고 <a href="https://angular.io/" class="external-link" target="_blank">Angular</a>)
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sanic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Sanic
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#falcon" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Falcon
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#molten" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Molten
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hug" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Hug
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#apistar-0-5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          APIStar (&lt;= 0.5)
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#used-by-fastapi" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          <strong>FastAPI</strong>가 사용하는 것
+        </span>
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="FastAPI가 사용하는 것">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pydantic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Pydantic
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#starlette" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Starlette
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#uvicorn" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Uvicorn
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#benchmarks-and-speed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          벤치마크와 속도
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../history-design-future/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      역사, 디자인 그리고 미래
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../benchmarks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      벤치마크
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../management/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      Repository Management
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../release-notes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      Release Notes
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="목차">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      목차
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#intro" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          소개
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#previous-tools" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          이전 도구들
+        </span>
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="이전 도구들">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#django" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Django
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#django-rest-framework" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Django REST Framework
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#flask" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Flask
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#requests" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Requests
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#swagger-openapi" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Swagger / <a href="https://github.com/OAI/OpenAPI-Specification/" class="external-link" target="_blank">OpenAPI</a>
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#flask-rest-frameworks" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Flask REST framework들
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#marshmallow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Marshmallow
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#webargs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Webargs
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#apispec" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          APISpec
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#flask-apispec" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Flask-apispec
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nestjs-and-angular" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          NestJS (그리고 <a href="https://angular.io/" class="external-link" target="_blank">Angular</a>)
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sanic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Sanic
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#falcon" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Falcon
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#molten" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Molten
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hug" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Hug
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#apistar-0-5" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          APIStar (&lt;= 0.5)
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#used-by-fastapi" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          <strong>FastAPI</strong>가 사용하는 것
+        </span>
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="FastAPI가 사용하는 것">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#pydantic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Pydantic
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#starlette" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Starlette
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#uvicorn" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Uvicorn
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#benchmarks-and-speed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          벤치마크와 속도
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+                
+
+
+
+  
+
+
+  <nav class="md-path" aria-label="네비게이션" >
+    <ol class="md-path__list">
+      
+        
+  
+  
+    <li class="md-path__item">
+      <a href=".." class="md-path__link">
+        
+  <span class="md-ellipsis">
+    FastAPI
+  </span>
+
+      </a>
+    </li>
+  
+
+      
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../about/" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    소개 
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ol>
+  </nav>
+
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="alternatives-inspiration-and-comparisons">대안, 영감, 비교<a class="headerlink" data-preview="" href="#alternatives-inspiration-and-comparisons" title="Permanent link">&para;</a></h1>
+<p><strong>FastAPI</strong>에 영감을 준 것들, 대안과의 비교, 그리고 그로부터 무엇을 배웠는지에 대한 내용입니다.</p>
+<h2 id="intro">소개<a class="headerlink" data-preview="" href="#intro" title="Permanent link">&para;</a></h2>
+<p>다른 사람들의 이전 작업이 없었다면 <strong>FastAPI</strong>는 존재하지 않았을 것입니다.</p>
+<p>그 전에 만들어진 많은 도구들이 <strong>FastAPI</strong>의 탄생에 영감을 주었습니다.</p>
+<p>저는 여러 해 동안 새로운 framework를 만드는 것을 피하고 있었습니다. 먼저 <strong>FastAPI</strong>가 다루는 모든 기능을 여러 서로 다른 framework, plug-in, 도구를 사용해 해결해 보려고 했습니다.</p>
+<p>하지만 어느 시점에는, 이전 도구들의 가장 좋은 아이디어를 가져와 가능한 최선의 방식으로 조합하고, 이전에는 존재하지 않았던 언어 기능(Python 3.6+ type hints)을 활용해 이 모든 기능을 제공하는 무언가를 만드는 것 외에는 다른 선택지가 없었습니다.</p>
+<h2 id="previous-tools">이전 도구들<a class="headerlink" data-preview="" href="#previous-tools" title="Permanent link">&para;</a></h2>
+<h3 id="django"><a href="https://www.djangoproject.com/" class="external-link" target="_blank">Django</a><a class="headerlink" data-preview="" href="#django" title="Permanent link">&para;</a></h3>
+<p>가장 인기 있는 Python framework이며 널리 신뢰받고 있습니다. Instagram 같은 시스템을 만드는 데 사용됩니다.</p>
+<p>상대적으로 관계형 데이터베이스(예: MySQL 또는 PostgreSQL)와 강하게 결합되어 있어서, NoSQL 데이터베이스(예: Couchbase, MongoDB, Cassandra 등)를 주 저장 엔진으로 사용하는 것은 그리 쉽지 않습니다.</p>
+<p>백엔드에서 HTML을 생성하기 위해 만들어졌지, 현대적인 프런트엔드(예: React, Vue.js, Angular)나 다른 시스템(예: <abbr title="Internet of Things - 사물 인터넷">IoT</abbr> 기기)에서 사용되는 API를 만들기 위해 설계된 것은 아닙니다.</p>
+<h3 id="django-rest-framework"><a href="https://www.django-rest-framework.org/" class="external-link" target="_blank">Django REST Framework</a><a class="headerlink" data-preview="" href="#django-rest-framework" title="Permanent link">&para;</a></h3>
+<p>Django REST framework는 Django를 기반으로 Web API를 구축하기 위한 유연한 toolkit으로 만들어졌고, Django의 API 기능을 개선하기 위한 목적이었습니다.</p>
+<p>Mozilla, Red Hat, Eventbrite를 포함해 많은 회사에서 사용합니다.</p>
+<p><strong>자동 API 문서화</strong>의 초기 사례 중 하나였고, 이것이 특히 <strong>FastAPI</strong>를 "찾게 된" 첫 아이디어 중 하나였습니다.</p>
+<div class="admonition note">
+<p class="admonition-title">참고</p>
+<p>Django REST Framework는 Tom Christie가 만들었습니다. <strong>FastAPI</strong>의 기반이 되는 Starlette와 Uvicorn을 만든 사람과 동일합니다.</p>
+</div>
+<div class="admonition check">
+<p class="admonition-title"><strong>FastAPI</strong>에 영감을 준 것</p>
+<p>자동 API 문서화 웹 사용자 인터페이스를 제공하기.</p>
+</div>
+<h3 id="flask"><a href="https://flask.palletsprojects.com" class="external-link" target="_blank">Flask</a><a class="headerlink" data-preview="" href="#flask" title="Permanent link">&para;</a></h3>
+<p>Flask는 "microframework"로, Django에 기본으로 포함된 데이터베이스 통합이나 여러 기능들을 포함하지 않습니다.</p>
+<p>이 단순함과 유연성 덕분에 NoSQL 데이터베이스를 주 데이터 저장 시스템으로 사용하는 같은 작업이 가능합니다.</p>
+<p>매우 단순하기 때문에 비교적 직관적으로 배울 수 있지만, 문서가 어떤 지점에서는 다소 기술적으로 깊어지기도 합니다.</p>
+<p>또한 데이터베이스, 사용자 관리, 혹은 Django에 미리 구축되어 있는 다양한 기능들이 꼭 필요하지 않은 다른 애플리케이션에도 흔히 사용됩니다. 물론 이런 기능들 중 다수는 plug-in으로 추가할 수 있습니다.</p>
+<p>이런 구성요소의 분리와, 필요한 것만 정확히 덧붙여 확장할 수 있는 "microframework"라는 점은 제가 유지하고 싶었던 핵심 특성이었습니다.</p>
+<p>Flask의 단순함을 고려하면 API를 구축하는 데 잘 맞는 것처럼 보였습니다. 다음으로 찾고자 했던 것은 Flask용 "Django REST Framework"였습니다.</p>
+<div class="admonition check">
+<p class="admonition-title"><strong>FastAPI</strong>에 영감을 준 것</p>
+<p>micro-framework가 되기. 필요한 도구와 구성요소를 쉽게 조합할 수 있도록 하기.</p>
+<p>단순하고 사용하기 쉬운 routing 시스템을 갖기.</p>
+</div>
+<h3 id="requests"><a href="https://requests.readthedocs.io" class="external-link" target="_blank">Requests</a><a class="headerlink" data-preview="" href="#requests" title="Permanent link">&para;</a></h3>
+<p><strong>FastAPI</strong>는 실제로 <strong>Requests</strong>의 대안이 아닙니다. 둘의 범위는 매우 다릅니다.</p>
+<p>실제로 FastAPI 애플리케이션 <em>내부에서</em> Requests를 사용하는 경우도 흔합니다.</p>
+<p>그럼에도 FastAPI는 Requests로부터 꽤 많은 영감을 얻었습니다.</p>
+<p><strong>Requests</strong>는 (클라이언트로서) API와 <em>상호작용</em>하기 위한 라이브러리이고, <strong>FastAPI</strong>는 (서버로서) API를 <em>구축</em>하기 위한 라이브러리입니다.</p>
+<p>대략 말하면 서로 반대편에 있으며, 서로를 보완합니다.</p>
+<p>Requests는 매우 단순하고 직관적인 설계를 가졌고, 합리적인 기본값을 바탕으로 사용하기가 아주 쉽습니다. 동시에 매우 강력하고 커스터마이징도 가능합니다.</p>
+<p>그래서 공식 웹사이트에서 말하듯이:</p>
+<blockquote>
+<p>Requests is one of the most downloaded Python packages of all time</p>
+</blockquote>
+<p>사용 방법은 매우 간단합니다. 예를 들어 <code>GET</code> 요청을 하려면 다음처럼 작성합니다:</p>
+<div class="highlight"><pre><span></span><code><span id="__span-0-1"><span class="n">response</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;http://example.com/some/url&quot;</span><span class="p">)</span>
+</span></code></pre></div>
+<p>이에 대응하는 FastAPI의 API <em>경로 처리</em>는 다음과 같이 보일 수 있습니다:</p>
+<div class="highlight"><pre><span></span><code><span id="__span-1-1"><span class="hll"><span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/some/url&quot;</span><span class="p">)</span>
+</span></span><span id="__span-1-2"><span class="k">def</span><span class="w"> </span><span class="nf">read_url</span><span class="p">():</span>
+</span><span id="__span-1-3">    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;Hello World&quot;</span><span class="p">}</span>
+</span></code></pre></div>
+<p><code>requests.get(...)</code>와 <code>@app.get(...)</code>의 유사성을 확인해 보세요.</p>
+<div class="admonition check">
+<p class="admonition-title"><strong>FastAPI</strong>에 영감을 준 것</p>
+<ul>
+<li>단순하고 직관적인 API를 갖기.</li>
+<li>HTTP method 이름(operations)을 직접, 직관적이고 명확한 방식으로 사용하기.</li>
+<li>합리적인 기본값을 제공하되, 강력한 커스터마이징을 가능하게 하기.</li>
+</ul>
+</div>
+<h3 id="swagger-openapi"><a href="https://swagger.io/" class="external-link" target="_blank">Swagger</a> / <a href="https://github.com/OAI/OpenAPI-Specification/" class="external-link" target="_blank">OpenAPI</a><a class="headerlink" data-preview="" href="#swagger-openapi" title="Permanent link">&para;</a></h3>
+<p>제가 Django REST Framework에서 가장 원했던 주요 기능은 자동 API 문서화였습니다.</p>
+<p>그 후 JSON(또는 JSON의 확장인 YAML)을 사용해 API를 문서화하는 표준인 Swagger가 있다는 것을 알게 되었습니다.</p>
+<p>그리고 Swagger API를 위한 웹 사용자 인터페이스도 이미 만들어져 있었습니다. 그래서 API에 대한 Swagger 문서를 생성할 수 있다면, 이 웹 사용자 인터페이스를 자동으로 사용할 수 있게 됩니다.</p>
+<p>어느 시점에 Swagger는 Linux Foundation으로 넘어가 OpenAPI로 이름이 바뀌었습니다.</p>
+<p>그래서 2.0 버전을 이야기할 때는 "Swagger"라고 말하는 것이 일반적이고, 3+ 버전은 "OpenAPI"라고 말하는 것이 일반적입니다.</p>
+<div class="admonition check">
+<p class="admonition-title"><strong>FastAPI</strong>에 영감을 준 것</p>
+<p>커스텀 schema 대신, API 사양을 위한 열린 표준을 채택하고 사용하기.</p>
+<p>또한 표준 기반의 사용자 인터페이스 도구를 통합하기:</p>
+<ul>
+<li><a href="https://github.com/swagger-api/swagger-ui" class="external-link" target="_blank">Swagger UI</a></li>
+<li><a href="https://github.com/Rebilly/ReDoc" class="external-link" target="_blank">ReDoc</a></li>
+</ul>
+<p>이 두 가지는 꽤 대중적이고 안정적이기 때문에 선택되었습니다. 하지만 간단히 검색해보면 OpenAPI를 위한 대안 UI가 수십 가지나 있다는 것을 알 수 있습니다(<strong>FastAPI</strong>와 함께 사용할 수 있습니다).</p>
+</div>
+<h3 id="flask-rest-frameworks">Flask REST framework들<a class="headerlink" data-preview="" href="#flask-rest-frameworks" title="Permanent link">&para;</a></h3>
+<p>Flask REST framework는 여러 개가 있지만, 시간을 들여 조사해 본 결과, 상당수가 중단되었거나 방치되어 있었고, 해결되지 않은 여러 이슈 때문에 적합하지 않은 경우가 많았습니다.</p>
+<h3 id="marshmallow"><a href="https://marshmallow.readthedocs.io/en/stable/" class="external-link" target="_blank">Marshmallow</a><a class="headerlink" data-preview="" href="#marshmallow" title="Permanent link">&para;</a></h3>
+<p>API 시스템에 필요한 주요 기능 중 하나는 데이터 "<abbr title="also called marshalling, conversion - 마샬링, 변환이라고도 합니다">serialization</abbr>"입니다. 이는 코드(Python)에서 데이터를 가져와 네트워크로 전송할 수 있는 형태로 변환하는 것을 의미합니다. 예를 들어 데이터베이스의 데이터를 담은 객체를 JSON 객체로 변환하거나, <code>datetime</code> 객체를 문자열로 변환하는 등의 작업입니다.</p>
+<p>API에 또 하나 크게 필요한 기능은 데이터 검증입니다. 특정 파라미터를 기준으로 데이터가 유효한지 확인하는 것입니다. 예를 들어 어떤 필드가 <code>int</code>인지, 임의의 문자열이 아닌지 확인하는 식입니다. 이는 특히 들어오는 데이터에 유용합니다.</p>
+<p>데이터 검증 시스템이 없다면, 모든 검사를 코드에서 수동으로 해야 합니다.</p>
+<p>이런 기능들을 제공하기 위해 Marshmallow가 만들어졌습니다. 훌륭한 라이브러리이며, 저도 이전에 많이 사용했습니다.</p>
+<p>하지만 Python type hints가 존재하기 전에 만들어졌습니다. 그래서 각 <abbr title="the definition of how data should be formed - 데이터가 어떻게 구성되어야 하는지에 대한 정의">schema</abbr>를 정의하려면 Marshmallow가 제공하는 특정 유틸리티와 클래스를 사용해야 합니다.</p>
+<div class="admonition check">
+<p class="admonition-title"><strong>FastAPI</strong>에 영감을 준 것</p>
+<p>데이터 타입과 검증을 제공하는 "schema"를 코드로 정의하고, 이를 자동으로 활용하기.</p>
+</div>
+<h3 id="webargs"><a href="https://webargs.readthedocs.io/en/latest/" class="external-link" target="_blank">Webargs</a><a class="headerlink" data-preview="" href="#webargs" title="Permanent link">&para;</a></h3>
+<p>API에 필요한 또 다른 큰 기능은 들어오는 요청에서 데이터를 <abbr title="reading and converting to Python data - 읽어서 Python 데이터로 변환하기">parsing</abbr>하는 것입니다.</p>
+<p>Webargs는 Flask를 포함한 여러 framework 위에서 이를 제공하기 위해 만들어진 도구입니다.</p>
+<p>내부적으로 Marshmallow를 사용해 데이터 검증을 수행합니다. 그리고 같은 개발자들이 만들었습니다.</p>
+<p>아주 훌륭한 도구이며, 저도 <strong>FastAPI</strong>를 만들기 전에 많이 사용했습니다.</p>
+<div class="admonition info">
+<p class="admonition-title">정보</p>
+<p>Webargs는 Marshmallow와 같은 개발자들이 만들었습니다.</p>
+</div>
+<div class="admonition check">
+<p class="admonition-title"><strong>FastAPI</strong>에 영감을 준 것</p>
+<p>들어오는 요청 데이터의 자동 검증을 갖기.</p>
+</div>
+<h3 id="apispec"><a href="https://apispec.readthedocs.io/en/stable/" class="external-link" target="_blank">APISpec</a><a class="headerlink" data-preview="" href="#apispec" title="Permanent link">&para;</a></h3>
+<p>Marshmallow와 Webargs는 plug-in 형태로 검증, parsing, serialization을 제공합니다.</p>
+<p>하지만 문서화는 여전히 부족했습니다. 그래서 APISpec이 만들어졌습니다.</p>
+<p>이는 여러 framework를 위한 plug-in이며(Starlette용 plug-in도 있습니다).</p>
+<p>작동 방식은, 각 route를 처리하는 함수의 docstring 안에 YAML 형식으로 schema 정의를 작성하고,</p>
+<p>그로부터 OpenAPI schema를 생성합니다.</p>
+<p>Flask, Starlette, Responder 등에서 이런 방식으로 동작합니다.</p>
+<p>하지만 다시, Python 문자열 내부(큰 YAML)에서 micro-syntax를 다루어야 한다는 문제가 있습니다.</p>
+<p>에디터가 이를 크게 도와주지 못합니다. 또한 파라미터나 Marshmallow schema를 수정해놓고 YAML docstring도 같이 수정하는 것을 잊어버리면, 생성된 schema는 오래된 상태가 됩니다.</p>
+<div class="admonition info">
+<p class="admonition-title">정보</p>
+<p>APISpec은 Marshmallow와 같은 개발자들이 만들었습니다.</p>
+</div>
+<div class="admonition check">
+<p class="admonition-title"><strong>FastAPI</strong>에 영감을 준 것</p>
+<p>API를 위한 열린 표준인 OpenAPI를 지원하기.</p>
+</div>
+<h3 id="flask-apispec"><a href="https://flask-apispec.readthedocs.io/en/latest/" class="external-link" target="_blank">Flask-apispec</a><a class="headerlink" data-preview="" href="#flask-apispec" title="Permanent link">&para;</a></h3>
+<p>Flask plug-in으로, Webargs, Marshmallow, APISpec을 묶어줍니다.</p>
+<p>Webargs와 Marshmallow의 정보를 사용해 APISpec으로 OpenAPI schema를 자동 생성합니다.</p>
+<p>훌륭한 도구인데도 과소평가되어 있습니다. 다른 많은 Flask plug-in보다 훨씬 더 유명해져야 합니다. 문서가 너무 간결하고 추상적이라서 그럴 수도 있습니다.</p>
+<p>이 도구는 Python docstring 내부에 YAML(또 다른 문법)을 작성해야 하는 문제를 해결했습니다.</p>
+<p>Flask + Flask-apispec + Marshmallow + Webargs 조합은 <strong>FastAPI</strong>를 만들기 전까지 제가 가장 좋아하던 백엔드 stack이었습니다.</p>
+<p>이를 사용하면서 여러 Flask full-stack generator가 만들어졌습니다. 이것들이 지금까지 저(그리고 여러 외부 팀)가 사용해 온 주요 stack입니다:</p>
+<ul>
+<li><a href="https://github.com/tiangolo/full-stack" class="external-link" target="_blank">https://github.com/tiangolo/full-stack</a></li>
+<li><a href="https://github.com/tiangolo/full-stack-flask-couchbase" class="external-link" target="_blank">https://github.com/tiangolo/full-stack-flask-couchbase</a></li>
+<li><a href="https://github.com/tiangolo/full-stack-flask-couchdb" class="external-link" target="_blank">https://github.com/tiangolo/full-stack-flask-couchdb</a></li>
+</ul>
+<p>그리고 이 동일한 full-stack generator들이 <a class="internal-link" data-preview="" href="../project-generation/" target="_blank"><strong>FastAPI</strong> Project Generators</a>의 기반이 되었습니다.</p>
+<div class="admonition info">
+<p class="admonition-title">정보</p>
+<p>Flask-apispec은 Marshmallow와 같은 개발자들이 만들었습니다.</p>
+</div>
+<div class="admonition check">
+<p class="admonition-title"><strong>FastAPI</strong>에 영감을 준 것</p>
+<p>serialization과 validation을 정의하는 동일한 코드로부터 OpenAPI schema를 자동 생성하기.</p>
+</div>
+<h3 id="nestjs-and-angular"><a href="https://nestjs.com/" class="external-link" target="_blank">NestJS</a> (그리고 <a href="https://angular.io/" class="external-link" target="_blank">Angular</a>)<a class="headerlink" data-preview="" href="#nestjs-and-angular" title="Permanent link">&para;</a></h3>
+<p>이건 Python도 아닙니다. NestJS는 Angular에서 영감을 받은 JavaScript(TypeScript) NodeJS framework입니다.</p>
+<p>Flask-apispec으로 할 수 있는 것과 어느 정도 비슷한 것을 달성합니다.</p>
+<p>Angular 2에서 영감을 받은 의존성 주입 시스템이 통합되어 있습니다. 제가 아는 다른 의존성 주입 시스템들처럼 "injectable"을 사전에 등록해야 하므로, 장황함과 코드 반복이 늘어납니다.</p>
+<p>파라미터가 TypeScript 타입(Python type hints와 유사함)으로 설명되기 때문에 에디터 지원은 꽤 좋습니다.</p>
+<p>하지만 TypeScript 데이터는 JavaScript로 컴파일된 뒤에는 보존되지 않기 때문에, 타입에 의존해 검증, serialization, 문서화를 동시에 정의할 수 없습니다. 이 점과 일부 설계 결정 때문에, 검증/serialization/자동 schema 생성을 하려면 여러 곳에 decorator를 추가해야 하며, 결과적으로 매우 장황해집니다.</p>
+<p>중첩 모델을 잘 처리하지 못합니다. 즉, 요청의 JSON body가 내부 필드를 가진 JSON 객체이고 그 내부 필드들이 다시 중첩된 JSON 객체인 경우, 제대로 문서화하고 검증할 수 없습니다.</p>
+<div class="admonition check">
+<p class="admonition-title"><strong>FastAPI</strong>에 영감을 준 것</p>
+<p>Python 타입을 사용해 뛰어난 에디터 지원을 제공하기.</p>
+<p>강력한 의존성 주입 시스템을 갖추기. 코드 반복을 최소화하는 방법을 찾기.</p>
+</div>
+<h3 id="sanic"><a href="https://sanic.readthedocs.io/en/latest/" class="external-link" target="_blank">Sanic</a><a class="headerlink" data-preview="" href="#sanic" title="Permanent link">&para;</a></h3>
+<p><code>asyncio</code> 기반의 매우 빠른 Python framework 중 초기 사례였습니다. Flask와 매우 유사하게 만들어졌습니다.</p>
+<div class="admonition note">
+<p class="admonition-title">기술 세부사항</p>
+<p>기본 Python <code>asyncio</code> 루프 대신 <a href="https://github.com/MagicStack/uvloop" class="external-link" target="_blank"><code>uvloop</code></a>를 사용했습니다. 이것이 매우 빠르게 만든 요인입니다.</p>
+<p>이는 Uvicorn과 Starlette에 명확히 영감을 주었고, 현재 공개 benchmark에서는 이 둘이 Sanic보다 더 빠릅니다.</p>
+</div>
+<div class="admonition check">
+<p class="admonition-title"><strong>FastAPI</strong>에 영감을 준 것</p>
+<p>미친 성능을 낼 수 있는 방법을 찾기.</p>
+<p>그래서 <strong>FastAPI</strong>는 Starlette를 기반으로 합니다. Starlette는 사용 가능한 framework 중 가장 빠르기 때문입니다(서드파티 benchmark로 테스트됨).</p>
+</div>
+<h3 id="falcon"><a href="https://falconframework.org/" class="external-link" target="_blank">Falcon</a><a class="headerlink" data-preview="" href="#falcon" title="Permanent link">&para;</a></h3>
+<p>Falcon은 또 다른 고성능 Python framework로, 최소한으로 설계되었고 Hug 같은 다른 framework의 기반으로 동작하도록 만들어졌습니다.</p>
+<p>함수가 두 개의 파라미터(하나는 "request", 하나는 "response")를 받도록 설계되어 있습니다. 그런 다음 request에서 일부를 "읽고", response에 일부를 "작성"합니다. 이 설계 때문에, 표준 Python type hints를 함수 파라미터로 사용해 요청 파라미터와 body를 선언하는 것이 불가능합니다.</p>
+<p>따라서 데이터 검증, serialization, 문서화는 자동으로 되지 않고 코드로 해야 합니다. 또는 Hug처럼 Falcon 위에 framework를 얹어 구현해야 합니다. request 객체 하나와 response 객체 하나를 파라미터로 받는 Falcon의 설계에서 영감을 받은 다른 framework에서도 같은 구분이 나타납니다.</p>
+<div class="admonition check">
+<p class="admonition-title"><strong>FastAPI</strong>에 영감을 준 것</p>
+<p>훌륭한 성능을 얻는 방법을 찾기.</p>
+<p>Hug(= Falcon 기반)과 함께, 함수에서 <code>response</code> 파라미터를 선언하도록 <strong>FastAPI</strong>에 영감을 주었습니다.</p>
+<p>다만 FastAPI에서는 선택 사항이며, 주로 헤더, 쿠키, 그리고 대체 status code를 설정하는 데 사용됩니다.</p>
+</div>
+<h3 id="molten"><a href="https://moltenframework.com/" class="external-link" target="_blank">Molten</a><a class="headerlink" data-preview="" href="#molten" title="Permanent link">&para;</a></h3>
+<p><strong>FastAPI</strong>를 만들기 시작한 초기 단계에서 Molten을 알게 되었고, 꽤 비슷한 아이디어를 갖고 있었습니다:</p>
+<ul>
+<li>Python type hints 기반</li>
+<li>이 타입으로부터 검증과 문서화 생성</li>
+<li>의존성 주입 시스템</li>
+</ul>
+<p>Pydantic 같은 서드파티 라이브러리를 사용해 데이터 검증/serialization/문서화를 하지 않고 자체 구현을 사용합니다. 그래서 이런 데이터 타입 정의를 쉽게 재사용하기는 어렵습니다.</p>
+<p>조금 더 장황한 설정이 필요합니다. 또한 WSGI(ASGI가 아니라) 기반이므로, Uvicorn, Starlette, Sanic 같은 도구가 제공하는 고성능을 활용하도록 설계되지 않았습니다.</p>
+<p>의존성 주입 시스템은 의존성을 사전에 등록해야 하고, 선언된 타입을 기반으로 의존성을 해결합니다. 따라서 특정 타입을 제공하는 "component"를 두 개 이상 선언할 수 없습니다.</p>
+<p>Route는 한 곳에서 선언하고, 다른 곳에 선언된 함수를 사용합니다(엔드포인트를 처리하는 함수 바로 위에 둘 수 있는 decorator를 사용하는 대신). 이는 Flask(및 Starlette)보다는 Django 방식에 가깝습니다. 코드에서 상대적으로 강하게 결합된 것들을 분리해 놓습니다.</p>
+<div class="admonition check">
+<p class="admonition-title"><strong>FastAPI</strong>에 영감을 준 것</p>
+<p>모델 속성의 "default" 값으로 데이터 타입에 대한 추가 검증을 정의하기. 이는 에디터 지원을 개선하며, 이전에는 Pydantic에 없었습니다.</p>
+<p>이것은 실제로 Pydantic의 일부를 업데이트하여 같은 검증 선언 스타일을 지원하도록 하는 데 영감을 주었습니다(이 기능은 이제 Pydantic에 이미 포함되어 있습니다).</p>
+</div>
+<h3 id="hug"><a href="https://github.com/hugapi/hug" class="external-link" target="_blank">Hug</a><a class="headerlink" data-preview="" href="#hug" title="Permanent link">&para;</a></h3>
+<p>Hug는 Python type hints를 사용해 API 파라미터 타입을 선언하는 기능을 구현한 초기 framework 중 하나였습니다. 이는 다른 도구들도 같은 방식을 하도록 영감을 준 훌륭한 아이디어였습니다.</p>
+<p>표준 Python 타입 대신 커스텀 타입을 선언에 사용했지만, 여전히 큰 진전이었습니다.</p>
+<p>또한 전체 API를 JSON으로 선언하는 커스텀 schema를 생성한 초기 framework 중 하나였습니다.</p>
+<p>OpenAPI나 JSON Schema 같은 표준을 기반으로 하지 않았기 때문에 Swagger UI 같은 다른 도구와 통합하는 것은 직관적이지 않았습니다. 하지만 역시 매우 혁신적인 아이디어였습니다.</p>
+<p>흥미롭고 흔치 않은 기능이 하나 있습니다. 같은 framework로 API뿐 아니라 CLI도 만들 수 있습니다.</p>
+<p>동기식 Python 웹 framework의 이전 표준(WSGI) 기반이어서 Websockets와 다른 것들을 처리할 수는 없지만, 성능은 여전히 높습니다.</p>
+<div class="admonition info">
+<p class="admonition-title">정보</p>
+<p>Hug는 Timothy Crosley가 만들었습니다. Python 파일에서 import를 자동으로 정렬하는 훌륭한 도구인 <a href="https://github.com/timothycrosley/isort" class="external-link" target="_blank"><code>isort</code></a>의 제작자이기도 합니다.</p>
+</div>
+<div class="admonition check">
+<p class="admonition-title"><strong>FastAPI</strong>에 영감을 준 아이디어들</p>
+<p>Hug는 APIStar의 일부에 영감을 주었고, 저는 APIStar와 함께 Hug를 가장 유망한 도구 중 하나로 보았습니다.</p>
+<p>Hug는 Python type hints로 파라미터를 선언하고, API를 정의하는 schema를 자동으로 생성하도록 <strong>FastAPI</strong>에 영감을 주었습니다.</p>
+<p>Hug는 헤더와 쿠키를 설정하기 위해 함수에 <code>response</code> 파라미터를 선언하도록 <strong>FastAPI</strong>에 영감을 주었습니다.</p>
+</div>
+<h3 id="apistar-0-5"><a href="https://github.com/encode/apistar" class="external-link" target="_blank">APIStar</a> (&lt;= 0.5)<a class="headerlink" data-preview="" href="#apistar-0-5" title="Permanent link">&para;</a></h3>
+<p><strong>FastAPI</strong>를 만들기로 결정하기 직전에 <strong>APIStar</strong> 서버를 발견했습니다. 찾고 있던 거의 모든 것을 갖추고 있었고 설계도 훌륭했습니다.</p>
+<p>NestJS와 Molten보다 앞서, Python type hints를 사용해 파라미터와 요청을 선언하는 framework 구현을 제가 처음 본 사례들 중 하나였습니다. Hug와 거의 같은 시기에 발견했습니다. 하지만 APIStar는 OpenAPI 표준을 사용했습니다.</p>
+<p>여러 위치에서 동일한 type hints를 기반으로 자동 데이터 검증, 데이터 serialization, OpenAPI schema 생성을 제공했습니다.</p>
+<p>Body schema 정의는 Pydantic처럼 동일한 Python type hints를 사용하지는 않았고 Marshmallow와 조금 더 비슷해서 에디터 지원은 그만큼 좋지 않았지만, 그래도 APIStar는 당시 사용할 수 있는 최선의 선택지였습니다.</p>
+<p>당시 최고의 성능 benchmark를 가졌습니다(Starlette에 의해서만 추월됨).</p>
+<p>처음에는 자동 API 문서화 웹 UI가 없었지만, Swagger UI를 추가할 수 있다는 것을 알고 있었습니다.</p>
+<p>의존성 주입 시스템도 있었습니다. 위에서 언급한 다른 도구들처럼 component의 사전 등록이 필요했지만, 여전히 훌륭한 기능이었습니다.</p>
+<p>보안 통합이 없어서 전체 프로젝트에서 사용해 볼 수는 없었습니다. 그래서 Flask-apispec 기반 full-stack generator로 갖추고 있던 모든 기능을 대체할 수 없었습니다. 그 기능을 추가하는 pull request를 만드는 것이 제 백로그에 있었습니다.</p>
+<p>하지만 이후 프로젝트의 초점이 바뀌었습니다.</p>
+<p>더 이상 API web framework가 아니게 되었는데, 제작자가 Starlette에 집중해야 했기 때문입니다.</p>
+<p>이제 APIStar는 web framework가 아니라 OpenAPI 사양을 검증하기 위한 도구 모음입니다.</p>
+<div class="admonition info">
+<p class="admonition-title">정보</p>
+<p>APIStar는 Tom Christie가 만들었습니다. 다음을 만든 사람과 동일합니다:</p>
+<ul>
+<li>Django REST Framework</li>
+<li>Starlette(<strong>FastAPI</strong>의 기반)</li>
+<li>Uvicorn(Starlette와 <strong>FastAPI</strong>에서 사용)</li>
+</ul>
+</div>
+<div class="admonition check">
+<p class="admonition-title"><strong>FastAPI</strong>에 영감을 준 것</p>
+<p>존재하게 만들기.</p>
+<p>동일한 Python 타입으로 여러 가지(데이터 검증, serialization, 문서화)를 선언하면서 동시에 뛰어난 에디터 지원을 제공한다는 아이디어는 제가 매우 훌륭하다고 생각했습니다.</p>
+<p>그리고 오랫동안 비슷한 framework를 찾아 여러 대안을 테스트한 끝에, APIStar가 그때 이용 가능한 최선의 선택지였습니다.</p>
+<p>그 후 APIStar 서버가 더는 존재하지 않게 되고 Starlette가 만들어졌는데, 이는 그런 시스템을 위한 더 새롭고 더 나은 기반이었습니다. 이것이 <strong>FastAPI</strong>를 만들게 된 최종 영감이었습니다.</p>
+<p>저는 <strong>FastAPI</strong>를 APIStar의 "정신적 후계자"로 생각합니다. 동시에, 이 모든 이전 도구들에서 배운 것들을 바탕으로 기능, typing 시스템, 그리고 다른 부분들을 개선하고 확장했습니다.</p>
+</div>
+<h2 id="used-by-fastapi"><strong>FastAPI</strong>가 사용하는 것<a class="headerlink" data-preview="" href="#used-by-fastapi" title="Permanent link">&para;</a></h2>
+<h3 id="pydantic"><a href="https://docs.pydantic.dev/" class="external-link" target="_blank">Pydantic</a><a class="headerlink" data-preview="" href="#pydantic" title="Permanent link">&para;</a></h3>
+<p>Pydantic은 Python type hints를 기반으로 데이터 검증, serialization, 문서화(JSON Schema 사용)를 정의하는 라이브러리입니다.</p>
+<p>그 덕분에 매우 직관적입니다.</p>
+<p>Marshmallow와 비교할 수 있습니다. 다만 benchmark에서 Marshmallow보다 빠릅니다. 그리고 동일한 Python type hints를 기반으로 하므로 에디터 지원도 훌륭합니다.</p>
+<div class="admonition check">
+<p class="admonition-title"><strong>FastAPI</strong>가 이를 사용하는 목적</p>
+<p>모든 데이터 검증, 데이터 serialization, 자동 모델 문서화(JSON Schema 기반)를 처리하기.</p>
+<p>그 다음 <strong>FastAPI</strong>는 그 JSON Schema 데이터를 가져와 OpenAPI에 포함시키며, 그 외에도 여러 작업을 수행합니다.</p>
+</div>
+<h3 id="starlette"><a href="https://www.starlette.dev/" class="external-link" target="_blank">Starlette</a><a class="headerlink" data-preview="" href="#starlette" title="Permanent link">&para;</a></h3>
+<p>Starlette는 경량 <abbr title="The new standard for building asynchronous Python web applications - 비동기 Python 웹 애플리케이션을 구축하기 위한 새로운 표준">ASGI</abbr> framework/toolkit으로, 고성능 asyncio 서비스를 만들기에 이상적입니다.</p>
+<p>매우 단순하고 직관적입니다. 쉽게 확장할 수 있도록 설계되었고, 모듈식 component를 갖습니다.</p>
+<p>다음이 포함됩니다:</p>
+<ul>
+<li>정말 인상적인 성능.</li>
+<li>WebSocket 지원.</li>
+<li>프로세스 내 백그라운드 작업.</li>
+<li>시작 및 종료 이벤트.</li>
+<li>HTTPX 기반의 테스트 클라이언트.</li>
+<li>CORS, GZip, Static Files, Streaming responses.</li>
+<li>세션 및 쿠키 지원.</li>
+<li>100% 테스트 커버리지.</li>
+<li>100% 타입 주석이 달린 코드베이스.</li>
+<li>소수의 필수 의존성.</li>
+</ul>
+<p>Starlette는 현재 테스트된 Python framework 중 가장 빠릅니다. 단, framework가 아니라 서버인 Uvicorn이 더 빠릅니다.</p>
+<p>Starlette는 웹 microframework의 기본 기능을 모두 제공합니다.</p>
+<p>하지만 자동 데이터 검증, serialization, 문서화는 제공하지 않습니다.</p>
+<p>그것이 <strong>FastAPI</strong>가 위에 추가하는 핵심 중 하나이며, 모두 Python type hints(Pydantic 사용)를 기반으로 합니다. 여기에 더해 의존성 주입 시스템, 보안 유틸리티, OpenAPI schema 생성 등도 포함됩니다.</p>
+<div class="admonition note">
+<p class="admonition-title">기술 세부사항</p>
+<p>ASGI는 Django 코어 팀 멤버들이 개발 중인 새로운 "표준"입니다. 아직 "Python 표준"(PEP)은 아니지만, 그 방향으로 진행 중입니다.</p>
+<p>그럼에도 이미 여러 도구에서 "표준"으로 사용되고 있습니다. 이는 상호운용성을 크게 개선합니다. 예를 들어 Uvicorn을 다른 ASGI 서버(예: Daphne 또는 Hypercorn)로 교체할 수도 있고, <code>python-socketio</code> 같은 ASGI 호환 도구를 추가할 수도 있습니다.</p>
+</div>
+<div class="admonition check">
+<p class="admonition-title"><strong>FastAPI</strong>가 이를 사용하는 목적</p>
+<p>핵심 웹 부분을 모두 처리하기. 그 위에 기능을 추가하기.</p>
+<p><code>FastAPI</code> 클래스 자체는 <code>Starlette</code> 클래스를 직접 상속합니다.</p>
+<p>따라서 Starlette로 할 수 있는 모든 것은 기본적으로 <strong>FastAPI</strong>로도 직접 할 수 있습니다. 즉, <strong>FastAPI</strong>는 사실상 Starlette에 강력한 기능을 더한 것입니다.</p>
+</div>
+<h3 id="uvicorn"><a href="https://www.uvicorn.dev/" class="external-link" target="_blank">Uvicorn</a><a class="headerlink" data-preview="" href="#uvicorn" title="Permanent link">&para;</a></h3>
+<p>Uvicorn은 uvloop과 httptools로 구축된 초고속 ASGI 서버입니다.</p>
+<p>web framework가 아니라 서버입니다. 예를 들어 경로 기반 routing을 위한 도구는 제공하지 않습니다. 그런 것은 Starlette(또는 <strong>FastAPI</strong>) 같은 framework가 위에서 제공합니다.</p>
+<p>Starlette와 <strong>FastAPI</strong>에서 권장하는 서버입니다.</p>
+<div class="admonition check">
+<p class="admonition-title"><strong>FastAPI</strong>가 이를 권장하는 방식</p>
+<p><strong>FastAPI</strong> 애플리케이션을 실행하기 위한 주요 웹 서버.</p>
+<p>또한 <code>--workers</code> 커맨드라인 옵션을 사용하면 비동기 멀티프로세스 서버로 실행할 수도 있습니다.</p>
+<p>자세한 내용은 <a class="internal-link" data-preview="" href="../deployment/" target="_blank">배포</a> 섹션을 확인하세요.</p>
+</div>
+<h2 id="benchmarks-and-speed">벤치마크와 속도<a class="headerlink" data-preview="" href="#benchmarks-and-speed" title="Permanent link">&para;</a></h2>
+<p>Uvicorn, Starlette, FastAPI 사이의 차이를 이해하고 비교하려면 <a class="internal-link" data-preview="" href="../benchmarks/" target="_blank">벤치마크</a> 섹션을 확인하세요.</p>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  맨위로
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="하단/푸터" >
+        
+          
+          <a href="../about/" class="md-footer__link md-footer__link--prev" aria-label="이전: 소개">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                이전
+              </span>
+              <div class="md-ellipsis">
+                소개
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../history-design-future/" class="md-footer__link md-footer__link--next" aria-label="다음: 역사, 디자인 그리고 미래">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                다음
+              </span>
+              <div class="md-ellipsis">
+                역사, 디자인 그리고 미래
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+    <div class="md-copyright__highlight">
+        The FastAPI trademark is owned by <a href="https://tiangolo.com" target="_blank">@tiangolo</a> and is registered in the US and across other regions
+    </div>
+    
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+        Material for MkDocs
+    </a>
+    
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/fastapi/fastapi" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M202.1 328.7c0 20.9-10.9 55.1-36.7 55.1s-36.7-34.2-36.7-55.1 10.9-55.1 36.7-55.1 36.7 34.2 36.7 55.1M496 278.2c0 31.9-3.2 65.7-17.5 95-37.9 76.6-142.1 74.8-216.7 74.8-75.8 0-186.2 2.7-225.6-74.8-14.6-29-20.2-63.1-20.2-95 0-41.9 13.9-81.5 41.5-113.6-5.2-15.8-7.7-32.4-7.7-48.8 0-21.5 4.9-32.3 14.6-51.8 45.3 0 74.3 9 108.8 36 29-6.9 58.8-10 88.7-10 27 0 54.2 2.9 80.4 9.2 34-26.7 63-35.2 107.8-35.2 9.8 19.5 14.6 30.3 14.6 51.8 0 16.4-2.6 32.7-7.7 48.2 27.5 32.4 39 72.3 39 114.2m-64.3 50.5c0-43.9-26.7-82.6-73.5-82.6-18.9 0-37 3.4-56 6-14.9 2.3-29.8 3.2-45.1 3.2-15.2 0-30.1-.9-45.1-3.2-18.7-2.6-37-6-56-6-46.8 0-73.5 38.7-73.5 82.6 0 87.8 80.4 101.3 150.4 101.3h48.2c70.3 0 150.6-13.4 150.6-101.3m-82.6-55.1c-25.8 0-36.7 34.2-36.7 55.1s10.9 55.1 36.7 55.1 36.7-34.2 36.7-55.1-10.9-55.1-36.7-55.1"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://discord.gg/VQjSZaeJmf" target="_blank" rel="noopener" title="discord.gg" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M492.5 69.8c-.2-.3-.4-.6-.8-.7-38.1-17.5-78.4-30-119.7-37.1-.4-.1-.8 0-1.1.1s-.6.4-.8.8c-5.5 9.9-10.5 20.2-14.9 30.6-44.6-6.8-89.9-6.8-134.4 0-4.5-10.5-9.5-20.7-15.1-30.6-.2-.3-.5-.6-.8-.8s-.7-.2-1.1-.2C162.5 39 122.2 51.5 84.1 69c-.3.1-.6.4-.8.7C7.1 183.5-13.8 294.6-3.6 404.2c0 .3.1.5.2.8s.3.4.5.6c44.4 32.9 94 58 146.8 74.2.4.1.8.1 1.1 0s.7-.4.9-.7c11.3-15.4 21.4-31.8 30-48.8.1-.2.2-.5.2-.8s0-.5-.1-.8-.2-.5-.4-.6-.4-.3-.7-.4c-15.8-6.1-31.2-13.4-45.9-21.9-.3-.2-.5-.4-.7-.6s-.3-.6-.3-.9 0-.6.2-.9.3-.5.6-.7c3.1-2.3 6.2-4.7 9.1-7.1.3-.2.6-.4.9-.4s.7 0 1 .1c96.2 43.9 200.4 43.9 295.5 0 .3-.1.7-.2 1-.2s.7.2.9.4c2.9 2.4 6 4.9 9.1 7.2.2.2.4.4.6.7s.2.6.2.9-.1.6-.3.9-.4.5-.6.6c-14.7 8.6-30 15.9-45.9 21.8-.2.1-.5.2-.7.4s-.3.4-.4.7-.1.5-.1.8.1.5.2.8c8.8 17 18.8 33.3 30 48.8.2.3.6.6.9.7s.8.1 1.1 0c52.9-16.2 102.6-41.3 147.1-74.2.2-.2.4-.4.5-.6s.2-.5.2-.8c12.3-126.8-20.5-236.9-86.9-334.5zm-302 267.7c-29 0-52.8-26.6-52.8-59.2s23.4-59.2 52.8-59.2c29.7 0 53.3 26.8 52.8 59.2 0 32.7-23.4 59.2-52.8 59.2m195.4 0c-29 0-52.8-26.6-52.8-59.2s23.4-59.2 52.8-59.2c29.7 0 53.3 26.8 52.8 59.2 0 32.7-23.2 59.2-52.8 59.2"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://x.com/fastapi" target="_blank" rel="noopener" title="x.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M459.4 151.7c.3 4.5.3 9.1.3 13.6 0 138.7-105.6 298.6-298.6 298.6-59.5 0-114.7-17.2-161.1-47.1 8.4 1 16.6 1.3 25.3 1.3 49.1 0 94.2-16.6 130.3-44.8-46.1-1-84.8-31.2-98.1-72.8 6.5 1 13 1.6 19.8 1.6 9.4 0 18.8-1.3 27.6-3.6-48.1-9.7-84.1-52-84.1-103v-1.3c14 7.8 30.2 12.7 47.4 13.3-28.3-18.8-46.8-51-46.8-87.4 0-19.5 5.2-37.4 14.3-53C87.4 130.8 165 172.4 252.1 176.9c-1.6-7.8-2.6-15.9-2.6-24C249.5 95.1 296.3 48 354.4 48c30.2 0 57.5 12.7 76.7 33.1 23.7-4.5 46.5-13.3 66.6-25.3-7.8 24.4-24.4 44.8-46.1 57.8 21.1-2.3 41.6-8.1 60.4-16.2-14.3 20.8-32.2 39.3-52.6 54.3"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://www.linkedin.com/company/fastapi" target="_blank" rel="noopener" title="www.linkedin.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3M135.4 416H69V202.2h66.5V416zM102.2 96a38.5 38.5 0 1 1 0 77 38.5 38.5 0 1 1 0-77m282.1 320h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9z"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://tiangolo.com" target="_blank" rel="noopener" title="tiangolo.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M351.9 280H161c2.9 64.5 17.2 123.9 37.5 167.4 11.4 24.5 23.7 41.8 35.1 52.4 11.2 10.5 18.9 12.2 22.9 12.2s11.7-1.7 22.9-12.2c11.4-10.6 23.7-28 35.1-52.4 20.3-43.5 34.6-102.9 37.5-167.4zm-191-48h190.9c-2.8-64.5-17.1-123.9-37.4-167.4-11.4-24.4-23.7-41.8-35.1-52.4C268.1 1.7 260.4 0 256.4 0s-11.7 1.7-22.9 12.2c-11.4 10.6-23.7 28-35.1 52.4-20.3 43.5-34.6 102.9-37.5 167.4m-48 0c3.5-85.6 25.6-165.1 57.9-217.3C78.7 47.3 10.9 131.2 1.5 232zM1.5 280c9.4 100.8 77.2 184.7 169.3 217.3-32.3-52.2-54.4-131.7-57.9-217.3zm398.4 0c-3.5 85.6-25.6 165.1-57.9 217.3 92.1-32.7 159.9-116.5 169.3-217.3zm111.4-48C501.9 131.2 434.1 47.3 342 14.7c32.3 52.2 54.4 131.7 57.9 217.3z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+      <div class="md-progress" data-md-component="progress" role="progressbar"></div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["content.code.annotate", "content.code.copy", "content.footnote.tooltips", "content.tabs.link", "content.tooltips", "navigation.footer", "navigation.indexes", "navigation.instant", "navigation.instant.prefetch", "navigation.instant.progress", "navigation.path", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "navigation.tracking", "search.highlight", "search.share", "search.suggest", "toc.follow"], "search": "../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "\ud074\ub9bd\ubcf4\ub4dc\uc5d0 \ubcf5\uc0ac\ub428", "clipboard.copy": "\ud074\ub9bd\ubcf4\ub4dc\ub85c \ubcf5\uc0ac", "search.result.more.one": "\uc774 \ubb38\uc11c\uc5d0\uc11c 1\uac1c\uc758 \uac80\uc0c9 \uacb0\uacfc \ub354 \ubcf4\uae30", "search.result.more.other": "\uc774 \ubb38\uc11c\uc5d0\uc11c #\uac1c\uc758 \uac80\uc0c9 \uacb0\uacfc \ub354 \ubcf4\uae30", "search.result.none": "\uac80\uc0c9\uc5b4\uc640 \uc77c\uce58\ud558\ub294 \ubb38\uc11c\uac00 \uc5c6\uc2b5\ub2c8\ub2e4", "search.result.one": "1\uac1c\uc758 \uc77c\uce58\ud558\ub294 \ubb38\uc11c", "search.result.other": "#\uac1c\uc758 \uc77c\uce58\ud558\ub294 \ubb38\uc11c", "search.result.placeholder": "\uac80\uc0c9\uc5b4\ub97c \uc785\ub825\ud558\uc138\uc694", "search.result.term.missing": "\ud3ec\ud568\ub418\uc9c0 \uc54a\uc740 \uac80\uc0c9\uc5b4", "select.version": "\ubc84\uc804 \uc120\ud0dd"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.e71a0d61.min.js"></script>
+      
+        <script src="../js/termynal.js"></script>
+      
+        <script src="../js/custom.js"></script>
+      
+    
+  <!-- Cloudflare Pages Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "83c63961621f43319d43d493c35d7611"}'></script><!-- Cloudflare Pages Analytics --></body>
+</html>

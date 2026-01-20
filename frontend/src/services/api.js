@@ -14,8 +14,8 @@ export const fetchIncomeData = async (filters = {}) => {
     const params = {};
     if (filters.occupation) params.occupation = filters.occupation;
     if (filters.region) params.region = filters.region;
-    if (filters.ageGroup) params.age_group = filters.ageGroup;
     if (filters.gender) params.gender = filters.gender;
+    if (filters.year) params.year = filters.year;
 
     const response = await api.get('/income', { params });
     return response.data;
@@ -30,11 +30,26 @@ export const fetchJobAds = async (filters = {}) => {
     const params = {};
     if (filters.occupation) params.occupation = filters.occupation;
     if (filters.region) params.region = filters.region;
+    params.limit = 200;  // Get more job ads
 
     const response = await api.get('/jobs', { params });
     return response.data;
   } catch (error) {
     console.error('Error fetching job ads:', error);
+    return [];
+  }
+};
+
+export const fetchJobsAggregated = async (filters = {}) => {
+  try {
+    const params = {};
+    if (filters.occupation) params.occupation = filters.occupation;
+    if (filters.region) params.region = filters.region;
+
+    const response = await api.get('/jobs/aggregated', { params });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching aggregated jobs:', error);
     return [];
   }
 };

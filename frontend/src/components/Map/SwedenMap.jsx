@@ -1,17 +1,69 @@
-import React, { useEffect, useRef } from 'react';
-import { Box, Typography } from '@mui/material';
+import React, { useEffect, useRef, useState } from 'react';
+import { Box, Typography, CircularProgress } from '@mui/material';
 import * as d3 from 'd3';
 
-const SwedenMap = ({ data, selectedRegion }) => {
-  const svgRef = useRef();
+// GeoJSON URL for Swedish regions (NUTS-2 level)
+const GEOJSON_URL = 'https://raw.githubusercontent.com/okfse/sweden-geojson/master/swedish_regions.geojson';
 
+// Mapping from NUTS region names to GeoJSON feature names
+const REGION_NAME_MAP = {
+  'Sweden': null, // Skip national total
+  'Stockholm': 'Stockholm',
+  'East-Central Sweden': 'Östra Mellansverige',
+  'Småland and islands': 'Småland med öarna', 
+  'South Sweden': 'Sydsverige',
+  'West Sweden': 'Västsverige',
+  'North-Central Sweden': 'Norra Mellansverige',
+  'Central Norrland': 'Mellersta Norrland',
+  'Upper Norrland': 'Övre Norrland',
+};
+
+const SwedenMap = ({ data, selectedRegion, onRegionClick }) => {
+  const svgRef = useRef();
+  const [geoData, setGeoData] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  // Load GeoJSON on mount
   useEffect(() => {
-    drawMap();
-  }, [data, selectedRegion]);
+    const loadGeoJSON = async () => {
+      try {
+        const response = await fetch(GEOJSON_URL);
+        const geojson = await response.json();
+        setGeoData(geojson);
+        setLoading(false);
+      } catch (error) {
+        console.error('Error loading GeoJSON:', error);
+        setLoading(false);
+      }
+    };
+    loadGeoJSON();
+  }, []);
+
+  // Draw map when data or selection changes
+  useEffect(() => {
+    if (geoData) {
+      drawMap();
+    }
+  }, [geoData, data, selectedRegion]);
+
+  // Aggregate income by region
+  const getRegionIncomeMap = () => {
+    const regionIncome = {};
+    if (data && data.length > 0) {
+      data.forEach(item => {
+        const region = item.region;
+        const mappedName = REGION_NAME_MAP[region];
+        if (mappedName && item.monthly_salary) {
+          if (!regionIncome[mappedName] || item.monthly_salary > regionIncome[mappedName]) {
+            regionIncome[mappedName] = item.monthly_salary;
+          }
+        }
+      });
+    }
+    return regionIncome;
+  };
 
   const drawMap = () => {
-    // This is a simplified Sweden map visualization
-    // In production, you would load actual GeoJSON data for Swedish regions
     const svg = d3.select(svgRef.current);
     svg.selectAll('*').remove();
 
@@ -20,58 +72,129 @@ const SwedenMap = ({ data, selectedRegion }) => {
 
     svg.attr('width', width).attr('height', height);
 
-    // Sample regions (simplified representation)
-    const regions = [
-      { name: 'Stockholm', code: '01', x: 200, y: 150 },
-      { name: 'Uppsala', code: '03', x: 200, y: 100 },
-      { name: 'Södermanland', code: '04', x: 180, y: 180 },
-      { name: 'Östergötland', code: '05', x: 180, y: 220 },
-      { name: 'Jönköping', code: '06', x: 150, y: 260 },
-      { name: 'Kronoberg', code: '07', x: 130, y: 300 },
-      { name: 'Kalmar', code: '08', x: 180, y: 280 },
-      { name: 'Gotland', code: '09', x: 250, y: 260 },
-      { name: 'Blekinge', code: '10', x: 150, y: 340 },
-      { name: 'Skåne', code: '12', x: 130, y: 380 },
-    ];
+    // Create projection for Sweden
+    const projection = d3.geoMercator()
+      .center([17, 62.5])
+      .scale(800)
+      .translate([width / 2, height / 2]);
 
-    const circles = svg.selectAll('circle')
-      .data(regions)
+    const pathGenerator = d3.geoPath().projection(projection);
+
+    // Get income data for coloring
+    const regionIncome = getRegionIncomeMap();
+    const incomeValues = Object.values(regionIncome);
+    const minIncome = incomeValues.length > 0 ? Math.min(...incomeValues) : 40000;
+    const maxIncome = incomeValues.length > 0 ? Math.max(...incomeValues) : 60000;
+
+    // Color scale
+    const colorScale = d3.scaleSequential()
+      .domain([minIncome, maxIncome])
+      .interpolator(d3.interpolateBlues);
+
+    // Draw regions
+    svg.selectAll('path')
+      .data(geoData.features)
       .enter()
-      .append('circle')
-      .attr('cx', d => d.x)
-      .attr('cy', d => d.y)
-      .attr('r', 15)
+      .append('path')
+      .attr('d', pathGenerator)
       .attr('fill', d => {
-        if (selectedRegion && d.code === selectedRegion) {
-          return '#1976d2';
-        }
-        return '#90caf9';
+        const regionName = d.properties.name;
+        const income = regionIncome[regionName];
+        return income ? colorScale(income) : '#e0e0e0';
       })
-      .attr('stroke', '#1976d2')
-      .attr('stroke-width', 2)
+      .attr('stroke', '#333')
+      .attr('stroke-width', 0.5)
       .style('cursor', 'pointer')
       .on('mouseover', function(event, d) {
-        d3.select(this).attr('r', 20);
+        d3.select(this)
+          .attr('stroke-width', 2)
+          .attr('stroke', '#1976d2');
+        
+        // Show tooltip
+        const regionName = d.properties.name;
+        const income = regionIncome[regionName];
+        
+        svg.append('text')
+          .attr('id', 'tooltip')
+          .attr('x', event.offsetX || 200)
+          .attr('y', event.offsetY || 250)
+          .attr('text-anchor', 'middle')
+          .style('font-size', '12px')
+          .style('font-weight', 'bold')
+          .style('fill', '#333')
+          .text(`${regionName}: ${income ? `${Math.round(income).toLocaleString()} SEK` : 'No data'}`);
       })
-      .on('mouseout', function(event, d) {
-        d3.select(this).attr('r', 15);
+      .on('mouseout', function() {
+        d3.select(this)
+          .attr('stroke-width', 0.5)
+          .attr('stroke', '#333');
+        svg.select('#tooltip').remove();
+      })
+      .on('click', function(event, d) {
+        if (onRegionClick) {
+          onRegionClick(d.properties.name);
+        }
       });
 
-    svg.selectAll('text')
-      .data(regions)
-      .enter()
-      .append('text')
-      .attr('x', d => d.x)
-      .attr('y', d => d.y + 30)
+    // Add legend
+    const legendWidth = 150;
+    const legendHeight = 10;
+    
+    const legend = svg.append('g')
+      .attr('transform', `translate(20, ${height - 40})`);
+
+    const legendScale = d3.scaleLinear()
+      .domain([minIncome, maxIncome])
+      .range([0, legendWidth]);
+
+    const legendAxis = d3.axisBottom(legendScale)
+      .ticks(3)
+      .tickFormat(d => `${Math.round(d/1000)}k`);
+
+    // Gradient for legend
+    const gradient = svg.append('defs')
+      .append('linearGradient')
+      .attr('id', 'income-gradient')
+      .attr('x1', '0%')
+      .attr('x2', '100%');
+
+    gradient.append('stop')
+      .attr('offset', '0%')
+      .attr('stop-color', colorScale(minIncome));
+
+    gradient.append('stop')
+      .attr('offset', '100%')
+      .attr('stop-color', colorScale(maxIncome));
+
+    legend.append('rect')
+      .attr('width', legendWidth)
+      .attr('height', legendHeight)
+      .style('fill', 'url(#income-gradient)');
+
+    legend.append('g')
+      .attr('transform', `translate(0, ${legendHeight})`)
+      .call(legendAxis);
+
+    legend.append('text')
+      .attr('x', legendWidth / 2)
+      .attr('y', -5)
       .attr('text-anchor', 'middle')
       .style('font-size', '10px')
-      .text(d => d.name);
+      .text('Monthly Salary (SEK)');
   };
+
+  if (loading) {
+    return (
+      <Box display="flex" justifyContent="center" alignItems="center" height="100%">
+        <CircularProgress />
+      </Box>
+    );
+  }
 
   return (
     <Box>
       <Typography variant="h6" gutterBottom>
-        Sweden Map
+        Average Income by Region
       </Typography>
       <Box display="flex" justifyContent="center">
         <svg ref={svgRef}></svg>

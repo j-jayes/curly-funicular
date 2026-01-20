@@ -229,3 +229,17 @@ data-pipeline/data/processed/*
 # OS files
 .DS_Store
 Thumbs.db
+
+# Environment files with secrets (keep .env.example)
+.env
+.envrc
+
+# VSCode settings (optional, can be shared)
+.vscode/
+
+# Scraped documentation (can be regenerated)
+.github/llms-full.txt
+
+# Python virtual environment
+.venv/
+venv/

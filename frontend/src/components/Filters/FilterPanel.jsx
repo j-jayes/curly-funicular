@@ -10,11 +10,14 @@ import {
 } from '@mui/material';
 
 const FilterPanel = ({ filters, occupations, regions, onFilterChange }) => {
-  const ageGroups = ['18-24', '25-34', '35-44', '45-54', '55-64', '65+'];
   const genders = [
-    { value: 'M', label: 'Male' },
-    { value: 'F', label: 'Female' },
-    { value: 'all', label: 'All' }
+    { value: 'men', label: 'Men' },
+    { value: 'women', label: 'Women' },
+  ];
+
+  const years = [
+    { value: '2023', label: '2023' },
+    { value: '2024', label: '2024' },
   ];
 
   const handleChange = (field) => (event) => {
@@ -55,7 +58,7 @@ const FilterPanel = ({ filters, occupations, regions, onFilterChange }) => {
             >
               <MenuItem value="">All Regions</MenuItem>
               {regions.map((region) => (
-                <MenuItem key={region.code} value={region.code}>
+                <MenuItem key={region.code} value={region.name}>
                   {region.name}
                 </MenuItem>
               ))}
@@ -65,16 +68,16 @@ const FilterPanel = ({ filters, occupations, regions, onFilterChange }) => {
 
         <Grid item xs={12} sm={6} md={3}>
           <FormControl fullWidth>
-            <InputLabel>Age Group</InputLabel>
+            <InputLabel>Year</InputLabel>
             <Select
-              value={filters.ageGroup}
-              label="Age Group"
-              onChange={handleChange('ageGroup')}
+              value={filters.year || ''}
+              label="Year"
+              onChange={handleChange('year')}
             >
-              <MenuItem value="">All Ages</MenuItem>
-              {ageGroups.map((age) => (
-                <MenuItem key={age} value={age}>
-                  {age}
+              <MenuItem value="">All Years</MenuItem>
+              {years.map((year) => (
+                <MenuItem key={year.value} value={year.value}>
+                  {year.label}
                 </MenuItem>
               ))}
             </Select>

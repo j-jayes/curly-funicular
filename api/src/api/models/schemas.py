@@ -6,36 +6,53 @@ from datetime import datetime
 
 
 class IncomeData(BaseModel):
-    """Income data model."""
+    """Income data model.
     
-    occupation: str = Field(..., description="Occupation name")
-    occupation_code: str = Field(..., description="SSYK occupation code")
-    region: str = Field(..., description="Region name")
-    region_code: str = Field(..., description="Region code")
-    year: int = Field(..., description="Year")
-    age_group: Optional[str] = Field(None, description="Age group")
-    gender: Optional[str] = Field(None, description="Gender")
-    median_income: Optional[float] = Field(None, description="Median income in SEK")
-    mean_income: Optional[float] = Field(None, description="Mean income in SEK")
-    income_percentile_10: Optional[float] = Field(None, description="10th percentile income")
-    income_percentile_90: Optional[float] = Field(None, description="90th percentile income")
+    Represents salary statistics from SCB (Statistics Sweden).
+    """
+    
+    occupation: str = Field(..., description="Occupation name with SSYK code")
+    occupation_code: str = Field(..., description="SSYK occupation code (e.g., 2512)")
+    region: str = Field(..., description="Region name (e.g., Stockholm)")
+    region_code: str = Field(..., description="Region identifier")
+    year: Optional[int] = Field(None, description="Year of data")
+    gender: Optional[str] = Field(None, description="Gender (men/women)")
+    monthly_salary: Optional[float] = Field(None, description="Monthly salary in SEK")
+    
+    class Config:
+        """Pydantic config for flexible validation."""
+        extra = "allow"
 
 
 class JobAd(BaseModel):
-    """Job advertisement model."""
+    """Job advertisement model.
+    
+    Represents a job ad from Arbetsförmedlingen.
+    """
     
     id: str = Field(..., description="Job ad ID")
     headline: str = Field(..., description="Job headline")
     employer: Optional[str] = Field(None, description="Employer name")
-    occupation: str = Field(..., description="Occupation")
-    occupation_code: str = Field(..., description="Occupation code")
-    region: str = Field(..., description="Region")
-    region_code: str = Field(..., description="Region code")
-    published_date: Optional[datetime] = Field(None, description="Publication date")
-    application_deadline: Optional[datetime] = Field(None, description="Application deadline")
+    occupation: Optional[str] = Field(None, description="Occupation name")
+    occupation_code: str = Field(..., description="SSYK occupation code")
+    region: Optional[str] = Field(None, description="Region name")
+    region_code: Optional[str] = Field(None, description="Region identifier")
+    published_date: Optional[str] = Field(None, description="Publication date")
+    application_deadline: Optional[str] = Field(None, description="Application deadline")
     number_of_vacancies: int = Field(1, description="Number of vacancies")
     employment_type: Optional[str] = Field(None, description="Employment type")
     working_hours_type: Optional[str] = Field(None, description="Working hours type")
+
+
+class JobsAggregated(BaseModel):
+    """Aggregated job statistics by region and occupation."""
+    
+    year: int = Field(..., description="Year")
+    region: Optional[str] = Field(None, description="Region name")
+    occupation: str = Field(..., description="Occupation name")
+    ssyk_code: str = Field(..., description="SSYK occupation code")
+    ad_count: int = Field(..., description="Number of job ads")
+    total_vacancies: int = Field(..., description="Total number of vacancies")
 
 
 class Occupation(BaseModel):
@@ -57,5 +74,5 @@ class StatsResponse(BaseModel):
     
     total_occupations: int = Field(..., description="Total number of occupations")
     total_regions: int = Field(..., description="Total number of regions")
-    total_job_ads: int = Field(..., description="Total number of active job ads")
-    avg_income: Optional[float] = Field(None, description="Average income across all data")
+    total_job_ads: int = Field(..., description="Total number of job ads")
+    avg_income: Optional[float] = Field(None, description="Average monthly salary")

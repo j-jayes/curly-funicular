@@ -1,0 +1,7509 @@
+
+<!doctype html>
+<html lang="ko" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="FastAPI framework, high performance, easy to learn, fast to code, ready for production">
+      
+      
+      
+        <link rel="canonical" href="https://fastapi.tiangolo.com/ko/deployment/docker/">
+      
+      
+        <link rel="prev" href="../server-workers/">
+      
+      
+        <link rel="next" href="../../how-to/">
+      
+      
+        
+          <link rel="alternate" href="/" hreflang="ko">
+        
+          <link rel="alternate" href="/de/" hreflang="ko">
+        
+          <link rel="alternate" href="/es/" hreflang="ko">
+        
+          <link rel="alternate" href="/ko/" hreflang="ko">
+        
+          <link rel="alternate" href="/pt/" hreflang="ko">
+        
+          <link rel="alternate" href="/ru/" hreflang="ko">
+        
+          <link rel="alternate" href="/uk/" hreflang="ko">
+        
+      
+      
+      <link rel="icon" href="../../img/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.0">
+    
+    
+      
+        <title>컨테이너의 FastAPI - 도커 - FastAPI</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.618322db.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.ab4e12ef.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+      <link rel="stylesheet" href="../../css/termynal.css">
+    
+      <link rel="stylesheet" href="../../css/custom.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  
+<meta property="og:type" content="website" />
+<meta property="og:title" content="컨테이너의 FastAPI - 도커 - FastAPI" />
+<meta property="og:description" content="FastAPI framework, high performance, easy to learn, fast to code, ready for production" />
+<meta property="og:image" content="https://fastapi.tiangolo.com/ko/assets/images/social/deployment/docker.png" />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:url" content="https://fastapi.tiangolo.com/ko/deployment/docker/" />
+<meta property="twitter:card" content="summary_large_image" />
+<meta property="twitter:title" content="컨테이너의 FastAPI - 도커 - FastAPI" />
+<meta property="twitter:description" content="FastAPI framework, high performance, easy to learn, fast to code, ready for production" />
+<meta property="twitter:image" content="https://fastapi.tiangolo.com/ko/assets/images/social/deployment/docker.png" />
+</head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#fastapi-in-containers-docker" class="md-skip">
+          콘텐츠로 이동
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+        <aside class="md-banner">
+          <div class="md-banner__inner md-grid md-typeset">
+            
+            
+<div class="announce-wrapper">
+  <div id="announce-left">
+    <div class="item">
+      <a class="announce-link" href="https://fastapicloud.com" target="_blank">
+        <span class="twemoji">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 19c0 .34.04.67.09 1H6.5c-1.5 0-2.81-.5-3.89-1.57C1.54 17.38 1 16.09 1 14.58q0-1.95 1.17-3.48C3.34 9.57 4 9.43 5.25 9.15c.42-1.53 1.25-2.77 2.5-3.72S10.42 4 12 4c1.95 0 3.6.68 4.96 2.04S19 9.05 19 11c1.15.13 2.1.63 2.86 1.5.51.57.84 1.21 1 1.92A5.9 5.9 0 0 0 19 13c-3.31 0-6 2.69-6 6m3-1h2v4h2v-4h2l-3-3z"/></svg>
+        </span> Join the <strong>FastAPI Cloud</strong> waiting list 🚀
+      </a>
+    </div>
+    <div class="item">
+      <a class="announce-link" href="https://x.com/fastapi" target="_blank">
+        <span class="twemoji">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M357.2 48h70.6L273.6 224.2 455 464H313L201.7 318.6 74.5 464H3.8l164.9-188.5L-5.2 48h145.6l100.5 132.9zm-24.8 373.8h39.1L119.1 88h-42z"/></svg>
+        </span> Follow <strong>@fastapi</strong> on <strong>X (Twitter)</strong> to stay updated
+      </a>
+    </div>
+    <div class="item">
+      <a class="announce-link" href="https://www.linkedin.com/company/fastapi" target="_blank">
+        <span class="twemoji linkedin">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3M135.4 416H69V202.2h66.5V416zM102.2 96a38.5 38.5 0 1 1 0 77 38.5 38.5 0 1 1 0-77m282.1 320h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9z"/></svg>
+        </span> Follow <strong>FastAPI</strong> on <strong>LinkedIn</strong> to stay updated
+      </a>
+    </div>
+    <div class="item">
+      <a class="announce-link" href="https://fastapi.tiangolo.com/newsletter/">
+        <span class="twemoji">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m20 8-8 5-8-5V6l8 5 8-5m0-2H4c-1.11 0-2 .89-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2"/></svg>
+        </span> Subscribe to the <strong>FastAPI and friends</strong> newsletter 🎉
+      </a>
+    </div>
+  </div>
+  <div id="announce-right" style="position: relative;">
+    <div class="item">
+      <a title="BlockBee Cryptocurrency Payment Gateway" style="display: block; position: relative;" href="https://blockbee.io?ref=fastapi" target="_blank">
+        <span class="sponsor-badge">sponsor</span>
+        <img class="sponsor-image" src="/img/sponsors/blockbee-banner.png" />
+      </a>
+    </div>
+    <div class="item">
+      <a title="Scalar: Beautiful Open-Source API References from Swagger/OpenAPI files" style="display: block; position: relative;" href="https://github.com/scalar/scalar/?utm_source=fastapi&utm_medium=website&utm_campaign=top-banner" target="_blank">
+        <span class="sponsor-badge">sponsor</span>
+        <img class="sponsor-image" src="/img/sponsors/scalar-banner.svg" />
+      </a>
+    </div>
+    <div class="item">
+      <a title="Auth, user management and more for your B2B product" style="display: block; position: relative;" href="https://www.propelauth.com/?utm_source=fastapi&utm_campaign=1223&utm_medium=topbanner" target="_blank">
+        <span class="sponsor-badge">sponsor</span>
+        <img class="sponsor-image" src="/img/sponsors/propelauth-banner.png" />
+      </a>
+    </div>
+    <div class="item">
+      <a title="Zuplo: Scale, Protect, Document, and Monetize your FastAPI" style="display: block; position: relative;" href="https://zuplo.link/fastapi-web" target="_blank">
+        <span class="sponsor-badge">sponsor</span>
+        <img class="sponsor-image" src="/img/sponsors/zuplo-banner.png" />
+      </a>
+    </div>
+    <div class="item">
+      <a title="liblab - Generate SDKs from FastAPI" style="display: block; position: relative;" href="https://liblab.com?utm_source=fastapi" target="_blank">
+        <span class="sponsor-badge">sponsor</span>
+        <img class="sponsor-image" src="/img/sponsors/liblab-banner.png" />
+      </a>
+    </div>
+    <div class="item">
+      <a title="Deploy & scale any full-stack web app on Render. Focus on building apps, not infra." style="display: block; position: relative;" href="https://docs.render.com/deploy-fastapi?utm_source=deploydoc&utm_medium=referral&utm_campaign=fastapi" target="_blank">
+        <span class="sponsor-badge">sponsor</span>
+        <img class="sponsor-image" src="/img/sponsors/render-banner.svg" />
+      </a>
+    </div>
+    <div class="item">
+      <a title="Cut Code Review Time & Bugs in Half with CodeRabbit" style="display: block; position: relative;" href="https://www.coderabbit.ai/?utm_source=fastapi&utm_medium=banner&utm_campaign=fastapi" target="_blank">
+        <span class="sponsor-badge">sponsor</span>
+        <img class="sponsor-image" src="/img/sponsors/coderabbit-banner.png" />
+      </a>
+    </div>
+    <div class="item">
+      <a title="Making Retail Purchases Actionable for Brands and Developers" style="display: block; position: relative;" href="https://subtotal.com/?utm_source=fastapi&utm_medium=sponsorship&utm_campaign=open-source" target="_blank">
+        <span class="sponsor-badge">sponsor</span>
+        <img class="sponsor-image" src="/img/sponsors/subtotal-banner.svg" />
+      </a>
+    </div>
+    <div class="item">
+      <a title="Deploy enterprise applications at startup speed" style="display: block; position: relative;" href="https://docs.railway.com/guides/fastapi?utm_medium=integration&utm_source=docs&utm_campaign=fastapi" target="_blank">
+        <span class="sponsor-badge">sponsor</span>
+        <img class="sponsor-image" src="/img/sponsors/railway-banner.png" />
+      </a>
+    </div>
+    <div class="item">
+      <a title="SerpApi: Web Search API" style="display: block; position: relative;" href="https://serpapi.com/?utm_source=fastapi_website" target="_blank">
+        <span class="sponsor-badge">sponsor</span>
+        <img class="sponsor-image" src="/img/sponsors/serpapi-banner.png" />
+      </a>
+    </div>
+    <div class="item">
+      <a title="Greptile: The AI Code Reviewer" style="display: block; position: relative;" href="https://www.greptile.com/?utm_source=fastapi&utm_medium=sponsorship&utm_campaign=fastapi_sponsor_page" target="_blank">
+        <span class="sponsor-badge">sponsor</span>
+        <img class="sponsor-image" src="/img/sponsors/greptile-banner.png" />
+      </a>
+    </div>
+  </div>
+</div>
+
+          </div>
+          
+        </aside>
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="상단/헤더">
+    <a href="../.." title="FastAPI" class="md-header__button md-logo" aria-label="FastAPI" data-md-component="logo">
+      
+  <img src="../../img/icon-white.svg" alt="logo">
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            FastAPI
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              컨테이너의 FastAPI - 도커
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9 2C5.13 2 2 5.13 2 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.87-3.13-7-7-7M6 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H6zm13-8h-2l-3.2 9h1.9l.7-2h3.2l.7 2h1.9zm-2.15 5.65L18 15l1.15 3.65z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="teal" data-md-color-accent="amber"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 0-7 7c0 2.38 1.19 4.47 3 5.74V17a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1v-2.26c1.81-1.27 3-3.36 3-5.74a7 7 0 0 0-7-7M9 21a1 1 0 0 0 1 1h4a1 1 0 0 0 1-1v-1H9z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="teal" data-md-color-accent="amber"  aria-label="Switch to system preference"  type="radio" name="__palette" id="__palette_2">
+    
+      <label class="md-header__button md-icon" title="Switch to system preference" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 1 7 7c0 2.38-1.19 4.47-3 5.74V17a1 1 0 0 1-1 1H9a1 1 0 0 1-1-1v-2.26C6.19 13.47 5 11.38 5 9a7 7 0 0 1 7-7M9 21v-1h6v1a1 1 0 0 1-1 1h-4a1 1 0 0 1-1-1m3-17a5 5 0 0 0-5 5c0 2.05 1.23 3.81 3 4.58V16h4v-2.42c1.77-.77 3-2.53 3-4.58a5 5 0 0 0-5-5"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+      <div class="md-header__option">
+  <div class="md-select">
+    
+    <button class="md-header__button md-icon" aria-label="언어설정">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m12.87 15.07-2.54-2.51.03-.03A17.5 17.5 0 0 0 14.07 6H17V4h-7V2H8v2H1v2h11.17C11.5 7.92 10.44 9.75 9 11.35 8.07 10.32 7.3 9.19 6.69 8h-2c.73 1.63 1.73 3.17 2.98 4.56l-5.09 5.02L4 19l5-5 3.11 3.11zM18.5 10h-2L12 22h2l1.12-3h4.75L21 22h2zm-2.62 7 1.62-4.33L19.12 17z"/></svg>
+    </button>
+    <div class="md-select__inner">
+      <ul class="md-select__list">
+        
+          <li class="md-select__item">
+            <a href="/" hreflang="" class="md-select__link">
+              en - English
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="/de/" hreflang="" class="md-select__link">
+              de - Deutsch
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="/es/" hreflang="" class="md-select__link">
+              es - español
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="/ko/" hreflang="" class="md-select__link">
+              ko - 한국어
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="/pt/" hreflang="" class="md-select__link">
+              pt - português
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="/ru/" hreflang="" class="md-select__link">
+              ru - русский язык
+            </a>
+          </li>
+        
+          <li class="md-select__item">
+            <a href="/uk/" hreflang="" class="md-select__link">
+              uk - українська мова
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</div>
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="검색" placeholder="검색" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="검색">
+        
+          <a href="javascript:void(0)" class="md-search__icon md-icon" title="공유" aria-label="공유" data-clipboard data-clipboard-text="" data-md-component="search-share" tabindex="-1">
+            
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M18 16.08c-.76 0-1.44.3-1.96.77L8.91 12.7c.05-.23.09-.46.09-.7s-.04-.47-.09-.7l7.05-4.11c.54.5 1.25.81 2.04.81a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3c0 .24.04.47.09.7L8.04 9.81C7.5 9.31 6.79 9 6 9a3 3 0 0 0-3 3 3 3 0 0 0 3 3c.79 0 1.5-.31 2.04-.81l7.12 4.15c-.05.21-.08.43-.08.66 0 1.61 1.31 2.91 2.92 2.91s2.92-1.3 2.92-2.91A2.92 2.92 0 0 0 18 16.08"/></svg>
+          </a>
+        
+        <button type="reset" class="md-search__icon md-icon" title="지우기" aria-label="지우기" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            검색 초기화
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/fastapi/fastapi" title="저장소로 이동" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M202.1 328.7c0 20.9-10.9 55.1-36.7 55.1s-36.7-34.2-36.7-55.1 10.9-55.1 36.7-55.1 36.7 34.2 36.7 55.1M496 278.2c0 31.9-3.2 65.7-17.5 95-37.9 76.6-142.1 74.8-216.7 74.8-75.8 0-186.2 2.7-225.6-74.8-14.6-29-20.2-63.1-20.2-95 0-41.9 13.9-81.5 41.5-113.6-5.2-15.8-7.7-32.4-7.7-48.8 0-21.5 4.9-32.3 14.6-51.8 45.3 0 74.3 9 108.8 36 29-6.9 58.8-10 88.7-10 27 0 54.2 2.9 80.4 9.2 34-26.7 63-35.2 107.8-35.2 9.8 19.5 14.6 30.3 14.6 51.8 0 16.4-2.6 32.7-7.7 48.2 27.5 32.4 39 72.3 39 114.2m-64.3 50.5c0-43.9-26.7-82.6-73.5-82.6-18.9 0-37 3.4-56 6-14.9 2.3-29.8 3.2-45.1 3.2-15.2 0-30.1-.9-45.1-3.2-18.7-2.6-37-6-56-6-46.8 0-73.5 38.7-73.5 82.6 0 87.8 80.4 101.3 150.4 101.3h48.2c70.3 0 150.6-13.4 150.6-101.3m-82.6-55.1c-25.8 0-36.7 34.2-36.7 55.1s10.9 55.1 36.7 55.1 36.7-34.2 36.7-55.1-10.9-55.1-36.7-55.1"/></svg>
+  </div>
+  <div class="md-source__repository">
+    fastapi/fastapi
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+    
+      
+<nav class="md-tabs" aria-label="탭" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  FastAPI
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../features/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  기능
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../learn/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  배우기 
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../reference/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  Reference
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../fastapi-people/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  FastAPI People
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../resources/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  리소스 
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../about/" class="md-tabs__link">
+          
+  
+  
+    
+  
+  소개 
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../release-notes/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Release Notes
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="네비게이션" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="FastAPI" class="md-nav__button md-logo" aria-label="FastAPI" data-md-component="logo">
+      
+  <img src="../../img/icon-white.svg" alt="logo">
+
+    </a>
+    FastAPI
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/fastapi/fastapi" title="저장소로 이동" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M202.1 328.7c0 20.9-10.9 55.1-36.7 55.1s-36.7-34.2-36.7-55.1 10.9-55.1 36.7-55.1 36.7 34.2 36.7 55.1M496 278.2c0 31.9-3.2 65.7-17.5 95-37.9 76.6-142.1 74.8-216.7 74.8-75.8 0-186.2 2.7-225.6-74.8-14.6-29-20.2-63.1-20.2-95 0-41.9 13.9-81.5 41.5-113.6-5.2-15.8-7.7-32.4-7.7-48.8 0-21.5 4.9-32.3 14.6-51.8 45.3 0 74.3 9 108.8 36 29-6.9 58.8-10 88.7-10 27 0 54.2 2.9 80.4 9.2 34-26.7 63-35.2 107.8-35.2 9.8 19.5 14.6 30.3 14.6 51.8 0 16.4-2.6 32.7-7.7 48.2 27.5 32.4 39 72.3 39 114.2m-64.3 50.5c0-43.9-26.7-82.6-73.5-82.6-18.9 0-37 3.4-56 6-14.9 2.3-29.8 3.2-45.1 3.2-15.2 0-30.1-.9-45.1-3.2-18.7-2.6-37-6-56-6-46.8 0-73.5 38.7-73.5 82.6 0 87.8 80.4 101.3 150.4 101.3h48.2c70.3 0 150.6-13.4 150.6-101.3m-82.6-55.1c-25.8 0-36.7 34.2-36.7 55.1s10.9 55.1 36.7 55.1 36.7-34.2 36.7-55.1-10.9-55.1-36.7-55.1"/></svg>
+  </div>
+  <div class="md-source__repository">
+    fastapi/fastapi
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    FastAPI
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../features/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      기능
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+        
+        
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../learn/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    배우기 
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3" id="__nav_3_label" tabindex="">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    배우기 
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../python-types/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      파이썬 타입 소개
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../async/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      동시성과 async / await
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../environment-variables/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      환경 변수
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../virtual-environments/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      가상 환경
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_6" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../tutorial/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    자습서 - 사용자 안내서 
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3_6" id="__nav_3_6_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    자습서 - 사용자 안내서 
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorial/first-steps/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      첫걸음
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorial/path-params/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      경로 매개변수
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorial/query-params/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      쿼리 매개변수
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorial/body/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      요청 본문
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorial/query-params-str-validations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      쿼리 매개변수와 문자열 검증
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorial/path-params-numeric-validations/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      경로 매개변수와 숫자 검증
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorial/query-param-models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      쿼리 매개변수 모델
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorial/body-multiple-params/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      본문 - 다중 매개변수
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorial/body-fields/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      본문 - 필드
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorial/body-nested-models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      본문 - 중첩 모델
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorial/schema-extra-example/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      요청 예제 데이터 선언
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorial/extra-data-types/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      추가 데이터 자료형
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorial/cookie-params/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      쿠키 매개변수
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorial/header-params/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      헤더 매개변수
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorial/cookie-param-models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      쿠키 매개변수 모델
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorial/header-param-models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      헤더 매개변수 모델
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorial/response-model/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      응답 모델 - 반환 타입
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorial/extra-models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      추가 모델
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorial/response-status-code/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      응답 상태 코드
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorial/request-forms/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      폼 데이터
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorial/request-form-models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      폼 모델
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorial/request-files/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      파일 요청
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorial/request-forms-and-files/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      폼 및 파일 요청
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorial/handling-errors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      오류 처리
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorial/path-operation-configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      경로 처리 설정
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorial/encoder/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      JSON 호환 가능 인코더
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorial/body-updates/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      Body - 업데이트
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_6_29" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../tutorial/dependencies/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    의존성 
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3_6_29" id="__nav_3_6_29_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_6_29_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_6_29">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    의존성 
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorial/dependencies/classes-as-dependencies/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      의존성으로서의 클래스
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorial/dependencies/sub-dependencies/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      하위 의존성
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorial/dependencies/dependencies-in-path-operation-decorators/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      경로 작동 데코레이터에서의 의존성
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorial/dependencies/global-dependencies/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      전역 의존성
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorial/dependencies/dependencies-with-yield/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      <code>yield</code>를 사용하는 의존성
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_6_30" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../tutorial/security/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    보안 
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3_6_30" id="__nav_3_6_30_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_6_30_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_6_30">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    보안 
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorial/security/first-steps/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      보안 - 첫 단계
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorial/security/get-current-user/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      현재 사용자 가져오기
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorial/security/simple-oauth2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      패스워드와 Bearer를 이용한 간단한 OAuth2
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorial/security/oauth2-jwt/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      패스워드(해싱 포함)를 사용하는 OAuth2, JWT 토큰을 사용하는 Bearer
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorial/middleware/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      미들웨어
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorial/cors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      CORS (교차-출처 리소스 공유)
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorial/sql-databases/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      SQL (관계형) 데이터베이스
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorial/bigger-applications/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      더 큰 애플리케이션 - 여러 파일
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorial/background-tasks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      백그라운드 작업
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorial/metadata/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      메타데이터 및 문서화 URL
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorial/static-files/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      정적 파일
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorial/testing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      테스팅
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorial/debugging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      디버깅
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_7" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../advanced/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    심화 사용자 안내서 - 도입부 
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3_7" id="__nav_3_7_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    심화 사용자 안내서 - 도입부 
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../advanced/path-operation-advanced-configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      경로 처리 고급 구성
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../advanced/additional-status-codes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      추가 상태 코드
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../advanced/response-directly/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      응답을 직접 반환하기
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../advanced/custom-response/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      사용자 정의 응답 - HTML, Stream, 파일, 기타
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../advanced/additional-responses/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      OpenAPI에서 추가 응답
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../advanced/response-cookies/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      응답 쿠키
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../advanced/response-headers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      응답 헤더
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../advanced/response-change-status-code/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      응답 - 상태 코드 변경
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../advanced/advanced-dependencies/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      고급 의존성
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_7_11" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../advanced/security/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    고급 보안 
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3_7_11" id="__nav_3_7_11_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_7_11_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_7_11">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    고급 보안 
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../advanced/security/oauth2-scopes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      OAuth2 스코프
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../advanced/security/http-basic-auth/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      HTTP Basic Auth
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../advanced/using-request-directly/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      <code>Request</code> 직접 사용하기
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../advanced/dataclasses/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      Dataclasses 사용하기
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../advanced/middleware/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      고급 Middleware
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../advanced/sub-applications/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      하위 응용프로그램 - 마운트
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../advanced/behind-a-proxy/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      프록시 뒤에서 실행하기
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../advanced/templates/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      템플릿
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../advanced/websockets/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      WebSockets
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../advanced/events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      Lifespan 이벤트
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../advanced/testing-websockets/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      WebSocket 테스트하기
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../advanced/testing-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      이벤트 테스트: 라이프스팬 및 시작 - 종료
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../advanced/testing-dependencies/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      오버라이드로 의존성 테스트하기
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../advanced/async-tests/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      비동기 테스트
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../advanced/settings/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      설정과 환경 변수
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../advanced/openapi-callbacks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      OpenAPI 콜백
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../advanced/openapi-webhooks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      OpenAPI Webhooks
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../advanced/wsgi/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      WSGI 포함하기 - Flask, Django 그 외
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../advanced/generate-clients/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      SDK 생성하기
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../fastapi-cli/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      FastAPI CLI
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_9" checked>
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    배포 
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3_9" id="__nav_3_9_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_9_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_9">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    배포 
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../versions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      FastAPI 버전들에 대하여
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../fastapicloud/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      FastAPI Cloud
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../https/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      HTTPS 알아보기
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../manually/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      서버를 수동으로 실행하기
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../concepts/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      배포 개념
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../cloud/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      클라우드 제공업체에서 FastAPI 배포하기
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../server-workers/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      서버 워커 - 워커와 함께 사용하는 Uvicorn
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      컨테이너의 FastAPI - 도커
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      컨테이너의 FastAPI - 도커
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="목차">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      목차
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#what-is-a-container" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          컨테이너란
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-is-a-container-image" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          컨테이너 이미지란
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#container-images" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          컨테이너 이미지
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#containers-and-processes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          컨테이너와 프로세스
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#build-a-docker-image-for-fastapi" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          FastAPI를 위한 도커 이미지 빌드하기
+        </span>
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="FastAPI를 위한 도커 이미지 빌드하기">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#package-requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          패키지 요구사항
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#create-the-fastapi-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          <strong>FastAPI</strong> 코드 생성하기
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dockerfile" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Dockerfile
+        </span>
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Dockerfile">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#use-cmd-exec-form" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          <code>CMD</code> 사용하기 - Exec Form
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#directory-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          디렉터리 구조
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#behind-a-tls-termination-proxy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          TLS 종료 프록시의 배후
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#docker-cache" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          도커 캐시
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#build-the-docker-image" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          도커 이미지 생성하기
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#start-the-docker-container" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          도커 컨테이너 시작하기
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#check-it" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          확인하기
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#interactive-api-docs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          인터랙티브 API 문서
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#alternative-api-docs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          대안 API 문서
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#build-a-docker-image-with-a-single-file-fastapi" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          단일 파일 FastAPI로 도커 이미지 빌드하기
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deployment-concepts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          배포 개념
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#https" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          HTTPS
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#running-on-startup-and-restarts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          시작 시 자동 실행과 재시작
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#replication-number-of-processes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          복제 - 프로세스 개수
+        </span>
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="복제 - 프로세스 개수">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#load-balancer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          로드 밸런서
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#one-load-balancer-multiple-worker-containers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          하나의 로드 밸런서 - 여러 워커 컨테이너
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#one-process-per-container" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          컨테이너당 하나의 프로세스
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#containers-with-multiple-processes-and-special-cases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          여러 프로세스를 가진 컨테이너와 특수한 경우
+        </span>
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="여러 프로세스를 가진 컨테이너와 특수한 경우">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#a-simple-app" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          단순한 앱
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#docker-compose" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Docker Compose
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#memory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          메모리
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#previous-steps-before-starting-and-containers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          시작 전 단계와 컨테이너
+        </span>
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="시작 전 단계와 컨테이너">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#multiple-containers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          여러 컨테이너
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#single-container" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          단일 컨테이너
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#base-docker-image" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          베이스 도커 이미지
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deploy-the-container-image" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          컨테이너 이미지 배포하기
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#docker-image-with-uv" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          <code>uv</code>를 사용하는 도커 이미지
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#recap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          요약
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_10" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../how-to/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    How To - 레시피 
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_3_10" id="__nav_3_10_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_10_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_10">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    How To - 레시피 
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../how-to/general/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      일반 - 사용 방법 - 레시피
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../how-to/migrate-from-pydantic-v1-to-pydantic-v2/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      Pydantic v1에서 Pydantic v2로 마이그레이션하기
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../how-to/graphql/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      GraphQL
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../how-to/custom-request-and-route/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      커스텀 Request 및 APIRoute 클래스
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../how-to/conditional-openapi/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      조건부 OpenAPI
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../how-to/extending-openapi/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      OpenAPI 확장하기
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../how-to/separate-openapi-schemas/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      입력과 출력에 대해 OpenAPI 스키마를 분리할지 여부
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../how-to/custom-docs-ui-assets/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      커스텀 Docs UI 정적 에셋(자체 호스팅)
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../how-to/configure-swagger-ui/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      Swagger UI 구성
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../how-to/testing-database/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      데이터베이스 테스트하기
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../how-to/authentication-error-status-code/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      이전 403 인증 오류 상태 코드 사용하기
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../reference/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Reference
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4" id="__nav_4_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/fastapi/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      <code>FastAPI</code> class
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/parameters/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      Request Parameters
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/status/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      Status Codes
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/uploadfile/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      <code>UploadFile</code> class
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/exceptions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      Exceptions - <code>HTTPException</code> and <code>WebSocketException</code>
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/dependencies/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      Dependencies - <code>Depends()</code> and <code>Security()</code>
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/apirouter/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      <code>APIRouter</code> class
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/background/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      Background Tasks - <code>BackgroundTasks</code>
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/request/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      <code>Request</code> class
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/websockets/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      WebSockets
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/httpconnection/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      <code>HTTPConnection</code> class
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/response/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      <code>Response</code> class
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/responses/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      Custom Response Classes - File, HTML, Redirect, Streaming, etc.
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/middleware/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      Middleware
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_16" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../reference/openapi/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    OpenAPI
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_4_16" id="__nav_4_16_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_16_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4_16">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    OpenAPI
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/openapi/docs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      OpenAPI <code>docs</code>
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/openapi/models/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      OpenAPI <code>models</code>
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/security/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      Security Tools
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/encoders/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      Encoders - <code>jsonable_encoder</code>
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/staticfiles/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      Static Files - <code>StaticFiles</code>
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/templating/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      Templating - <code>Jinja2Templates</code>
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../reference/testclient/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      Test Client - <code>TestClient</code>
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../fastapi-people/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      FastAPI People
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_6" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../resources/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    리소스 
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_6" id="__nav_6_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    리소스 
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../help-fastapi/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      FastAPI 지원 - 도움 받기
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../contributing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      Development - Contributing
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../project-generation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      Full Stack FastAPI 템플릿
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../external-links/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      External Links
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../newsletter/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      FastAPI and friends newsletter
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../management-tasks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      Repository Management Tasks
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+          
+        
+      
+        
+      
+        
+      
+        
+      
+        
+      
+    
+    
+    
+      
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_7" >
+        
+          
+          <div class="md-nav__link md-nav__container">
+            <a href="../../about/" class="md-nav__link ">
+              
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    소개 
+  
+
+    
+  </span>
+  
+  
+
+            </a>
+            
+              
+              <label class="md-nav__link " for="__nav_7" id="__nav_7_label" tabindex="0">
+                <span class="md-nav__icon md-icon"></span>
+              </label>
+            
+          </div>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_7">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    소개 
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../alternatives/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      대안, 영감, 비교
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../history-design-future/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      역사, 디자인 그리고 미래
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../benchmarks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      벤치마크
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../management/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      Repository Management
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../release-notes/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    <span class="md-typeset">
+      Release Notes
+    </span>
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="목차">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      목차
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#what-is-a-container" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          컨테이너란
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-is-a-container-image" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          컨테이너 이미지란
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#container-images" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          컨테이너 이미지
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#containers-and-processes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          컨테이너와 프로세스
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#build-a-docker-image-for-fastapi" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          FastAPI를 위한 도커 이미지 빌드하기
+        </span>
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="FastAPI를 위한 도커 이미지 빌드하기">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#package-requirements" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          패키지 요구사항
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#create-the-fastapi-code" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          <strong>FastAPI</strong> 코드 생성하기
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dockerfile" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Dockerfile
+        </span>
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Dockerfile">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#use-cmd-exec-form" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          <code>CMD</code> 사용하기 - Exec Form
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#directory-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          디렉터리 구조
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#behind-a-tls-termination-proxy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          TLS 종료 프록시의 배후
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#docker-cache" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          도커 캐시
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#build-the-docker-image" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          도커 이미지 생성하기
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#start-the-docker-container" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          도커 컨테이너 시작하기
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#check-it" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          확인하기
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#interactive-api-docs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          인터랙티브 API 문서
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#alternative-api-docs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          대안 API 문서
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#build-a-docker-image-with-a-single-file-fastapi" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          단일 파일 FastAPI로 도커 이미지 빌드하기
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deployment-concepts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          배포 개념
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#https" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          HTTPS
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#running-on-startup-and-restarts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          시작 시 자동 실행과 재시작
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#replication-number-of-processes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          복제 - 프로세스 개수
+        </span>
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="복제 - 프로세스 개수">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#load-balancer" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          로드 밸런서
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#one-load-balancer-multiple-worker-containers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          하나의 로드 밸런서 - 여러 워커 컨테이너
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#one-process-per-container" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          컨테이너당 하나의 프로세스
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#containers-with-multiple-processes-and-special-cases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          여러 프로세스를 가진 컨테이너와 특수한 경우
+        </span>
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="여러 프로세스를 가진 컨테이너와 특수한 경우">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#a-simple-app" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          단순한 앱
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#docker-compose" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          Docker Compose
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#memory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          메모리
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#previous-steps-before-starting-and-containers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          시작 전 단계와 컨테이너
+        </span>
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="시작 전 단계와 컨테이너">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#multiple-containers" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          여러 컨테이너
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#single-container" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          단일 컨테이너
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#base-docker-image" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          베이스 도커 이미지
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#deploy-the-container-image" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          컨테이너 이미지 배포하기
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#docker-image-with-uv" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          <code>uv</code>를 사용하는 도커 이미지
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#recap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        <span class="md-typeset">
+          요약
+        </span>
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+                
+
+
+
+  
+
+
+  <nav class="md-path" aria-label="네비게이션" >
+    <ol class="md-path__list">
+      
+        
+  
+  
+    <li class="md-path__item">
+      <a href="../.." class="md-path__link">
+        
+  <span class="md-ellipsis">
+    FastAPI
+  </span>
+
+      </a>
+    </li>
+  
+
+      
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../../learn/" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    배우기 
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    배포 
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ol>
+  </nav>
+
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="fastapi-in-containers-docker">컨테이너의 FastAPI - 도커<a class="headerlink" data-preview="" href="#fastapi-in-containers-docker" title="Permanent link">&para;</a></h1>
+<p>FastAPI 애플리케이션을 배포할 때 일반적인 접근 방법은 <strong>리눅스 컨테이너 이미지</strong>를 빌드하는 것입니다. 보통 <a href="https://www.docker.com/" class="external-link" target="_blank"><strong>Docker</strong></a>를 사용해 수행합니다. 그런 다음 해당 컨테이너 이미지를 몇 가지 가능한 방법 중 하나로 배포할 수 있습니다.</p>
+<p>리눅스 컨테이너를 사용하면 <strong>보안</strong>, <strong>재현 가능성</strong>, <strong>단순함</strong> 등 여러 장점이 있습니다.</p>
+<div class="admonition tip">
+<p class="admonition-title">팁</p>
+<p>시간이 없고 이미 이런 내용들을 알고 계신가요? 아래의 <a data-preview="" href="#build-a-docker-image-for-fastapi"><code>Dockerfile</code> 👇</a>로 이동하세요.</p>
+</div>
+<details>
+<summary>Dockerfile Preview 👀</summary>
+
+<div class="highlight"><pre><span></span><code><span id="__span-0-1"><span class="k">FROM</span><span class="w"> </span><span class="s">python:3.9</span>
+</span><span id="__span-0-2">
+</span><span id="__span-0-3"><span class="k">WORKDIR</span><span class="w"> </span><span class="s">/code</span>
+</span><span id="__span-0-4">
+</span><span id="__span-0-5"><span class="k">COPY</span><span class="w"> </span>./requirements.txt<span class="w"> </span>/code/requirements.txt
+</span><span id="__span-0-6">
+</span><span id="__span-0-7"><span class="k">RUN</span><span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--no-cache-dir<span class="w"> </span>--upgrade<span class="w"> </span>-r<span class="w"> </span>/code/requirements.txt
+</span><span id="__span-0-8">
+</span><span id="__span-0-9"><span class="k">COPY</span><span class="w"> </span>./app<span class="w"> </span>/code/app
+</span><span id="__span-0-10">
+</span><span id="__span-0-11"><span class="k">CMD</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;fastapi&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;run&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;app/main.py&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;--port&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;80&quot;</span><span class="p">]</span>
+</span><span id="__span-0-12">
+</span><span id="__span-0-13"><span class="c"># If running behind a proxy like Nginx or Traefik add --proxy-headers</span>
+</span><span id="__span-0-14"><span class="c"># CMD [&quot;fastapi&quot;, &quot;run&quot;, &quot;app/main.py&quot;, &quot;--port&quot;, &quot;80&quot;, &quot;--proxy-headers&quot;]</span>
+</span></code></pre></div>
+
+</details>
+
+<h2 id="what-is-a-container">컨테이너란<a class="headerlink" data-preview="" href="#what-is-a-container" title="Permanent link">&para;</a></h2>
+<p>컨테이너(주로 리눅스 컨테이너)는 모든 의존성과 필요한 파일을 포함해 애플리케이션을 패키징하면서, 같은 시스템의 다른 컨테이너(다른 애플리케이션이나 컴포넌트)와는 분리된 상태로 유지할 수 있는 매우 <strong>가벼운</strong> 방법입니다.</p>
+<p>리눅스 컨테이너는 호스트(머신, 가상 머신, 클라우드 서버 등)와 같은 리눅스 커널을 사용해 실행됩니다. 즉, 전체 운영체제를 에뮬레이션하는 완전한 가상 머신에 비해 매우 가볍습니다.</p>
+<p>이 방식으로 컨테이너는 프로세스를 직접 실행하는 것과 비슷한 수준의 <strong>적은 자원</strong>을 소비합니다(가상 머신은 훨씬 더 많은 자원을 소비합니다).</p>
+<p>또한 컨테이너는 자체적인 <strong>격리된</strong> 실행 프로세스(보통 하나의 프로세스), 파일 시스템, 네트워크를 가지므로 배포, 보안, 개발 등을 단순화합니다.</p>
+<h2 id="what-is-a-container-image">컨테이너 이미지란<a class="headerlink" data-preview="" href="#what-is-a-container-image" title="Permanent link">&para;</a></h2>
+<p><strong>컨테이너</strong>는 <strong>컨테이너 이미지</strong>에서 실행됩니다.</p>
+<p>컨테이너 이미지는 컨테이너에 있어야 하는 모든 파일, 환경 변수, 기본 명령/프로그램의 <strong>정적</strong> 버전입니다. 여기서 <strong>정적</strong>이라는 것은 컨테이너 <strong>이미지</strong>가 실행 중이거나 수행되는 것이 아니라, 패키징된 파일과 메타데이터일 뿐이라는 뜻입니다.</p>
+<p>저장된 정적 콘텐츠인 "<strong>컨테이너 이미지</strong>"와 달리, "<strong>컨테이너</strong>"는 보통 실행 중인 인스턴스, 즉 <strong>실행되는</strong> 대상을 의미합니다.</p>
+<p><strong>컨테이너</strong>가 시작되어 실행 중이면(<strong>컨테이너 이미지</strong>로부터 시작됨) 파일, 환경 변수 등을 생성하거나 변경할 수 있습니다. 이러한 변경은 해당 컨테이너에만 존재하며, 기반이 되는 컨테이너 이미지에는 지속되지 않습니다(디스크에 저장되지 않습니다).</p>
+<p>컨테이너 이미지는 <strong>프로그램</strong> 파일과 그 콘텐츠, 예를 들어 <code>python</code>과 어떤 파일 <code>main.py</code>에 비유할 수 있습니다.</p>
+<p>그리고 <strong>컨테이너</strong> 자체는(<strong>컨테이너 이미지</strong>와 달리) 이미지의 실제 실행 인스턴스로서 <strong>프로세스</strong>에 비유할 수 있습니다. 실제로 컨테이너는 <strong>실행 중인 프로세스</strong>가 있을 때만 실행됩니다(보통 단일 프로세스입니다). 컨테이너 내부에 실행 중인 프로세스가 없으면 컨테이너는 중지됩니다.</p>
+<h2 id="container-images">컨테이너 이미지<a class="headerlink" data-preview="" href="#container-images" title="Permanent link">&para;</a></h2>
+<p>Docker는 <strong>컨테이너 이미지</strong>와 <strong>컨테이너</strong>를 생성하고 관리하는 주요 도구 중 하나입니다.</p>
+<p>또한 <a href="https://hub.docker.com/" class="external-link" target="_blank">Docker Hub</a>에는 다양한 도구, 환경, 데이터베이스, 애플리케이션을 위한 미리 만들어진 <strong>공식 컨테이너 이미지</strong>가 공개되어 있습니다.</p>
+<p>예를 들어, 공식 <a href="https://hub.docker.com/_/python" class="external-link" target="_blank">Python Image</a>가 있습니다.</p>
+<p>그리고 데이터베이스 등 다양한 용도의 다른 이미지도 많이 있습니다. 예를 들면:</p>
+<ul>
+<li><a href="https://hub.docker.com/_/postgres" class="external-link" target="_blank">PostgreSQL</a></li>
+<li><a href="https://hub.docker.com/_/mysql" class="external-link" target="_blank">MySQL</a></li>
+<li><a href="https://hub.docker.com/_/mongo" class="external-link" target="_blank">MongoDB</a></li>
+<li><a href="https://hub.docker.com/_/redis" class="external-link" target="_blank">Redis</a> 등</li>
+</ul>
+<p>미리 만들어진 컨테이너 이미지를 사용하면 서로 다른 도구를 <strong>결합</strong>하고 사용하기가 매우 쉽습니다. 예를 들어 새로운 데이터베이스를 시험해 볼 때도 그렇습니다. 대부분의 경우 <strong>공식 이미지</strong>를 사용하고, 환경 변수로 설정만 하면 됩니다.</p>
+<p>이렇게 하면 많은 경우 컨테이너와 Docker를 학습하고, 그 지식을 여러 다른 도구와 컴포넌트에 재사용할 수 있습니다.</p>
+<p>따라서 데이터베이스, Python 애플리케이션, React 프론트엔드 애플리케이션이 있는 웹 서버 등 서로 다른 것들을 담은 <strong>여러 컨테이너</strong>를 실행하고 내부 네트워크를 통해 연결할 수 있습니다.</p>
+<p>Docker나 Kubernetes 같은 모든 컨테이너 관리 시스템에는 이러한 네트워킹 기능이 통합되어 있습니다.</p>
+<h2 id="containers-and-processes">컨테이너와 프로세스<a class="headerlink" data-preview="" href="#containers-and-processes" title="Permanent link">&para;</a></h2>
+<p><strong>컨테이너 이미지</strong>는 보통 <strong>컨테이너</strong>가 시작될 때 실행되어야 하는 기본 프로그램/명령과 해당 프로그램에 전달할 매개변수를 메타데이터에 포함합니다. 커맨드 라인에서 실행할 때와 매우 유사합니다.</p>
+<p><strong>컨테이너</strong>가 시작되면 해당 명령/프로그램을 실행합니다(다만 오버라이드하여 다른 명령/프로그램을 실행하게 할 수도 있습니다).</p>
+<p>컨테이너는 <strong>메인 프로세스</strong>(명령 또는 프로그램)가 실행되는 동안 실행됩니다.</p>
+<p>컨테이너는 보통 <strong>단일 프로세스</strong>를 가지지만, 메인 프로세스에서 서브프로세스를 시작할 수도 있으며, 그러면 같은 컨테이너에 <strong>여러 프로세스</strong>가 존재하게 됩니다.</p>
+<p>하지만 <strong>최소 하나의 실행 중인 프로세스</strong> 없이 실행 중인 컨테이너를 가질 수는 없습니다. 메인 프로세스가 중지되면 컨테이너도 중지됩니다.</p>
+<h2 id="build-a-docker-image-for-fastapi">FastAPI를 위한 도커 이미지 빌드하기<a class="headerlink" data-preview="" href="#build-a-docker-image-for-fastapi" title="Permanent link">&para;</a></h2>
+<p>좋습니다, 이제 무언가를 만들어 봅시다! 🚀</p>
+<p><strong>공식 Python</strong> 이미지에 기반하여 FastAPI용 <strong>Docker 이미지</strong>를 <strong>처음부터</strong> 빌드하는 방법을 보여드리겠습니다.</p>
+<p>이는 <strong>대부분의 경우</strong>에 하고 싶은 방식입니다. 예를 들면:</p>
+<ul>
+<li><strong>Kubernetes</strong> 또는 유사한 도구를 사용할 때</li>
+<li><strong>Raspberry Pi</strong>에서 실행할 때</li>
+<li>컨테이너 이미지를 대신 실행해주는 클라우드 서비스를 사용할 때 등</li>
+</ul>
+<h3 id="package-requirements">패키지 요구사항<a class="headerlink" data-preview="" href="#package-requirements" title="Permanent link">&para;</a></h3>
+<p>보통 애플리케이션의 <strong>패키지 요구사항</strong>을 어떤 파일에 적어 둡니다.</p>
+<p>이는 주로 그 요구사항을 <strong>설치</strong>하는 데 사용하는 도구에 따라 달라집니다.</p>
+<p>가장 일반적인 방법은 패키지 이름과 버전을 한 줄에 하나씩 적어 둔 <code>requirements.txt</code> 파일을 사용하는 것입니다.</p>
+<p>버전 범위를 설정할 때는 <a class="internal-link" data-preview="" href="../versions/" target="_blank">FastAPI 버전들에 대하여</a>에서 읽은 것과 같은 아이디어를 사용하면 됩니다.</p>
+<p>예를 들어 <code>requirements.txt</code>는 다음과 같을 수 있습니다:</p>
+<div class="highlight"><pre><span></span><code><span id="__span-1-1">fastapi[standard]&gt;=0.113.0,&lt;0.114.0
+</span><span id="__span-1-2">pydantic&gt;=2.7.0,&lt;3.0.0
+</span></code></pre></div>
+<p>그리고 보통 <code>pip</code>로 패키지 의존성을 설치합니다. 예를 들면:</p>
+<div class="termy">
+
+<div class="highlight"><pre><span></span><code><span id="__span-2-1"><span class="gp">$ </span>pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt
+</span><span id="__span-2-2"><span class="go">---&gt; 100%</span>
+</span><span id="__span-2-3"><span class="go">Successfully installed fastapi pydantic</span>
+</span></code></pre></div>
+
+</div>
+
+<div class="admonition info">
+<p class="admonition-title">정보</p>
+<p>패키지 의존성을 정의하고 설치하는 다른 형식과 도구도 있습니다.</p>
+</div>
+<h3 id="create-the-fastapi-code"><strong>FastAPI</strong> 코드 생성하기<a class="headerlink" data-preview="" href="#create-the-fastapi-code" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>app</code> 디렉터리를 만들고 들어갑니다.</li>
+<li>빈 파일 <code>__init__.py</code>를 만듭니다.</li>
+<li>다음 내용으로 <code>main.py</code> 파일을 만듭니다:</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span id="__span-3-1"><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Union</span>
+</span><span id="__span-3-2">
+</span><span id="__span-3-3"><span class="kn">from</span><span class="w"> </span><span class="nn">fastapi</span><span class="w"> </span><span class="kn">import</span> <span class="n">FastAPI</span>
+</span><span id="__span-3-4">
+</span><span id="__span-3-5"><span class="n">app</span> <span class="o">=</span> <span class="n">FastAPI</span><span class="p">()</span>
+</span><span id="__span-3-6">
+</span><span id="__span-3-7">
+</span><span id="__span-3-8"><span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span>
+</span><span id="__span-3-9"><span class="k">def</span><span class="w"> </span><span class="nf">read_root</span><span class="p">():</span>
+</span><span id="__span-3-10">    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;Hello&quot;</span><span class="p">:</span> <span class="s2">&quot;World&quot;</span><span class="p">}</span>
+</span><span id="__span-3-11">
+</span><span id="__span-3-12">
+</span><span id="__span-3-13"><span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/items/</span><span class="si">{item_id}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="__span-3-14"><span class="k">def</span><span class="w"> </span><span class="nf">read_item</span><span class="p">(</span><span class="n">item_id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">q</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+</span><span id="__span-3-15">    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;item_id&quot;</span><span class="p">:</span> <span class="n">item_id</span><span class="p">,</span> <span class="s2">&quot;q&quot;</span><span class="p">:</span> <span class="n">q</span><span class="p">}</span>
+</span></code></pre></div>
+<h3 id="dockerfile">Dockerfile<a class="headerlink" data-preview="" href="#dockerfile" title="Permanent link">&para;</a></h3>
+<p>이제 같은 프로젝트 디렉터리에 다음 내용으로 <code>Dockerfile</code> 파일을 만듭니다:</p>
+<div class="annotate highlight"><pre><span></span><code><span id="__span-4-1"><span class="c"># (1)!</span>
+</span><span id="__span-4-2"><span class="k">FROM</span><span class="w"> </span><span class="s">python:3.9</span>
+</span><span id="__span-4-3">
+</span><span id="__span-4-4"><span class="c"># (2)!</span>
+</span><span id="__span-4-5"><span class="k">WORKDIR</span><span class="w"> </span><span class="s">/code</span>
+</span><span id="__span-4-6">
+</span><span id="__span-4-7"><span class="c"># (3)!</span>
+</span><span id="__span-4-8"><span class="k">COPY</span><span class="w"> </span>./requirements.txt<span class="w"> </span>/code/requirements.txt
+</span><span id="__span-4-9">
+</span><span id="__span-4-10"><span class="c"># (4)!</span>
+</span><span id="__span-4-11"><span class="k">RUN</span><span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--no-cache-dir<span class="w"> </span>--upgrade<span class="w"> </span>-r<span class="w"> </span>/code/requirements.txt
+</span><span id="__span-4-12">
+</span><span id="__span-4-13"><span class="c"># (5)!</span>
+</span><span id="__span-4-14"><span class="k">COPY</span><span class="w"> </span>./app<span class="w"> </span>/code/app
+</span><span id="__span-4-15">
+</span><span id="__span-4-16"><span class="c"># (6)!</span>
+</span><span id="__span-4-17"><span class="k">CMD</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;fastapi&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;run&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;app/main.py&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;--port&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;80&quot;</span><span class="p">]</span>
+</span></code></pre></div>
+<ol>
+<li>
+<p>공식 Python 베이스 이미지에서 시작합니다.</p>
+</li>
+<li>
+<p>현재 작업 디렉터리를 <code>/code</code>로 설정합니다.</p>
+<p>여기에 <code>requirements.txt</code> 파일과 <code>app</code> 디렉터리를 둘 것입니다.</p>
+</li>
+<li>
+<p>요구사항 파일을 <code>/code</code> 디렉터리로 복사합니다.</p>
+<p>처음에는 요구사항 파일만 <strong>단독으로</strong> 복사하고, 나머지 코드는 복사하지 않습니다.</p>
+<p>이 파일은 <strong>자주 바뀌지 않기</strong> 때문에 Docker는 이를 감지하여 이 단계에서 <strong>캐시</strong>를 사용하고, 다음 단계에서도 캐시를 사용할 수 있게 해줍니다.</p>
+</li>
+<li>
+<p>요구사항 파일에 있는 패키지 의존성을 설치합니다.</p>
+<p><code>--no-cache-dir</code> 옵션은 <code>pip</code>가 다운로드한 패키지를 로컬에 저장하지 않도록 합니다. 이는 <code>pip</code>가 같은 패키지를 설치하기 위해 다시 실행될 때만 의미가 있지만, 컨테이너 작업에서는 그렇지 않기 때문입니다.</p>
+<div class="admonition note">
+<p class="admonition-title">참고</p>
+<p><code>--no-cache-dir</code>는 <code>pip</code>에만 관련되어 있으며 Docker나 컨테이너와는 관련이 없습니다.</p>
+</div>
+<p><code>--upgrade</code> 옵션은 이미 설치된 패키지가 있다면 <code>pip</code>가 이를 업그레이드하도록 합니다.</p>
+<p>이전 단계에서 파일을 복사한 것이 <strong>Docker 캐시</strong>에 의해 감지될 수 있으므로, 이 단계에서도 가능하면 <strong>Docker 캐시를 사용</strong>합니다.</p>
+<p>이 단계에서 캐시를 사용하면 개발 중에 이미지를 반복해서 빌드할 때, 의존성을 <strong>매번 다운로드하고 설치하는</strong> 대신 많은 <strong>시간</strong>을 <strong>절약</strong>할 수 있습니다.</p>
+</li>
+<li>
+<p><code>./app</code> 디렉터리를 <code>/code</code> 디렉터리 안으로 복사합니다.</p>
+<p>이 디렉터리에는 <strong>가장 자주 변경되는</strong> 코드가 모두 포함되어 있으므로, Docker <strong>캐시</strong>는 이 단계나 <strong>이후 단계들</strong>에서는 쉽게 사용되지 않습니다.</p>
+<p>따라서 컨테이너 이미지 빌드 시간을 최적화하려면 <code>Dockerfile</code>의 <strong>끝부분 근처</strong>에 두는 것이 중요합니다.</p>
+</li>
+<li>
+<p>내부적으로 Uvicorn을 사용하는 <code>fastapi run</code>을 사용하도록 <strong>명령</strong>을 설정합니다.</p>
+<p><code>CMD</code>는 문자열 리스트를 받으며, 각 문자열은 커맨드 라인에서 공백으로 구분해 입력하는 항목들입니다.</p>
+<p>이 명령은 <strong>현재 작업 디렉터리</strong>에서 실행되며, 이는 위에서 <code>WORKDIR /code</code>로 설정한 <code>/code</code> 디렉터리와 같습니다.</p>
+</li>
+</ol>
+<div class="admonition tip">
+<p class="admonition-title">팁</p>
+<p>코드의 각 숫자 버블을 클릭해 각 줄이 하는 일을 확인하세요. 👆</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">경고</p>
+<p>아래에서 설명하는 것처럼 <code>CMD</code> 지시어는 <strong>항상</strong> <strong>exec form</strong>을 사용해야 합니다.</p>
+</div>
+<h4 id="use-cmd-exec-form"><code>CMD</code> 사용하기 - Exec Form<a class="headerlink" data-preview="" href="#use-cmd-exec-form" title="Permanent link">&para;</a></h4>
+<p>Docker 지시어 <a href="https://docs.docker.com/reference/dockerfile/#cmd" class="external-link" target="_blank"><code>CMD</code></a>는 두 가지 형식으로 작성할 수 있습니다:</p>
+<p>✅ <strong>Exec</strong> form:</p>
+<div class="highlight"><pre><span></span><code><span id="__span-5-1"><span class="c"># ✅ Do this</span>
+</span><span id="__span-5-2"><span class="k">CMD</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;fastapi&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;run&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;app/main.py&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;--port&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;80&quot;</span><span class="p">]</span>
+</span></code></pre></div>
+<p>⛔️ <strong>Shell</strong> form:</p>
+<div class="highlight"><pre><span></span><code><span id="__span-6-1"><span class="c"># ⛔️ Don&#39;t do this</span>
+</span><span id="__span-6-2"><span class="k">CMD</span><span class="w"> </span>fastapi<span class="w"> </span>run<span class="w"> </span>app/main.py<span class="w"> </span>--port<span class="w"> </span><span class="m">80</span>
+</span></code></pre></div>
+<p>FastAPI가 정상적으로 종료(graceful shutdown)되고 <a class="internal-link" data-preview="" href="../../advanced/events/" target="_blank">lifespan 이벤트</a>가 트리거되도록 하려면, 항상 <strong>exec</strong> form을 사용하세요.</p>
+<p>자세한 내용은 <a href="https://docs.docker.com/reference/dockerfile/#shell-and-exec-form" class="external-link" target="_blank">shell and exec form에 대한 Docker 문서</a>를 참고하세요.</p>
+<p>이는 <code>docker compose</code>를 사용할 때 꽤 눈에 띌 수 있습니다. 좀 더 기술적인 상세 내용은 Docker Compose FAQ 섹션을 참고하세요: <a href="https://docs.docker.com/compose/faq/#why-do-my-services-take-10-seconds-to-recreate-or-stop" class="external-link" target="_blank">Why do my services take 10 seconds to recreate or stop?</a>.</p>
+<h4 id="directory-structure">디렉터리 구조<a class="headerlink" data-preview="" href="#directory-structure" title="Permanent link">&para;</a></h4>
+<p>이제 다음과 같은 디렉터리 구조가 되어야 합니다:</p>
+<div class="highlight"><pre><span></span><code><span id="__span-7-1">.
+</span><span id="__span-7-2">├── app
+</span><span id="__span-7-3">│   ├── __init__.py
+</span><span id="__span-7-4">│   └── main.py
+</span><span id="__span-7-5">├── Dockerfile
+</span><span id="__span-7-6">└── requirements.txt
+</span></code></pre></div>
+<h4 id="behind-a-tls-termination-proxy">TLS 종료 프록시의 배후<a class="headerlink" data-preview="" href="#behind-a-tls-termination-proxy" title="Permanent link">&para;</a></h4>
+<p>Nginx나 Traefik 같은 TLS 종료 프록시(로드 밸런서) 뒤에서 컨테이너를 실행하고 있다면 <code>--proxy-headers</code> 옵션을 추가하세요. 이 옵션은 (FastAPI CLI를 통해) Uvicorn에게 해당 프록시가 보낸 헤더를 신뢰하도록 하여, 애플리케이션이 HTTPS 뒤에서 실행 중임을 알게 합니다.</p>
+<div class="highlight"><pre><span></span><code><span id="__span-8-1"><span class="k">CMD</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;fastapi&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;run&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;app/main.py&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;--proxy-headers&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;--port&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;80&quot;</span><span class="p">]</span>
+</span></code></pre></div>
+<h4 id="docker-cache">도커 캐시<a class="headerlink" data-preview="" href="#docker-cache" title="Permanent link">&para;</a></h4>
+<p>이 <code>Dockerfile</code>에는 중요한 트릭이 있습니다. 먼저 <strong>의존성 파일만</strong> 복사하고, 나머지 코드는 복사하지 않는 것입니다. 왜 그런지 설명하겠습니다.</p>
+<div class="highlight"><pre><span></span><code><span id="__span-9-1"><span class="k">COPY</span><span class="w"> </span>./requirements.txt<span class="w"> </span>/code/requirements.txt
+</span></code></pre></div>
+<p>Docker와 다른 도구들은 <code>Dockerfile</code>의 위에서부터 시작해, 각 지시어가 만든 파일을 포함하며 <strong>레이어를 하나씩 위에 쌓는 방식으로</strong> 컨테이너 이미지를 <strong>점진적으로</strong> 빌드합니다.</p>
+<p>Docker와 유사한 도구들은 이미지를 빌드할 때 <strong>내부 캐시</strong>도 사용합니다. 어떤 파일이 마지막으로 컨테이너 이미지를 빌드했을 때부터 바뀌지 않았다면, 파일을 다시 복사하고 새 레이어를 처음부터 만드는 대신, 이전에 만든 <strong>같은 레이어를 재사용</strong>합니다.</p>
+<p>파일 복사를 피하는 것만으로 큰 개선이 생기지는 않을 수 있지만, 해당 단계에서 캐시를 사용했기 때문에 <strong>다음 단계에서도 캐시를 사용할 수</strong> 있습니다. 예를 들어 다음과 같이 의존성을 설치하는 지시어에서 캐시를 사용할 수 있습니다:</p>
+<div class="highlight"><pre><span></span><code><span id="__span-10-1"><span class="k">RUN</span><span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--no-cache-dir<span class="w"> </span>--upgrade<span class="w"> </span>-r<span class="w"> </span>/code/requirements.txt
+</span></code></pre></div>
+<p>패키지 요구사항 파일은 <strong>자주 변경되지 않습니다</strong>. 따라서 그 파일만 복사하면 Docker는 그 단계에서 <strong>캐시를 사용할 수</strong> 있습니다.</p>
+<p>그리고 Docker는 그 다음 단계에서 의존성을 다운로드하고 설치할 때도 <strong>캐시를 사용할 수</strong> 있습니다. 바로 여기에서 <strong>많은 시간을 절약</strong>하게 됩니다. ✨ ...그리고 기다리며 지루해지는 것도 피할 수 있습니다. 😪😆</p>
+<p>패키지 의존성을 다운로드하고 설치하는 데에는 <strong>몇 분</strong>이 걸릴 수 있지만, <strong>캐시</strong>를 사용하면 많아야 <strong>몇 초</strong>면 끝납니다.</p>
+<p>또한 개발 중에 코드 변경 사항이 동작하는지 확인하기 위해 컨테이너 이미지를 계속 빌드하게 되므로, 이렇게 절약되는 시간은 누적되어 상당히 커집니다.</p>
+<p>그 다음 <code>Dockerfile</code>의 끝부분 근처에서 모든 코드를 복사합니다. 이 부분은 <strong>가장 자주 변경되는</strong> 부분이므로, 거의 항상 이 단계 이후에는 캐시를 사용할 수 없기 때문에 끝부분에 둡니다.</p>
+<div class="highlight"><pre><span></span><code><span id="__span-11-1"><span class="k">COPY</span><span class="w"> </span>./app<span class="w"> </span>/code/app
+</span></code></pre></div>
+<h3 id="build-the-docker-image">도커 이미지 생성하기<a class="headerlink" data-preview="" href="#build-the-docker-image" title="Permanent link">&para;</a></h3>
+<p>이제 모든 파일이 제자리에 있으니 컨테이너 이미지를 빌드해봅시다.</p>
+<ul>
+<li>프로젝트 디렉터리로 이동합니다(<code>Dockerfile</code>이 있고 <code>app</code> 디렉터리를 포함하는 위치).</li>
+<li>FastAPI 이미지를 빌드합니다:</li>
+</ul>
+<div class="termy">
+
+<div class="highlight"><pre><span></span><code><span id="__span-12-1"><span class="gp">$ </span>docker<span class="w"> </span>build<span class="w"> </span>-t<span class="w"> </span>myimage<span class="w"> </span>.
+</span><span id="__span-12-2">
+</span><span id="__span-12-3"><span class="go">---&gt; 100%</span>
+</span></code></pre></div>
+
+</div>
+
+<div class="admonition tip">
+<p class="admonition-title">팁</p>
+<p>끝에 있는 <code>.</code>에 주목하세요. 이는 <code>./</code>와 동일하며, Docker에게 컨테이너 이미지를 빌드할 때 사용할 디렉터리를 알려줍니다.</p>
+<p>이 경우 현재 디렉터리(<code>.</code>)입니다.</p>
+</div>
+<h3 id="start-the-docker-container">도커 컨테이너 시작하기<a class="headerlink" data-preview="" href="#start-the-docker-container" title="Permanent link">&para;</a></h3>
+<ul>
+<li>여러분의 이미지에 기반하여 컨테이너를 실행합니다:</li>
+</ul>
+<div class="termy">
+
+<div class="highlight"><pre><span></span><code><span id="__span-13-1"><span class="gp">$ </span>docker<span class="w"> </span>run<span class="w"> </span>-d<span class="w"> </span>--name<span class="w"> </span>mycontainer<span class="w"> </span>-p<span class="w"> </span><span class="m">80</span>:80<span class="w"> </span>myimage
+</span></code></pre></div>
+
+</div>
+
+<h2 id="check-it">확인하기<a class="headerlink" data-preview="" href="#check-it" title="Permanent link">&para;</a></h2>
+<p>Docker 컨테이너의 URL에서 확인할 수 있어야 합니다. 예를 들어: <a href="http://192.168.99.100/items/5?q=somequery" class="external-link" target="_blank">http://192.168.99.100/items/5?q=somequery</a> 또는 <a href="http://127.0.0.1/items/5?q=somequery" class="external-link" target="_blank">http://127.0.0.1/items/5?q=somequery</a>(또는 Docker 호스트를 사용해 동등하게 확인할 수 있습니다).</p>
+<p>아래와 같은 것을 보게 될 것입니다:</p>
+<div class="highlight"><pre><span></span><code><span id="__span-14-1"><span class="p">{</span><span class="nt">&quot;item_id&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;q&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;somequery&quot;</span><span class="p">}</span>
+</span></code></pre></div>
+<h2 id="interactive-api-docs">인터랙티브 API 문서<a class="headerlink" data-preview="" href="#interactive-api-docs" title="Permanent link">&para;</a></h2>
+<p>이제 <a href="http://192.168.99.100/docs" class="external-link" target="_blank">http://192.168.99.100/docs</a> 또는 <a href="http://127.0.0.1/docs" class="external-link" target="_blank">http://127.0.0.1/docs</a>(또는 Docker 호스트를 사용해 동등하게 접근)로 이동할 수 있습니다.</p>
+<p>자동으로 생성된 인터랙티브 API 문서(<a href="https://github.com/swagger-api/swagger-ui" class="external-link" target="_blank">Swagger UI</a> 제공)를 볼 수 있습니다:</p>
+<p><img alt="Swagger UI" src="https://fastapi.tiangolo.com/img/index/index-01-swagger-ui-simple.png" /></p>
+<h2 id="alternative-api-docs">대안 API 문서<a class="headerlink" data-preview="" href="#alternative-api-docs" title="Permanent link">&para;</a></h2>
+<p>또한 <a href="http://192.168.99.100/redoc" class="external-link" target="_blank">http://192.168.99.100/redoc</a> 또는 <a href="http://127.0.0.1/redoc" class="external-link" target="_blank">http://127.0.0.1/redoc</a>(또는 Docker 호스트를 사용해 동등하게 접근)로 이동할 수도 있습니다.</p>
+<p>대안 자동 문서(<a href="https://github.com/Rebilly/ReDoc" class="external-link" target="_blank">ReDoc</a> 제공)를 볼 수 있습니다:</p>
+<p><img alt="ReDoc" src="https://fastapi.tiangolo.com/img/index/index-02-redoc-simple.png" /></p>
+<h2 id="build-a-docker-image-with-a-single-file-fastapi">단일 파일 FastAPI로 도커 이미지 빌드하기<a class="headerlink" data-preview="" href="#build-a-docker-image-with-a-single-file-fastapi" title="Permanent link">&para;</a></h2>
+<p>FastAPI가 단일 파일(예: <code>./app</code> 디렉터리 없이 <code>main.py</code>만 있는 경우)이라면, 파일 구조는 다음과 같을 수 있습니다:</p>
+<div class="highlight"><pre><span></span><code><span id="__span-15-1">.
+</span><span id="__span-15-2">├── Dockerfile
+</span><span id="__span-15-3">├── main.py
+</span><span id="__span-15-4">└── requirements.txt
+</span></code></pre></div>
+<p>그런 다음 <code>Dockerfile</code>에서 해당 파일을 복사하도록 경로만 맞게 변경하면 됩니다:</p>
+<div class="annotate highlight"><pre><span></span><code><span id="__span-16-1"><span class="k">FROM</span><span class="w"> </span><span class="s">python:3.9</span>
+</span><span id="__span-16-2">
+</span><span id="__span-16-3"><span class="k">WORKDIR</span><span class="w"> </span><span class="s">/code</span>
+</span><span id="__span-16-4">
+</span><span id="__span-16-5"><span class="k">COPY</span><span class="w"> </span>./requirements.txt<span class="w"> </span>/code/requirements.txt
+</span><span id="__span-16-6">
+</span><span id="__span-16-7"><span class="k">RUN</span><span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--no-cache-dir<span class="w"> </span>--upgrade<span class="w"> </span>-r<span class="w"> </span>/code/requirements.txt
+</span><span id="__span-16-8">
+</span><span id="__span-16-9"><span class="c"># (1)!</span>
+</span><span id="__span-16-10"><span class="hll"><span class="k">COPY</span><span class="w"> </span>./main.py<span class="w"> </span>/code/
+</span></span><span id="__span-16-11">
+</span><span id="__span-16-12"><span class="c"># (2)!</span>
+</span><span id="__span-16-13"><span class="hll"><span class="k">CMD</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;fastapi&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;run&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;main.py&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;--port&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;80&quot;</span><span class="p">]</span>
+</span></span></code></pre></div>
+<ol>
+<li>
+<p><code>main.py</code> 파일을 <code>/code</code> 디렉터리로 직접 복사합니다(<code>./app</code> 디렉터리 없이).</p>
+</li>
+<li>
+<p>단일 파일 <code>main.py</code>에 있는 애플리케이션을 제공(serve)하기 위해 <code>fastapi run</code>을 사용합니다.</p>
+</li>
+</ol>
+<p><code>fastapi run</code>에 파일을 전달하면, 이것이 패키지의 일부가 아닌 단일 파일이라는 것을 자동으로 감지하고, 어떻게 임포트해서 FastAPI 앱을 제공할지 알아냅니다. 😎</p>
+<h2 id="deployment-concepts">배포 개념<a class="headerlink" data-preview="" href="#deployment-concepts" title="Permanent link">&para;</a></h2>
+<p>컨테이너 관점에서 같은 <a class="internal-link" data-preview="" href="../concepts/" target="_blank">배포 개념</a>들을 다시 이야기해 봅시다.</p>
+<p>컨테이너는 주로 애플리케이션의 <strong>빌드 및 배포</strong> 과정을 단순화하는 도구이지만, 이러한 <strong>배포 개념</strong>을 처리하는 특정 접근 방식을 강제하지는 않으며, 가능한 전략은 여러 가지입니다.</p>
+<p><strong>좋은 소식</strong>은 각 전략마다 모든 배포 개념을 다룰 수 있는 방법이 있다는 점입니다. 🎉</p>
+<p>컨테이너 관점에서 이 <strong>배포 개념</strong>들을 살펴봅시다:</p>
+<ul>
+<li>HTTPS</li>
+<li>시작 시 자동 실행</li>
+<li>재시작</li>
+<li>복제(실행 중인 프로세스 수)</li>
+<li>메모리</li>
+<li>시작 전 사전 단계</li>
+</ul>
+<h2 id="https">HTTPS<a class="headerlink" data-preview="" href="#https" title="Permanent link">&para;</a></h2>
+<p>FastAPI 애플리케이션의 <strong>컨테이너 이미지</strong>(그리고 나중에 실행 중인 <strong>컨테이너</strong>)에만 집중한다면, HTTPS는 보통 다른 도구에 의해 <strong>외부적으로</strong> 처리됩니다.</p>
+<p>예를 들어 <a href="https://traefik.io/" class="external-link" target="_blank">Traefik</a>을 사용하는 다른 컨테이너가 <strong>HTTPS</strong>와 <strong>인증서</strong>의 <strong>자동</strong> 획득을 처리할 수 있습니다.</p>
+<div class="admonition tip">
+<p class="admonition-title">팁</p>
+<p>Traefik은 Docker, Kubernetes 등과 통합되어 있어, 이를 사용해 컨테이너에 HTTPS를 설정하고 구성하기가 매우 쉽습니다.</p>
+</div>
+<p>또는 HTTPS를 클라우드 제공자가 서비스의 일부로 처리할 수도 있습니다(애플리케이션은 여전히 컨테이너에서 실행됩니다).</p>
+<h2 id="running-on-startup-and-restarts">시작 시 자동 실행과 재시작<a class="headerlink" data-preview="" href="#running-on-startup-and-restarts" title="Permanent link">&para;</a></h2>
+<p>보통 컨테이너를 <strong>시작하고 실행</strong>하는 역할을 담당하는 다른 도구가 있습니다.</p>
+<p>직접 <strong>Docker</strong>일 수도 있고, <strong>Docker Compose</strong>, <strong>Kubernetes</strong>, <strong>클라우드 서비스</strong> 등일 수도 있습니다.</p>
+<p>대부분(또는 전부)의 경우, 시작 시 컨테이너를 실행하고 실패 시 재시작을 활성화하는 간단한 옵션이 있습니다. 예를 들어 Docker에서는 커맨드 라인 옵션 <code>--restart</code>입니다.</p>
+<p>컨테이너를 사용하지 않으면 애플리케이션을 시작 시 자동 실행하고 재시작까지 구성하는 것이 번거롭고 어렵습니다. 하지만 <strong>컨테이너로 작업할 때</strong>는 대부분의 경우 그 기능이 기본으로 포함되어 있습니다. ✨</p>
+<h2 id="replication-number-of-processes">복제 - 프로세스 개수<a class="headerlink" data-preview="" href="#replication-number-of-processes" title="Permanent link">&para;</a></h2>
+<p><strong>Kubernetes</strong>, Docker Swarm Mode, Nomad 등의 복잡한 시스템으로 여러 머신에 분산된 컨테이너를 관리하는 <abbr title="A group of machines that are configured to be connected and work together in some way.">cluster</abbr>를 사용한다면, 각 컨테이너에서(<strong>워커를 사용하는 Uvicorn</strong> 같은) <strong>프로세스 매니저</strong>를 쓰는 대신, <strong>클러스터 레벨</strong>에서 <strong>복제를 처리</strong>하고 싶을 가능성이 큽니다.</p>
+<p>Kubernetes 같은 분산 컨테이너 관리 시스템은 보통 들어오는 요청에 대한 <strong>로드 밸런싱</strong>을 지원하면서도, <strong>컨테이너 복제</strong>를 처리하는 통합된 방법을 가지고 있습니다. 모두 <strong>클러스터 레벨</strong>에서요.</p>
+<p>그런 경우에는 <a data-preview="" href="#dockerfile">위에서 설명한 대로</a> 의존성을 설치하고, 여러 Uvicorn 워커를 사용하는 대신 <strong>단일 Uvicorn 프로세스</strong>를 실행하는 <strong>처음부터 만든 Docker 이미지</strong>를 사용하는 것이 좋을 것입니다.</p>
+<h3 id="load-balancer">로드 밸런서<a class="headerlink" data-preview="" href="#load-balancer" title="Permanent link">&para;</a></h3>
+<p>컨테이너를 사용할 때는 보통 <strong>메인 포트에서 대기(listening)하는</strong> 컴포넌트가 있습니다. <strong>HTTPS</strong>를 처리하기 위한 <strong>TLS 종료 프록시</strong> 역할을 하는 다른 컨테이너일 수도 있고, 유사한 도구일 수도 있습니다.</p>
+<p>이 컴포넌트가 요청의 <strong>부하(load)</strong>를 받아 워커들에 (가능하면) <strong>균형 있게</strong> 분산한다면, 보통 <strong>로드 밸런서</strong>라고 부릅니다.</p>
+<div class="admonition tip">
+<p class="admonition-title">팁</p>
+<p>HTTPS에 사용되는 동일한 <strong>TLS 종료 프록시</strong> 컴포넌트가 <strong>로드 밸런서</strong>이기도 한 경우가 많습니다.</p>
+</div>
+<p>또한 컨테이너로 작업할 때, 이를 시작하고 관리하는 시스템은 이미 해당 <strong>로드 밸런서</strong>(또는 <strong>TLS 종료 프록시</strong>)에서 여러분의 앱이 있는 컨테이너로 <strong>네트워크 통신</strong>(예: HTTP 요청)을 전달하는 내부 도구를 가지고 있습니다.</p>
+<h3 id="one-load-balancer-multiple-worker-containers">하나의 로드 밸런서 - 여러 워커 컨테이너<a class="headerlink" data-preview="" href="#one-load-balancer-multiple-worker-containers" title="Permanent link">&para;</a></h3>
+<p><strong>Kubernetes</strong> 같은 분산 컨테이너 관리 시스템에서는 내부 네트워킹 메커니즘을 통해, 메인 <strong>포트</strong>에서 대기하는 단일 <strong>로드 밸런서</strong>가 여러분의 앱을 실행하는 <strong>여러 컨테이너</strong>로 통신(요청)을 전달할 수 있습니다.</p>
+<p>앱을 실행하는 각 컨테이너는 보통 <strong>프로세스 하나만</strong> 가집니다(예: FastAPI 애플리케이션을 실행하는 Uvicorn 프로세스). 모두 같은 것을 실행하는 <strong>동일한 컨테이너</strong>이지만, 각자 고유한 프로세스, 메모리 등을 가집니다. 이렇게 하면 CPU의 <strong>서로 다른 코어</strong> 또는 <strong>서로 다른 머신</strong>에서 <strong>병렬화</strong>의 이점을 얻을 수 있습니다.</p>
+<p>그리고 <strong>로드 밸런서</strong>가 있는 분산 컨테이너 시스템은 여러분의 앱을 실행하는 각 컨테이너에 <strong>번갈아가며</strong> 요청을 <strong>분산</strong>합니다. 따라서 각 요청은 여러분의 앱을 실행하는 여러 <strong>복제된 컨테이너</strong> 중 하나에서 처리될 수 있습니다.</p>
+<p>또한 보통 이 <strong>로드 밸런서</strong>는 클러스터 내 <em>다른</em> 앱으로 가는 요청(예: 다른 도메인, 또는 다른 URL 경로 접두사 아래로 가는 요청)도 처리할 수 있으며, 그 통신을 클러스터에서 실행 중인 <em>그 다른</em> 애플리케이션의 올바른 컨테이너로 전달할 수 있습니다.</p>
+<h3 id="one-process-per-container">컨테이너당 하나의 프로세스<a class="headerlink" data-preview="" href="#one-process-per-container" title="Permanent link">&para;</a></h3>
+<p>이 시나리오에서는 이미 클러스터 레벨에서 복제를 처리하고 있으므로, <strong>컨테이너당 단일 (Uvicorn) 프로세스</strong>를 두는 것이 좋을 가능성이 큽니다.</p>
+<p>따라서 이 경우 컨테이너에서 <code>--workers</code> 커맨드 라인 옵션 같은 방식으로 여러 워커를 두고 싶지는 <strong>않을</strong> 것입니다. 컨테이너당 <strong>단일 Uvicorn 프로세스</strong>만 두고(하지만 컨테이너는 여러 개일 수 있습니다) 싶을 것입니다.</p>
+<p>컨테이너 내부에 (여러 워커를 위한) 또 다른 프로세스 매니저를 두는 것은, 이미 클러스터 시스템에서 처리하고 있는 <strong>불필요한 복잡성</strong>만 추가할 가능성이 큽니다.</p>
+<h3 id="containers-with-multiple-processes-and-special-cases">여러 프로세스를 가진 컨테이너와 특수한 경우<a class="headerlink" data-preview="" href="#containers-with-multiple-processes-and-special-cases" title="Permanent link">&para;</a></h3>
+<p>물론 컨테이너 하나에 여러 <strong>Uvicorn 워커 프로세스</strong>를 두고 싶을 수 있는 <strong>특수한 경우</strong>도 있습니다.</p>
+<p>그런 경우에는 <code>--workers</code> 커맨드 라인 옵션을 사용해 실행할 워커 수를 설정할 수 있습니다:</p>
+<div class="annotate highlight"><pre><span></span><code><span id="__span-17-1"><span class="k">FROM</span><span class="w"> </span><span class="s">python:3.9</span>
+</span><span id="__span-17-2">
+</span><span id="__span-17-3"><span class="k">WORKDIR</span><span class="w"> </span><span class="s">/code</span>
+</span><span id="__span-17-4">
+</span><span id="__span-17-5"><span class="k">COPY</span><span class="w"> </span>./requirements.txt<span class="w"> </span>/code/requirements.txt
+</span><span id="__span-17-6">
+</span><span id="__span-17-7"><span class="k">RUN</span><span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>--no-cache-dir<span class="w"> </span>--upgrade<span class="w"> </span>-r<span class="w"> </span>/code/requirements.txt
+</span><span id="__span-17-8">
+</span><span id="__span-17-9"><span class="k">COPY</span><span class="w"> </span>./app<span class="w"> </span>/code/app
+</span><span id="__span-17-10">
+</span><span id="__span-17-11"><span class="c"># (1)!</span>
+</span><span id="__span-17-12"><span class="k">CMD</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;fastapi&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;run&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;app/main.py&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;--port&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;80&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;--workers&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;4&quot;</span><span class="p">]</span>
+</span></code></pre></div>
+<ol>
+<li>여기서는 <code>--workers</code> 커맨드 라인 옵션으로 워커 수를 4로 설정합니다.</li>
+</ol>
+<p>이런 방식이 의미가 있을 수 있는 예시는 다음과 같습니다:</p>
+<h4 id="a-simple-app">단순한 앱<a class="headerlink" data-preview="" href="#a-simple-app" title="Permanent link">&para;</a></h4>
+<p>애플리케이션이 <strong>충분히 단순</strong>해서 클러스터가 아닌 <strong>단일 서버</strong>에서 실행할 수 있다면, 컨테이너에 프로세스 매니저를 두고 싶을 수 있습니다.</p>
+<h4 id="docker-compose">Docker Compose<a class="headerlink" data-preview="" href="#docker-compose" title="Permanent link">&para;</a></h4>
+<p><strong>Docker Compose</strong>로 클러스터가 아닌 <strong>단일 서버</strong>에 배포하는 경우, 공유 네트워크와 <strong>로드 밸런싱</strong>을 유지하면서(Docker Compose로) 컨테이너 복제를 관리하는 쉬운 방법이 없을 수 있습니다.</p>
+<p>그렇다면 <strong>프로세스 매니저</strong>가 컨테이너 내부에서 <strong>여러 워커 프로세스</strong>를 시작하는 <strong>단일 컨테이너</strong>를 원할 수 있습니다.</p>
+<hr />
+<p>핵심은, 이것들 중 <strong>어느 것도</strong> 무조건 따라야 하는 <strong>절대적인 규칙</strong>은 아니라는 것입니다. 이 아이디어들을 사용해 <strong>여러분의 사용 사례를 평가</strong>하고, 여러분의 시스템에 가장 적합한 접근 방식을 결정하면서 다음 개념을 어떻게 관리할지 확인할 수 있습니다:</p>
+<ul>
+<li>보안 - HTTPS</li>
+<li>시작 시 자동 실행</li>
+<li>재시작</li>
+<li>복제(실행 중인 프로세스 수)</li>
+<li>메모리</li>
+<li>시작 전 사전 단계</li>
+</ul>
+<h2 id="memory">메모리<a class="headerlink" data-preview="" href="#memory" title="Permanent link">&para;</a></h2>
+<p><strong>컨테이너당 단일 프로세스</strong>를 실행하면, 각 컨테이너(복제된 경우 여러 개)마다 소비하는 메모리 양이 대체로 잘 정의되고 안정적이며 제한된 값이 됩니다.</p>
+<p>그런 다음 컨테이너 관리 시스템(예: <strong>Kubernetes</strong>) 설정에서 동일하게 메모리 제한과 요구사항을 설정할 수 있습니다. 그러면 클러스터에서 사용 가능한 머신에 있는 메모리와 컨테이너가 필요로 하는 메모리 양을 고려해 <strong>컨테이너를 복제</strong>할 수 있습니다.</p>
+<p>애플리케이션이 <strong>단순</strong>하다면 이는 아마도 <strong>문제가 되지 않을</strong> 것이고, 엄격한 메모리 제한을 지정할 필요가 없을 수도 있습니다. 하지만 <strong>많은 메모리를 사용한다면</strong>(예: <strong>머신 러닝</strong> 모델), 얼마나 많은 메모리를 소비하는지 확인하고, <strong>각 머신</strong>에서 실행되는 <strong>컨테이너 수</strong>를 조정해야 합니다(필요하다면 클러스터에 머신을 더 추가할 수도 있습니다).</p>
+<p><strong>컨테이너당 여러 프로세스</strong>를 실행한다면, 시작되는 프로세스 수가 사용 가능한 것보다 <strong>더 많은 메모리를 소비하지</strong> 않는지 확인해야 합니다.</p>
+<h2 id="previous-steps-before-starting-and-containers">시작 전 단계와 컨테이너<a class="headerlink" data-preview="" href="#previous-steps-before-starting-and-containers" title="Permanent link">&para;</a></h2>
+<p>컨테이너(예: Docker, Kubernetes)를 사용한다면, 사용할 수 있는 주요 접근 방식은 두 가지입니다.</p>
+<h3 id="multiple-containers">여러 컨테이너<a class="headerlink" data-preview="" href="#multiple-containers" title="Permanent link">&para;</a></h3>
+<p><strong>여러 컨테이너</strong>가 있고 각 컨테이너가 보통 <strong>단일 프로세스</strong>를 실행한다면(예: <strong>Kubernetes</strong> 클러스터), 복제된 워커 컨테이너를 실행하기 <strong>전에</strong>, 단일 컨테이너에서 단일 프로세스로 <strong>시작 전 사전 단계</strong>를 수행하는 <strong>별도의 컨테이너</strong>를 두고 싶을 가능성이 큽니다.</p>
+<div class="admonition info">
+<p class="admonition-title">정보</p>
+<p>Kubernetes를 사용한다면, 이는 아마도 <a href="https://kubernetes.io/docs/concepts/workloads/pods/init-containers/" class="external-link" target="_blank">Init Container</a>일 것입니다.</p>
+</div>
+<p>사용 사례에서 시작 전 사전 단계를 <strong>여러 번 병렬로 실행</strong>해도 문제가 없다면(예: 데이터베이스 마이그레이션을 실행하는 것이 아니라, 데이터베이스가 준비되었는지 확인만 하는 경우), 메인 프로세스를 시작하기 직전에 각 컨테이너에 그 단계를 넣을 수도 있습니다.</p>
+<h3 id="single-container">단일 컨테이너<a class="headerlink" data-preview="" href="#single-container" title="Permanent link">&para;</a></h3>
+<p><strong>단일 컨테이너</strong>에서 여러 <strong>워커 프로세스</strong>(또는 단일 프로세스)를 시작하는 단순한 셋업이라면, 앱이 있는 프로세스를 시작하기 직전에 같은 컨테이너에서 시작 전 사전 단계를 실행할 수 있습니다.</p>
+<h3 id="base-docker-image">베이스 도커 이미지<a class="headerlink" data-preview="" href="#base-docker-image" title="Permanent link">&para;</a></h3>
+<p>과거에는 공식 FastAPI Docker 이미지가 있었습니다: <a href="https://github.com/tiangolo/uvicorn-gunicorn-fastapi-docker" class="external-link" target="_blank">tiangolo/uvicorn-gunicorn-fastapi</a>. 하지만 이제는 deprecated되었습니다. ⛔️</p>
+<p>아마도 이 베이스 도커 이미지(또는 유사한 다른 이미지)는 <strong>사용하지 않는</strong> 것이 좋습니다.</p>
+<p><strong>Kubernetes</strong>(또는 다른 도구)를 사용하고, 클러스터 레벨에서 여러 <strong>컨테이너</strong>로 <strong>복제</strong>를 이미 설정해 둔 경우라면, 위에서 설명한 대로 <strong>처음부터 이미지를 빌드하는 것</strong>이 더 낫습니다: <a data-preview="" href="#build-a-docker-image-for-fastapi">FastAPI를 위한 도커 이미지 빌드하기</a>.</p>
+<p>그리고 여러 워커가 필요하다면, <code>--workers</code> 커맨드 라인 옵션을 간단히 사용하면 됩니다.</p>
+<p>/// note Technical Details | 기술 세부사항</p>
+<p>이 Docker 이미지는 Uvicorn이 죽은 워커를 관리하고 재시작하는 기능을 지원하지 않던 시기에 만들어졌습니다. 그래서 Gunicorn과 Uvicorn을 함께 사용해야 했고, Gunicorn이 Uvicorn 워커 프로세스를 관리하고 재시작하도록 하기 위해 상당한 복잡성이 추가되었습니다.</p>
+<p>하지만 이제 Uvicorn(그리고 <code>fastapi</code> 명령)은 <code>--workers</code>를 지원하므로, 베이스 도커 이미지를 사용하는 대신 직접 이미지를 빌드하지 않을 이유가 없습니다(코드 양도 사실상 거의 같습니다 😅).</p>
+<p>///</p>
+<h2 id="deploy-the-container-image">컨테이너 이미지 배포하기<a class="headerlink" data-preview="" href="#deploy-the-container-image" title="Permanent link">&para;</a></h2>
+<p>컨테이너(Docker) 이미지를 만든 후에는 이를 배포하는 여러 방법이 있습니다.</p>
+<p>예를 들어:</p>
+<ul>
+<li>단일 서버에서 <strong>Docker Compose</strong>로</li>
+<li><strong>Kubernetes</strong> 클러스터로</li>
+<li>Docker Swarm Mode 클러스터로</li>
+<li>Nomad 같은 다른 도구로</li>
+<li>컨테이너 이미지를 받아 배포해주는 클라우드 서비스로</li>
+</ul>
+<h2 id="docker-image-with-uv"><code>uv</code>를 사용하는 도커 이미지<a class="headerlink" data-preview="" href="#docker-image-with-uv" title="Permanent link">&para;</a></h2>
+<p>프로젝트를 설치하고 관리하기 위해 <a href="https://github.com/astral-sh/uv" class="external-link" target="_blank">uv</a>를 사용한다면, <a href="https://docs.astral.sh/uv/guides/integration/docker/" class="external-link" target="_blank">uv Docker guide</a>를 따를 수 있습니다.</p>
+<h2 id="recap">요약<a class="headerlink" data-preview="" href="#recap" title="Permanent link">&para;</a></h2>
+<p>컨테이너 시스템(예: <strong>Docker</strong>, <strong>Kubernetes</strong>)을 사용하면 모든 <strong>배포 개념</strong>을 다루는 것이 상당히 단순해집니다:</p>
+<ul>
+<li>HTTPS</li>
+<li>시작 시 자동 실행</li>
+<li>재시작</li>
+<li>복제(실행 중인 프로세스 수)</li>
+<li>메모리</li>
+<li>시작 전 사전 단계</li>
+</ul>
+<p>대부분의 경우 베이스 이미지는 사용하지 않고, 공식 Python Docker 이미지에 기반해 <strong>처음부터 컨테이너 이미지를 빌드</strong>하는 것이 좋습니다.</p>
+<p><code>Dockerfile</code>에서 지시어의 <strong>순서</strong>와 <strong>Docker 캐시</strong>를 신경 쓰면 <strong>빌드 시간을 최소화</strong>해 생산성을 최대화할 수 있습니다(그리고 지루함도 피할 수 있습니다). 😎</p>
+
+
+
+
+
+
+
+  
+  
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  맨위로
+</button>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    
+      
+      <nav class="md-footer__inner md-grid" aria-label="하단/푸터" >
+        
+          
+          <a href="../server-workers/" class="md-footer__link md-footer__link--prev" aria-label="이전: 서버 워커 - 워커와 함께 사용하는 Uvicorn">
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+            </div>
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                이전
+              </span>
+              <div class="md-ellipsis">
+                서버 워커 - 워커와 함께 사용하는 Uvicorn
+              </div>
+            </div>
+          </a>
+        
+        
+          
+          <a href="../../how-to/" class="md-footer__link md-footer__link--next" aria-label="다음: How To - 레시피">
+            <div class="md-footer__title">
+              <span class="md-footer__direction">
+                다음
+              </span>
+              <div class="md-ellipsis">
+                How To - 레시피
+              </div>
+            </div>
+            <div class="md-footer__button md-icon">
+              
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11z"/></svg>
+            </div>
+          </a>
+        
+      </nav>
+    
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+    <div class="md-copyright__highlight">
+        The FastAPI trademark is owned by <a href="https://tiangolo.com" target="_blank">@tiangolo</a> and is registered in the US and across other regions
+    </div>
+    
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+        Material for MkDocs
+    </a>
+    
+</div>
+      
+        
+<div class="md-social">
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://github.com/fastapi/fastapi" target="_blank" rel="noopener" title="github.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M202.1 328.7c0 20.9-10.9 55.1-36.7 55.1s-36.7-34.2-36.7-55.1 10.9-55.1 36.7-55.1 36.7 34.2 36.7 55.1M496 278.2c0 31.9-3.2 65.7-17.5 95-37.9 76.6-142.1 74.8-216.7 74.8-75.8 0-186.2 2.7-225.6-74.8-14.6-29-20.2-63.1-20.2-95 0-41.9 13.9-81.5 41.5-113.6-5.2-15.8-7.7-32.4-7.7-48.8 0-21.5 4.9-32.3 14.6-51.8 45.3 0 74.3 9 108.8 36 29-6.9 58.8-10 88.7-10 27 0 54.2 2.9 80.4 9.2 34-26.7 63-35.2 107.8-35.2 9.8 19.5 14.6 30.3 14.6 51.8 0 16.4-2.6 32.7-7.7 48.2 27.5 32.4 39 72.3 39 114.2m-64.3 50.5c0-43.9-26.7-82.6-73.5-82.6-18.9 0-37 3.4-56 6-14.9 2.3-29.8 3.2-45.1 3.2-15.2 0-30.1-.9-45.1-3.2-18.7-2.6-37-6-56-6-46.8 0-73.5 38.7-73.5 82.6 0 87.8 80.4 101.3 150.4 101.3h48.2c70.3 0 150.6-13.4 150.6-101.3m-82.6-55.1c-25.8 0-36.7 34.2-36.7 55.1s10.9 55.1 36.7 55.1 36.7-34.2 36.7-55.1-10.9-55.1-36.7-55.1"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://discord.gg/VQjSZaeJmf" target="_blank" rel="noopener" title="discord.gg" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 576 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M492.5 69.8c-.2-.3-.4-.6-.8-.7-38.1-17.5-78.4-30-119.7-37.1-.4-.1-.8 0-1.1.1s-.6.4-.8.8c-5.5 9.9-10.5 20.2-14.9 30.6-44.6-6.8-89.9-6.8-134.4 0-4.5-10.5-9.5-20.7-15.1-30.6-.2-.3-.5-.6-.8-.8s-.7-.2-1.1-.2C162.5 39 122.2 51.5 84.1 69c-.3.1-.6.4-.8.7C7.1 183.5-13.8 294.6-3.6 404.2c0 .3.1.5.2.8s.3.4.5.6c44.4 32.9 94 58 146.8 74.2.4.1.8.1 1.1 0s.7-.4.9-.7c11.3-15.4 21.4-31.8 30-48.8.1-.2.2-.5.2-.8s0-.5-.1-.8-.2-.5-.4-.6-.4-.3-.7-.4c-15.8-6.1-31.2-13.4-45.9-21.9-.3-.2-.5-.4-.7-.6s-.3-.6-.3-.9 0-.6.2-.9.3-.5.6-.7c3.1-2.3 6.2-4.7 9.1-7.1.3-.2.6-.4.9-.4s.7 0 1 .1c96.2 43.9 200.4 43.9 295.5 0 .3-.1.7-.2 1-.2s.7.2.9.4c2.9 2.4 6 4.9 9.1 7.2.2.2.4.4.6.7s.2.6.2.9-.1.6-.3.9-.4.5-.6.6c-14.7 8.6-30 15.9-45.9 21.8-.2.1-.5.2-.7.4s-.3.4-.4.7-.1.5-.1.8.1.5.2.8c8.8 17 18.8 33.3 30 48.8.2.3.6.6.9.7s.8.1 1.1 0c52.9-16.2 102.6-41.3 147.1-74.2.2-.2.4-.4.5-.6s.2-.5.2-.8c12.3-126.8-20.5-236.9-86.9-334.5zm-302 267.7c-29 0-52.8-26.6-52.8-59.2s23.4-59.2 52.8-59.2c29.7 0 53.3 26.8 52.8 59.2 0 32.7-23.4 59.2-52.8 59.2m195.4 0c-29 0-52.8-26.6-52.8-59.2s23.4-59.2 52.8-59.2c29.7 0 53.3 26.8 52.8 59.2 0 32.7-23.2 59.2-52.8 59.2"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://x.com/fastapi" target="_blank" rel="noopener" title="x.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M459.4 151.7c.3 4.5.3 9.1.3 13.6 0 138.7-105.6 298.6-298.6 298.6-59.5 0-114.7-17.2-161.1-47.1 8.4 1 16.6 1.3 25.3 1.3 49.1 0 94.2-16.6 130.3-44.8-46.1-1-84.8-31.2-98.1-72.8 6.5 1 13 1.6 19.8 1.6 9.4 0 18.8-1.3 27.6-3.6-48.1-9.7-84.1-52-84.1-103v-1.3c14 7.8 30.2 12.7 47.4 13.3-28.3-18.8-46.8-51-46.8-87.4 0-19.5 5.2-37.4 14.3-53C87.4 130.8 165 172.4 252.1 176.9c-1.6-7.8-2.6-15.9-2.6-24C249.5 95.1 296.3 48 354.4 48c30.2 0 57.5 12.7 76.7 33.1 23.7-4.5 46.5-13.3 66.6-25.3-7.8 24.4-24.4 44.8-46.1 57.8 21.1-2.3 41.6-8.1 60.4-16.2-14.3 20.8-32.2 39.3-52.6 54.3"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://www.linkedin.com/company/fastapi" target="_blank" rel="noopener" title="www.linkedin.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3M135.4 416H69V202.2h66.5V416zM102.2 96a38.5 38.5 0 1 1 0 77 38.5 38.5 0 1 1 0-77m282.1 320h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9z"/></svg>
+    </a>
+  
+    
+    
+    
+    
+      
+      
+    
+    <a href="https://tiangolo.com" target="_blank" rel="noopener" title="tiangolo.com" class="md-social__link">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 7.1.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2025 Fonticons, Inc.--><path d="M351.9 280H161c2.9 64.5 17.2 123.9 37.5 167.4 11.4 24.5 23.7 41.8 35.1 52.4 11.2 10.5 18.9 12.2 22.9 12.2s11.7-1.7 22.9-12.2c11.4-10.6 23.7-28 35.1-52.4 20.3-43.5 34.6-102.9 37.5-167.4zm-191-48h190.9c-2.8-64.5-17.1-123.9-37.4-167.4-11.4-24.4-23.7-41.8-35.1-52.4C268.1 1.7 260.4 0 256.4 0s-11.7 1.7-22.9 12.2c-11.4 10.6-23.7 28-35.1 52.4-20.3 43.5-34.6 102.9-37.5 167.4m-48 0c3.5-85.6 25.6-165.1 57.9-217.3C78.7 47.3 10.9 131.2 1.5 232zM1.5 280c9.4 100.8 77.2 184.7 169.3 217.3-32.3-52.2-54.4-131.7-57.9-217.3zm398.4 0c-3.5 85.6-25.6 165.1-57.9 217.3 92.1-32.7 159.9-116.5 169.3-217.3zm111.4-48C501.9 131.2 434.1 47.3 342 14.7c32.3 52.2 54.4 131.7 57.9 217.3z"/></svg>
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+      <div class="md-progress" data-md-component="progress" role="progressbar"></div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["content.code.annotate", "content.code.copy", "content.footnote.tooltips", "content.tabs.link", "content.tooltips", "navigation.footer", "navigation.indexes", "navigation.instant", "navigation.instant.prefetch", "navigation.instant.progress", "navigation.path", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "navigation.tracking", "search.highlight", "search.share", "search.suggest", "toc.follow"], "search": "../../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "\ud074\ub9bd\ubcf4\ub4dc\uc5d0 \ubcf5\uc0ac\ub428", "clipboard.copy": "\ud074\ub9bd\ubcf4\ub4dc\ub85c \ubcf5\uc0ac", "search.result.more.one": "\uc774 \ubb38\uc11c\uc5d0\uc11c 1\uac1c\uc758 \uac80\uc0c9 \uacb0\uacfc \ub354 \ubcf4\uae30", "search.result.more.other": "\uc774 \ubb38\uc11c\uc5d0\uc11c #\uac1c\uc758 \uac80\uc0c9 \uacb0\uacfc \ub354 \ubcf4\uae30", "search.result.none": "\uac80\uc0c9\uc5b4\uc640 \uc77c\uce58\ud558\ub294 \ubb38\uc11c\uac00 \uc5c6\uc2b5\ub2c8\ub2e4", "search.result.one": "1\uac1c\uc758 \uc77c\uce58\ud558\ub294 \ubb38\uc11c", "search.result.other": "#\uac1c\uc758 \uc77c\uce58\ud558\ub294 \ubb38\uc11c", "search.result.placeholder": "\uac80\uc0c9\uc5b4\ub97c \uc785\ub825\ud558\uc138\uc694", "search.result.term.missing": "\ud3ec\ud568\ub418\uc9c0 \uc54a\uc740 \uac80\uc0c9\uc5b4", "select.version": "\ubc84\uc804 \uc120\ud0dd"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.e71a0d61.min.js"></script>
+      
+        <script src="../../js/termynal.js"></script>
+      
+        <script src="../../js/custom.js"></script>
+      
+    
+  <!-- Cloudflare Pages Analytics --><script defer src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "83c63961621f43319d43d493c35d7611"}'></script><!-- Cloudflare Pages Analytics --></body>
+</html>

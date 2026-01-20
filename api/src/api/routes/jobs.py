@@ -1,44 +1,55 @@
 """Job advertisements endpoints."""
 
-from fastapi import APIRouter, Query
+from fastapi import APIRouter, Query, HTTPException
 from typing import List, Optional
-from api.models.schemas import JobAd
+from api.models.schemas import JobAd, JobsAggregated
+from api.utils.database import get_data_access
 
 router = APIRouter()
 
 
 @router.get("/jobs", response_model=List[JobAd])
 async def get_job_ads(
-    occupation: Optional[str] = Query(None, description="Filter by occupation code"),
-    region: Optional[str] = Query(None, description="Filter by region code"),
-    employment_type: Optional[str] = Query(None, description="Filter by employment type"),
+    occupation: Optional[str] = Query(None, description="Filter by occupation code (e.g., 2512)"),
+    region: Optional[str] = Query(None, description="Filter by region name"),
     limit: int = Query(100, ge=1, le=1000, description="Maximum number of results")
 ):
     """Get job advertisements with optional filters.
     
-    This endpoint returns current job advertisements from Arbetsförmedlingen.
-    Data can be filtered by occupation, region, and employment type.
-    """
-    # TODO: Implement actual data retrieval from GCS/BigQuery
-    # For now, return sample data
-    sample_data = [
-        {
-            "id": "job123",
-            "headline": "Software Developer wanted",
-            "employer": "Tech Company AB",
-            "occupation": "Software Developer",
-            "occupation_code": "2512",
-            "region": "Stockholm",
-            "region_code": "01",
-            "published_date": "2024-01-15T10:00:00",
-            "application_deadline": "2024-02-15T23:59:59",
-            "number_of_vacancies": 2,
-            "employment_type": "Full-time",
-            "working_hours_type": "Full-time"
-        }
-    ]
+    This endpoint returns historical job advertisements from Arbetsförmedlingen.
+    Data sourced from JobTech Historical Ads API.
     
-    return sample_data
+    Available occupation codes:
+    - 2511: Systems analysts and IT architects
+    - 2512: Software and systems developers
+    """
+    data_access = get_data_access()
+    records = data_access.get_job_ads(
+        occupation=occupation,
+        region=region,
+        limit=limit,
+    )
+    
+    return records
+
+
+@router.get("/jobs/aggregated", response_model=List[JobsAggregated])
+async def get_jobs_aggregated(
+    occupation: Optional[str] = Query(None, description="Filter by occupation code"),
+    region: Optional[str] = Query(None, description="Filter by region name"),
+):
+    """Get aggregated job statistics by region and occupation.
+    
+    Returns counts of job ads and total vacancies grouped by region and occupation.
+    Useful for map visualizations and regional comparisons.
+    """
+    data_access = get_data_access()
+    records = data_access.get_jobs_aggregated(
+        occupation=occupation,
+        region=region,
+    )
+    
+    return records
 
 
 @router.get("/jobs/{job_id}", response_model=JobAd)
@@ -47,18 +58,12 @@ async def get_job_ad(job_id: str):
     
     Returns detailed information about a specific job advertisement.
     """
-    # TODO: Implement actual data retrieval
-    return {
-        "id": job_id,
-        "headline": "Software Developer wanted",
-        "employer": "Tech Company AB",
-        "occupation": "Software Developer",
-        "occupation_code": "2512",
-        "region": "Stockholm",
-        "region_code": "01",
-        "published_date": "2024-01-15T10:00:00",
-        "application_deadline": "2024-02-15T23:59:59",
-        "number_of_vacancies": 2,
-        "employment_type": "Full-time",
-        "working_hours_type": "Full-time"
-    }
+    data_access = get_data_access()
+    records = data_access.get_job_ads()
+    
+    # Find the job with matching ID
+    for record in records:
+        if record.get("id") == job_id:
+            return record
+    
+    raise HTTPException(status_code=404, detail=f"Job ad with ID {job_id} not found")

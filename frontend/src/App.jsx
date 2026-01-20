@@ -23,7 +23,7 @@ function App() {
   const [filters, setFilters] = useState({
     occupation: '',
     region: '',
-    ageGroup: '',
+    year: '',
     gender: ''
   });
   
