@@ -8,9 +8,16 @@ from api.utils.database import get_data_access
 router = APIRouter()
 
 
+def parse_occupations(occupation: Optional[str]) -> Optional[List[str]]:
+    """Parse comma-separated occupation codes into a list."""
+    if not occupation:
+        return None
+    return [occ.strip() for occ in occupation.split(",") if occ.strip()]
+
+
 @router.get("/income", response_model=List[IncomeData])
 async def get_income_data(
-    occupation: Optional[str] = Query(None, description="Filter by occupation code (e.g., 2512)"),
+    occupation: Optional[str] = Query(None, description="Filter by occupation code(s), comma-separated (e.g., 2512,2511)"),
     region: Optional[str] = Query(None, description="Filter by region name (e.g., Stockholm)"),
     gender: Optional[str] = Query(None, description="Filter by gender (men/women)"),
     year: Optional[int] = Query(None, description="Filter by year (2023, 2024)"),
@@ -21,13 +28,12 @@ async def get_income_data(
     This endpoint returns income statistics by occupation and geography.
     Data sourced from Statistics Sweden (SCB).
     
-    Available occupations:
-    - 2511: Systems analysts and IT architects
-    - 2512: Software and systems developers
+    Supports multiple occupations via comma-separated values.
     """
     data_access = get_data_access()
+    occupations = parse_occupations(occupation)
     records = data_access.get_income_summary(
-        occupation=occupation,
+        occupations=occupations,
         region=region,
         year=year,
     )
@@ -41,7 +47,7 @@ async def get_income_data(
 
 @router.get("/income/dispersion", response_model=List[IncomeDispersion])
 async def get_income_dispersion(
-    occupation: Optional[str] = Query(None, description="Filter by occupation name"),
+    occupation: Optional[str] = Query(None, description="Filter by occupation name(s), comma-separated"),
     year: Optional[int] = Query(None, description="Filter by year (2023, 2024)"),
     gender: Optional[str] = Query(None, description="Filter by gender (men/women)"),
 ):
@@ -49,10 +55,13 @@ async def get_income_dispersion(
     
     Returns P10, P25, Median, P75, P90 percentiles for each occupation/gender.
     Data sourced from Statistics Sweden (SCB).
+    
+    Note: This data is national-level only (no regional breakdown available).
     """
     data_access = get_data_access()
+    occupations = parse_occupations(occupation)
     return data_access.get_income_dispersion(
-        occupation=occupation,
+        occupations=occupations,
         year=year,
         gender=gender,
     )

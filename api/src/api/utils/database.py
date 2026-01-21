@@ -176,13 +176,18 @@ class DataAccess:
     
     def get_income_summary(
         self,
-        occupation: Optional[str] = None,
+        occupations: Optional[List[str]] = None,
         region: Optional[str] = None,
         year: Optional[int] = None,
     ) -> List[Dict[str, Any]]:
         """Get summarized income data by occupation and region.
         
         Pivots the data to show monthly_salary and num_employees as columns.
+        
+        Args:
+            occupations: List of occupation codes/names to filter by (supports multiple)
+            region: Region name filter
+            year: Year filter
         """
         df = self._load_income_data()
         
@@ -192,8 +197,12 @@ class DataAccess:
         # Filter to monthly salary only
         mask = df["observations"].str.contains("salary", case=False, na=False)
         
-        if occupation:
-            mask &= df["occupation (SSYK 2012)"].str.contains(occupation, case=False, na=False)
+        # Support multiple occupations
+        if occupations and len(occupations) > 0:
+            occ_mask = pd.Series([False] * len(df))
+            for occ in occupations:
+                occ_mask |= df["occupation (SSYK 2012)"].str.contains(occ, case=False, na=False)
+            mask &= occ_mask
         if region:
             mask &= df["region"].str.contains(region, case=False, na=False)
         if year:
@@ -201,11 +210,35 @@ class DataAccess:
         
         filtered = df[mask]
         
+        # Also get number of employees for weighting
+        emp_mask = df["observations"].str.contains("employees", case=False, na=False)
+        if occupations and len(occupations) > 0:
+            occ_mask = pd.Series([False] * len(df))
+            for occ in occupations:
+                occ_mask |= df["occupation (SSYK 2012)"].str.contains(occ, case=False, na=False)
+            emp_mask &= occ_mask
+        if region:
+            emp_mask &= df["region"].str.contains(region, case=False, na=False)
+        if year:
+            emp_mask &= df["year"].astype(str) == str(year)
+        
+        emp_df = df[emp_mask]
+        
+        # Create lookup for employee counts
+        emp_lookup = {}
+        for _, row in emp_df.iterrows():
+            key = (row.get("occupation (SSYK 2012)", ""), row.get("region", ""), row.get("sex", ""), row.get("year", ""))
+            emp_lookup[key] = float(row.get("value", 0)) if pd.notna(row.get("value")) else 0
+        
         records = []
         for _, row in filtered.iterrows():
             occ_name = row.get("occupation (SSYK 2012)", "")
             # Look up SSYK code from occupation name
             occ_code = OCCUPATION_TO_SSYK.get(occ_name, "")
+            
+            # Get employee count for this record
+            emp_key = (occ_name, row.get("region", ""), row.get("sex", ""), row.get("year", ""))
+            num_employees = emp_lookup.get(emp_key, 0)
             
             records.append({
                 "occupation": occ_name,
@@ -215,20 +248,21 @@ class DataAccess:
                 "year": int(row.get("year", 0)) if pd.notna(row.get("year")) else None,
                 "gender": row.get("sex", ""),
                 "monthly_salary": float(row.get("value")) if pd.notna(row.get("value")) else None,
+                "num_employees": num_employees,
             })
         
         return records
 
     def get_job_ads(
         self,
-        occupation: Optional[str] = None,
+        occupations: Optional[List[str]] = None,
         region: Optional[str] = None,
         limit: int = 100
     ) -> List[Dict[str, Any]]:
         """Get job advertisements with optional filters.
         
         Args:
-            occupation: Occupation code filter
+            occupations: List of occupation codes to filter by (supports multiple)
             region: Region name filter
             limit: Maximum number of results
             
@@ -243,8 +277,12 @@ class DataAccess:
         # Apply filters
         mask = pd.Series([True] * len(df))
         
-        if occupation:
-            mask &= df["ssyk_code"].str.contains(occupation, na=False)
+        # Support multiple occupations
+        if occupations and len(occupations) > 0:
+            occ_mask = pd.Series([False] * len(df))
+            for occ in occupations:
+                occ_mask |= df["ssyk_code"].str.contains(occ, na=False)
+            mask &= occ_mask
         if region:
             mask &= df["region"].str.contains(region, case=False, na=False)
         
@@ -273,13 +311,13 @@ class DataAccess:
     
     def get_jobs_aggregated(
         self,
-        occupation: Optional[str] = None,
+        occupations: Optional[List[str]] = None,
         region: Optional[str] = None,
     ) -> List[Dict[str, Any]]:
         """Get aggregated job statistics by region and occupation.
         
         Args:
-            occupation: Occupation code filter
+            occupations: List of occupation codes to filter by (supports multiple)
             region: Region name filter
             
         Returns:
@@ -293,8 +331,12 @@ class DataAccess:
         # Apply filters
         mask = pd.Series([True] * len(df))
         
-        if occupation:
-            mask &= df["ssyk_code"].str.contains(occupation, na=False)
+        # Support multiple occupations
+        if occupations and len(occupations) > 0:
+            occ_mask = pd.Series([False] * len(df))
+            for occ in occupations:
+                occ_mask |= df["ssyk_code"].str.contains(occ, na=False)
+            mask &= occ_mask
         if region:
             mask &= df["region"].str.contains(region, case=False, na=False)
         
@@ -369,10 +411,69 @@ class DataAccess:
             "total_job_ads": n_jobs,
             "avg_income": avg_salary,
         }
+
+    def get_top_employers(
+        self,
+        occupations: Optional[List[str]] = None,
+        region: Optional[str] = None,
+        limit: int = 15
+    ) -> List[Dict[str, Any]]:
+        """Get top employers by job ad count.
+        
+        Args:
+            occupations: List of occupation codes to filter by (supports multiple)
+            region: Region name filter
+            limit: Maximum number of employers to return
+            
+        Returns:
+            List of top employers with ad and vacancy counts
+        """
+        df = self._load_jobs_data()
+        
+        if df.empty:
+            return []
+        
+        # Apply filters
+        mask = pd.Series([True] * len(df))
+        
+        # Support multiple occupations
+        if occupations and len(occupations) > 0:
+            occ_mask = pd.Series([False] * len(df))
+            for occ in occupations:
+                occ_mask |= df["ssyk_code"].str.contains(occ, na=False)
+            mask &= occ_mask
+        if region:
+            mask &= df["region"].str.contains(region, case=False, na=False)
+        
+        filtered = df[mask]
+        
+        if filtered.empty:
+            return []
+        
+        # Aggregate by employer
+        employer_stats = filtered.groupby("employer_name").agg({
+            "id": "count",
+            "number_of_vacancies": "sum",
+            "region": lambda x: x.mode().iloc[0] if len(x.mode()) > 0 else "Unknown"
+        }).reset_index()
+        
+        employer_stats.columns = ["employer", "ad_count", "total_vacancies", "primary_region"]
+        employer_stats = employer_stats.sort_values("ad_count", ascending=False).head(limit)
+        
+        records = []
+        for _, row in employer_stats.iterrows():
+            records.append({
+                "employer": row["employer"],
+                "ad_count": int(row["ad_count"]),
+                "total_vacancies": int(row["total_vacancies"]) if pd.notna(row["total_vacancies"]) else int(row["ad_count"]),
+                "primary_region": row["primary_region"],
+            })
+        
+        return records
     
     def get_income_dispersion(
         self,
-        occupation: Optional[str] = None,
+        occupations: Optional[List[str]] = None,
         year: Optional[int] = None,
         gender: Optional[str] = None,
     ) -> List[Dict[str, Any]]:
@@ -381,7 +482,7 @@ class DataAccess:
         Returns data with P10, P25, Median, P75, P90 for each occupation/gender.
         
         Args:
-            occupation: Occupation name filter
+            occupations: List of occupation names to filter by (supports multiple)
             year: Year filter
             gender: Gender filter ("men", "women")
             
@@ -396,10 +497,14 @@ class DataAccess:
         # Apply filters
         mask = pd.Series([True] * len(df))
         
-        if occupation:
+        # Support multiple occupations
+        if occupations and len(occupations) > 0:
             occ_col = "occupation (SSYK 2012)" if "occupation (SSYK 2012)" in df.columns else "occupation"
             if occ_col in df.columns:
-                mask &= df[occ_col].str.contains(occupation, case=False, na=False)
+                occ_mask = pd.Series([False] * len(df))
+                for occ in occupations:
+                    occ_mask |= df[occ_col].str.contains(occ, case=False, na=False)
+                mask &= occ_mask
         if year:
             mask &= df["year"].astype(str) == str(year)
         if gender:

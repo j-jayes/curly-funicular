@@ -2,15 +2,22 @@
 
 from fastapi import APIRouter, Query, HTTPException
 from typing import List, Optional
-from api.models.schemas import JobAd, JobsAggregated
+from api.models.schemas import JobAd, JobsAggregated, TopEmployer
 from api.utils.database import get_data_access
 
 router = APIRouter()
 
 
+def parse_occupations(occupation: Optional[str]) -> Optional[List[str]]:
+    """Parse comma-separated occupation codes into a list."""
+    if not occupation:
+        return None
+    return [occ.strip() for occ in occupation.split(",") if occ.strip()]
+
+
 @router.get("/jobs", response_model=List[JobAd])
 async def get_job_ads(
-    occupation: Optional[str] = Query(None, description="Filter by occupation code (e.g., 2512)"),
+    occupation: Optional[str] = Query(None, description="Filter by occupation code(s), comma-separated (e.g., 2512,2511)"),
     region: Optional[str] = Query(None, description="Filter by region name"),
     limit: int = Query(100, ge=1, le=1000, description="Maximum number of results")
 ):
@@ -19,13 +26,12 @@ async def get_job_ads(
     This endpoint returns historical job advertisements from Arbetsförmedlingen.
     Data sourced from JobTech Historical Ads API.
     
-    Available occupation codes:
-    - 2511: Systems analysts and IT architects
-    - 2512: Software and systems developers
+    Supports multiple occupations via comma-separated values.
     """
     data_access = get_data_access()
+    occupations = parse_occupations(occupation)
     records = data_access.get_job_ads(
-        occupation=occupation,
+        occupations=occupations,
         region=region,
         limit=limit,
     )
@@ -35,7 +41,7 @@ async def get_job_ads(
 
 @router.get("/jobs/aggregated", response_model=List[JobsAggregated])
 async def get_jobs_aggregated(
-    occupation: Optional[str] = Query(None, description="Filter by occupation code"),
+    occupation: Optional[str] = Query(None, description="Filter by occupation code(s), comma-separated"),
     region: Optional[str] = Query(None, description="Filter by region name"),
 ):
     """Get aggregated job statistics by region and occupation.
@@ -44,9 +50,32 @@ async def get_jobs_aggregated(
     Useful for map visualizations and regional comparisons.
     """
     data_access = get_data_access()
+    occupations = parse_occupations(occupation)
     records = data_access.get_jobs_aggregated(
-        occupation=occupation,
+        occupations=occupations,
         region=region,
+    )
+    
+    return records
+
+
+@router.get("/jobs/top-employers", response_model=List[TopEmployer])
+async def get_top_employers(
+    occupation: Optional[str] = Query(None, description="Filter by occupation code(s), comma-separated"),
+    region: Optional[str] = Query(None, description="Filter by region name"),
+    limit: int = Query(15, ge=1, le=50, description="Maximum number of employers"),
+):
+    """Get top employers by job ad count.
+    
+    Returns the most active employers based on job advertisement count.
+    Data sourced from JobTech Historical Ads API.
+    """
+    data_access = get_data_access()
+    occupations = parse_occupations(occupation)
+    records = data_access.get_top_employers(
+        occupations=occupations,
+        region=region,
+        limit=limit,
     )
     
     return records

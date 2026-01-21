@@ -69,20 +69,41 @@ const SwedenMap = ({ data, selectedRegion, onRegionClick }) => {
     }
   }, [geoData, data, selectedRegion]);
 
-  // Aggregate income by region - map to NUTS codes
+  // Aggregate income by region - calculate weighted average by employee count
   const getRegionIncomeMap = () => {
-    const regionIncome = {};
+    const regionData = {};
     if (Array.isArray(data) && data.length > 0) {
       data.forEach(item => {
         const region = item.region;
         const nutsCode = REGION_NAME_MAP[region];
         if (nutsCode && item.monthly_salary) {
-          if (!regionIncome[nutsCode] || item.monthly_salary > regionIncome[nutsCode]) {
-            regionIncome[nutsCode] = item.monthly_salary;
+          if (!regionData[nutsCode]) {
+            regionData[nutsCode] = { 
+              totalSalary: 0, 
+              totalEmployees: 0,
+              entries: 0 
+            };
           }
+          const employees = item.num_employees || 1;
+          regionData[nutsCode].totalSalary += item.monthly_salary * employees;
+          regionData[nutsCode].totalEmployees += employees;
+          regionData[nutsCode].entries += 1;
         }
       });
     }
+    
+    // Calculate weighted averages
+    const regionIncome = {};
+    Object.entries(regionData).forEach(([nutsCode, data]) => {
+      if (data.totalEmployees > 0) {
+        regionIncome[nutsCode] = {
+          avgSalary: data.totalSalary / data.totalEmployees,
+          totalEmployees: data.totalEmployees,
+          occupationCount: data.entries
+        };
+      }
+    });
+    
     return regionIncome;
   };
 
@@ -106,7 +127,7 @@ const SwedenMap = ({ data, selectedRegion, onRegionClick }) => {
 
     // Get income data for coloring
     const regionIncome = getRegionIncomeMap();
-    const incomeValues = Object.values(regionIncome);
+    const incomeValues = Object.values(regionIncome).map(d => d.avgSalary);
     const minIncome = incomeValues.length > 0 ? Math.min(...incomeValues) : 40000;
     const maxIncome = incomeValues.length > 0 ? Math.max(...incomeValues) : 60000;
 
@@ -123,8 +144,8 @@ const SwedenMap = ({ data, selectedRegion, onRegionClick }) => {
       .attr('d', pathGenerator)
       .attr('fill', d => {
         const nutsCode = d.properties.id;
-        const income = regionIncome[nutsCode];
-        return income ? colorScale(income) : '#e5e7eb';
+        const incomeData = regionIncome[nutsCode];
+        return incomeData ? colorScale(incomeData.avgSalary) : '#e5e7eb';
       })
       .attr('stroke', '#1f2937')
       .attr('stroke-width', 1)
@@ -137,36 +158,72 @@ const SwedenMap = ({ data, selectedRegion, onRegionClick }) => {
         // Show tooltip
         const nutsCode = d.properties.id;
         const regionName = NUTS_TO_NAME[nutsCode] || d.properties.na;
-        const income = regionIncome[nutsCode];
+        const incomeData = regionIncome[nutsCode];
         
         // Remove any existing tooltip
         svg.select('#tooltip-bg').remove();
         svg.select('#tooltip').remove();
+        svg.select('#tooltip2').remove();
         
-        const tooltipText = `${regionName}: ${income ? `${Math.round(income).toLocaleString()} SEK` : 'No data'}`;
         const tooltipX = width / 2;
-        const tooltipY = 30;
+        const tooltipY = 25;
         
-        // Add tooltip background
-        svg.append('rect')
-          .attr('id', 'tooltip-bg')
-          .attr('x', tooltipX - 80)
-          .attr('y', tooltipY - 15)
-          .attr('width', 160)
-          .attr('height', 24)
-          .attr('rx', 4)
-          .attr('fill', 'rgba(31, 41, 55, 0.9)');
-        
-        svg.append('text')
-          .attr('id', 'tooltip')
-          .attr('x', tooltipX)
-          .attr('y', tooltipY)
-          .attr('text-anchor', 'middle')
-          .style('font-size', '12px')
-          .style('font-weight', '500')
-          .style('fill', '#fff')
-          .style('font-family', '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif')
-          .text(tooltipText);
+        if (incomeData) {
+          const line1 = `${regionName}: ${Math.round(incomeData.avgSalary).toLocaleString()} SEK`;
+          const line2 = `${Math.round(incomeData.totalEmployees).toLocaleString()} employees`;
+          
+          // Add tooltip background - taller for 2 lines
+          svg.append('rect')
+            .attr('id', 'tooltip-bg')
+            .attr('x', tooltipX - 90)
+            .attr('y', tooltipY - 18)
+            .attr('width', 180)
+            .attr('height', 40)
+            .attr('rx', 4)
+            .attr('fill', 'rgba(31, 41, 55, 0.95)');
+          
+          svg.append('text')
+            .attr('id', 'tooltip')
+            .attr('x', tooltipX)
+            .attr('y', tooltipY)
+            .attr('text-anchor', 'middle')
+            .style('font-size', '12px')
+            .style('font-weight', '500')
+            .style('fill', '#fff')
+            .style('font-family', '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif')
+            .text(line1);
+          
+          svg.append('text')
+            .attr('id', 'tooltip2')
+            .attr('x', tooltipX)
+            .attr('y', tooltipY + 14)
+            .attr('text-anchor', 'middle')
+            .style('font-size', '10px')
+            .style('font-weight', '400')
+            .style('fill', '#9ca3af')
+            .style('font-family', '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif')
+            .text(line2);
+        } else {
+          svg.append('rect')
+            .attr('id', 'tooltip-bg')
+            .attr('x', tooltipX - 80)
+            .attr('y', tooltipY - 15)
+            .attr('width', 160)
+            .attr('height', 24)
+            .attr('rx', 4)
+            .attr('fill', 'rgba(31, 41, 55, 0.9)');
+          
+          svg.append('text')
+            .attr('id', 'tooltip')
+            .attr('x', tooltipX)
+            .attr('y', tooltipY)
+            .attr('text-anchor', 'middle')
+            .style('font-size', '12px')
+            .style('font-weight', '500')
+            .style('fill', '#fff')
+            .style('font-family', '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif')
+            .text(`${regionName}: No data`);
+        }
       })
       .on('mouseout', function() {
         d3.select(this)
@@ -174,6 +231,7 @@ const SwedenMap = ({ data, selectedRegion, onRegionClick }) => {
           .attr('stroke', '#1f2937');
         svg.select('#tooltip-bg').remove();
         svg.select('#tooltip').remove();
+        svg.select('#tooltip2').remove();
       })
       .on('click', function(event, d) {
         if (onRegionClick) {
@@ -259,7 +317,18 @@ const SwedenMap = ({ data, selectedRegion, onRegionClick }) => {
           fontSize: '1.1rem'
         }}
       >
-        Average Income by Region
+        Weighted Avg. Income by Region
+      </Typography>
+      <Typography 
+        variant="caption" 
+        sx={{ 
+          color: '#6b7280', 
+          display: 'block', 
+          mb: 1,
+          fontSize: '0.7rem'
+        }}
+      >
+        Weighted by employee count
       </Typography>
       <Box display="flex" justifyContent="center">
         <svg ref={svgRef}></svg>

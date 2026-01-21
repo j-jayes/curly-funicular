@@ -18,6 +18,7 @@ class IncomeData(BaseModel):
     year: Optional[int] = Field(None, description="Year of data")
     gender: Optional[str] = Field(None, description="Gender (men/women)")
     monthly_salary: Optional[float] = Field(None, description="Monthly salary in SEK")
+    num_employees: Optional[float] = Field(None, description="Number of employees (for weighting)")
     
     class Config:
         """Pydantic config for flexible validation."""
@@ -98,3 +99,12 @@ class StatsResponse(BaseModel):
     total_regions: int = Field(..., description="Total number of regions")
     total_job_ads: int = Field(..., description="Total number of job ads")
     avg_income: Optional[float] = Field(None, description="Average monthly salary")
+
+
+class TopEmployer(BaseModel):
+    """Top employer model for job ads."""
+    
+    employer: str = Field(..., description="Employer name")
+    ad_count: int = Field(..., description="Number of job ads posted")
+    total_vacancies: int = Field(..., description="Total number of vacancies")
+    primary_region: Optional[str] = Field(None, description="Most common region for job ads")

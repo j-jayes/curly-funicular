@@ -7,7 +7,10 @@ import {
   MenuItem, 
   Grid,
   Typography,
-  Chip
+  Chip,
+  Checkbox,
+  ListItemText,
+  OutlinedInput
 } from '@mui/material';
 import FilterListIcon from '@mui/icons-material/FilterList';
 
@@ -28,6 +31,13 @@ const AREA_OF_WORK = [
 const FilterPanel = ({ filters, occupations, regions, onFilterChange }) => {
   const [areaFilter, setAreaFilter] = React.useState('');
   
+  // Handle multi-select occupation change
+  const handleOccupationsChange = (event) => {
+    const { value } = event.target;
+    // value is an array of selected occupation codes
+    onFilterChange({ occupations: typeof value === 'string' ? value.split(',') : value });
+  };
+
   const handleChange = (field) => (event) => {
     onFilterChange({ [field]: event.target.value });
   };
@@ -35,7 +45,7 @@ const FilterPanel = ({ filters, occupations, regions, onFilterChange }) => {
   const handleAreaChange = (event) => {
     setAreaFilter(event.target.value);
     // Optional: Reset specific occupation when area changes
-    onFilterChange({ occupation: '' });
+    onFilterChange({ occupations: [] });
   };
 
   const selectStyles = {
@@ -64,6 +74,20 @@ const FilterPanel = ({ filters, occupations, regions, onFilterChange }) => {
     });
   }, [occupations, areaFilter]);
 
+  // Get selected occupations array (ensure it's always an array)
+  const selectedOccupations = filters.occupations || [];
+
+  // Render value for multi-select
+  const renderSelectedOccupations = (selected) => {
+    if (selected.length === 0) {
+      return <em style={{ color: '#9ca3af' }}>All Occupations</em>;
+    }
+    if (selected.length === 1) {
+      const occ = occupations.find(o => o.code === selected[0] || o.name === selected[0]);
+      return occ ? (occ.code ? `${occ.code} - ${occ.name}` : occ.name) : selected[0];
+    }
+    return `${selected.length} occupations selected`;
+  };
 
   return (
     <Box>
@@ -74,13 +98,13 @@ const FilterPanel = ({ filters, occupations, regions, onFilterChange }) => {
             Filters
           </Typography>
         </Box>
-        {(Object.values(filters).some(x => x) || areaFilter) && (
+        {(selectedOccupations.length > 0 || filters.region || filters.year || filters.gender || areaFilter) && (
            <Chip 
              label="Clear All" 
              size="small" 
              onClick={() => {
                setAreaFilter('');
-               onFilterChange({ occupation: '', region: '', year: '', gender: '' });
+               onFilterChange({ occupations: [], region: '', year: '', gender: '' });
              }}
              sx={{ cursor: 'pointer' }}
            />
@@ -89,7 +113,7 @@ const FilterPanel = ({ filters, occupations, regions, onFilterChange }) => {
       
       <Grid container spacing={2}>
         {/* Area of Work Filter */}
-        <Grid item xs={12} md={3}>
+        <Grid item xs={12} md={2}>
           <FormControl fullWidth size="small">
             <InputLabel>Area of Work</InputLabel>
             <Select
@@ -108,23 +132,41 @@ const FilterPanel = ({ filters, occupations, regions, onFilterChange }) => {
           </FormControl>
         </Grid>
 
-        {/* Occupation Filter */}
-        <Grid item xs={12} md={3}>
+        {/* Occupation Multi-Select Filter */}
+        <Grid item xs={12} md={4}>
           <FormControl fullWidth size="small">
-            <InputLabel>Occupation</InputLabel>
+            <InputLabel>Occupation(s)</InputLabel>
             <Select
-              value={filters.occupation || ''}
-              label="Occupation"
-              onChange={handleChange('occupation')}
-              MenuProps={{ PaperProps: { sx: { maxHeight: 300 } } }}
+              multiple
+              value={selectedOccupations}
+              onChange={handleOccupationsChange}
+              input={<OutlinedInput label="Occupation(s)" />}
+              renderValue={renderSelectedOccupations}
+              MenuProps={{ 
+                PaperProps: { sx: { maxHeight: 400 } },
+                anchorOrigin: { vertical: 'bottom', horizontal: 'left' },
+                transformOrigin: { vertical: 'top', horizontal: 'left' },
+              }}
               sx={selectStyles}
             >
-              <MenuItem value=""><em>All Occupations</em></MenuItem>
-              {filteredOccupations.map((occ, index) => (
-                <MenuItem key={occ.id || index} value={occ.code ? occ.code : occ.name}>
-                  {occ.code ? `${occ.code} - ${occ.name}` : occ.name}
-                </MenuItem>
-              ))}
+              {filteredOccupations.map((occ, index) => {
+                const value = occ.code || occ.name;
+                return (
+                  <MenuItem key={occ.id || index} value={value}>
+                    <Checkbox 
+                      checked={selectedOccupations.indexOf(value) > -1} 
+                      sx={{ 
+                        color: '#1b9e77',
+                        '&.Mui-checked': { color: '#1b9e77' }
+                      }}
+                    />
+                    <ListItemText 
+                      primary={occ.code ? `${occ.code} - ${occ.name}` : occ.name} 
+                      primaryTypographyProps={{ fontSize: '0.875rem' }}
+                    />
+                  </MenuItem>
+                );
+              })}
             </Select>
           </FormControl>
         </Grid>

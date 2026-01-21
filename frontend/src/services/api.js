@@ -10,10 +10,20 @@ const api = axios.create({
   },
 });
 
+// Helper to join array of occupations into comma-separated string
+const formatOccupations = (occupations) => {
+  if (!occupations) return null;
+  if (Array.isArray(occupations)) {
+    return occupations.length > 0 ? occupations.join(',') : null;
+  }
+  return occupations;
+};
+
 export const fetchIncomeData = async (filters = {}) => {
   try {
     const params = {};
-    if (filters.occupation) params.occupation = filters.occupation;
+    const occupation = formatOccupations(filters.occupations || filters.occupation);
+    if (occupation) params.occupation = occupation;
     if (filters.region) params.region = filters.region;
     if (filters.gender) params.gender = filters.gender;
     if (filters.year) params.year = filters.year;
@@ -29,7 +39,8 @@ export const fetchIncomeData = async (filters = {}) => {
 export const fetchJobAds = async (filters = {}) => {
   try {
     const params = {};
-    if (filters.occupation) params.occupation = filters.occupation;
+    const occupation = formatOccupations(filters.occupations || filters.occupation);
+    if (occupation) params.occupation = occupation;
     if (filters.region) params.region = filters.region;
     params.limit = 200;  // Get more job ads
 
@@ -44,13 +55,30 @@ export const fetchJobAds = async (filters = {}) => {
 export const fetchJobsAggregated = async (filters = {}) => {
   try {
     const params = {};
-    if (filters.occupation) params.occupation = filters.occupation;
+    const occupation = formatOccupations(filters.occupations || filters.occupation);
+    if (occupation) params.occupation = occupation;
     if (filters.region) params.region = filters.region;
 
     const response = await api.get('/jobs/aggregated', { params });
     return response.data;
   } catch (error) {
     console.error('Error fetching aggregated jobs:', error);
+    return [];
+  }
+};
+
+export const fetchTopEmployers = async (filters = {}) => {
+  try {
+    const params = {};
+    const occupation = formatOccupations(filters.occupations || filters.occupation);
+    if (occupation) params.occupation = occupation;
+    if (filters.region) params.region = filters.region;
+    params.limit = 15;
+
+    const response = await api.get('/jobs/top-employers', { params });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching top employers:', error);
     return [];
   }
 };
@@ -88,7 +116,8 @@ export const fetchStats = async () => {
 export const fetchIncomeDispersion = async (filters = {}) => {
   try {
     const params = {};
-    if (filters.occupation) params.occupation = filters.occupation;
+    const occupation = formatOccupations(filters.occupations || filters.occupation);
+    if (occupation) params.occupation = occupation;
     if (filters.year) params.year = filters.year;
     if (filters.gender) params.gender = filters.gender;
 
