@@ -10,13 +10,6 @@ import logging
 
 logger = logging.getLogger(__name__)
 
-# Occupation labels for SSYK codes
-SSYK_LABELS = {
-    "2511": "Systems analysts and IT architects",
-    "2512": "Software and systems developers",
-}
-
-
 class DataProcessor:
     """Process and combine data from multiple sources."""
     
@@ -57,7 +50,7 @@ class DataProcessor:
             "Region": "region_code", 
             "Yrke2012": "ssyk_code",
             "Kon": "gender_code",
-            "ContentsCode": "measure",
+            "ContentsCode": "measure_code",
             "value": "value",
         }
         
@@ -65,40 +58,49 @@ class DataProcessor:
             if old_name in df.columns:
                 df = df.rename(columns={old_name: new_name})
         
-        # Add occupation labels
-        if "ssyk_code" in df.columns:
-            df["occupation"] = df["ssyk_code"].map(SSYK_LABELS)
+        # Ensure occupation label exists
+        if "occupation_name" in df.columns:
+            df["occupation"] = df["occupation_name"]
+        elif "occupation" not in df.columns and "ssyk_code" in df.columns:
+             # Fallback (unlikely if ingestion works)
+             df["occupation"] = df["ssyk_code"]
         
-        # Pivot measure codes to columns for easier analysis
+        # Ensure measure column works for pivoting
+        # Ingestion produces 'measure' column with values like 'monthly_salary', 'num_employees'
+        if "measure" in df.columns:
+            # We can use this directly for pivoting
+            pass
+        else:
+             # Fallback mapping if ingestion didn't run _add_labels
+             logger.warning("Measure column missing, raw codes might be used")
+             df["measure"] = df.get("measure_code", df.get("ContentsCode"))
+
+        # Create wide format for common use cases
+        # We want columns: year, region, occupation, gender, monthly_salary, num_employees
         if "measure" in df.columns and "value" in df.columns:
-            measure_labels = {
-                "000000NV": "avg_monthly_salary",
-                "000000O0": "percentile_10",
-                "000000O1": "median_salary",
-                "000000O2": "percentile_90",
-            }
-            df["measure_name"] = df["measure"].map(measure_labels)
-            
-            # Keep both long and wide format options
-            df_long = df.copy()
-            
-            # Create wide format for common use cases
-            id_cols = [c for c in ["year", "region_code", "region_name", "ssyk_code", 
-                                   "occupation", "gender_code", "gender"] 
-                       if c in df.columns]
-            
-            if "measure_name" in df.columns and df["measure_name"].notna().any():
-                try:
-                    df_wide = df.pivot_table(
-                        index=id_cols,
-                        columns="measure_name",
-                        values="value",
-                        aggfunc="first"
-                    ).reset_index()
-                    logger.info(f"Created wide format with {len(df_wide)} records")
-                    return df_wide
-                except Exception as e:
-                    logger.warning(f"Could not pivot to wide format: {e}")
+             try:
+                id_cols = [c for c in ["year", "region_code", "region_name", "ssyk_code", 
+                                       "occupation", "gender_code", "gender", "sector_name", "sector"] 
+                           if c in df.columns]
+                
+                # Check duplicates before pivoting
+                if df.duplicated(subset=id_cols + ["measure"]).any():
+                    logger.warning("Duplicates found in income data, taking first")
+                
+                df_wide = df.pivot_table(
+                    index=id_cols,
+                    columns="measure",
+                    values="value",
+                    aggfunc="first"
+                ).reset_index()
+                
+                # Cleanup column names (remove name of index)
+                df_wide.columns.name = None
+                
+                logger.info(f"Created wide format with {len(df_wide)} records")
+                return df_wide
+             except Exception as e:
+                logger.warning(f"Could not pivot to wide format: {e}")
         
         logger.info(f"Processed {len(df)} income records (long format)")
         return df
@@ -122,10 +124,6 @@ class DataProcessor:
             df["year"] = df["published_date"].dt.year
             df["month"] = df["published_date"].dt.month
             df["year_month"] = df["published_date"].dt.to_period("M").astype(str)
-        
-        # Add occupation labels
-        if "ssyk_code" in df.columns:
-            df["occupation"] = df["ssyk_code"].map(SSYK_LABELS)
         
         # Clean vacancies
         if "number_of_vacancies" in df.columns:
@@ -170,10 +168,6 @@ class DataProcessor:
             "number_of_vacancies": "total_vacancies",
         })
         
-        # Add occupation labels
-        if "ssyk_code" in agg.columns:
-            agg["occupation"] = agg["ssyk_code"].map(SSYK_LABELS)
-        
         logger.info(f"Aggregated to {len(agg)} records")
         return agg
     
@@ -194,10 +188,11 @@ class DataProcessor:
         
         # Income stats
         if not income_df.empty:
-            salary_cols = ["avg_monthly_salary", "median_salary", "value"]
+            # Look for monthly_salary column (from pivot) OR 'value' if long format
+            salary_cols = ["monthly_salary", "avg_monthly_salary", "median_salary", "value"]
             salary_col = next((c for c in salary_cols if c in income_df.columns), None)
             
-            if salary_col:
+            if salary_col and pd.api.types.is_numeric_dtype(income_df[salary_col]):
                 stats["income"] = {
                     "mean_salary": float(income_df[salary_col].mean()),
                     "min_salary": float(income_df[salary_col].min()),
@@ -251,10 +246,9 @@ class DataProcessor:
             if old_name in df.columns and new_name not in df.columns:
                 df = df.rename(columns={old_name: new_name})
         
-        # Add occupation labels
-        if "ssyk_code" in df.columns:
-            df["occupation"] = df["ssyk_code"].map(SSYK_LABELS)
-        
+        if "occupation_name" in df.columns:
+            df["occupation"] = df["occupation_name"]
+
         # Standardize gender column
         if "gender" not in df.columns:
             if "gender_code" in df.columns:
@@ -262,8 +256,66 @@ class DataProcessor:
                 df["gender"] = df["gender_code"].map(gender_map)
         
         logger.info(f"Processed {len(df)} dispersion records")
-        logger.info(f"Columns: {list(df.columns)}")
         
+        return df
+
+    def process_income_by_age_data(self, df: pd.DataFrame) -> pd.DataFrame:
+        """Process income data by age."""
+        if df.empty:
+            return df
+        
+        logger.info(f"Processing {len(df)} income by age records")
+        df = df.copy()
+        
+        column_mapping = {
+            "Tid": "year", 
+            "Yrke2012": "ssyk_code", 
+            "Kon": "gender_code", 
+            "Alder": "age_group", 
+            "value": "monthly_salary",
+            "Sektor": "sector_code"
+        }
+        for old, new in column_mapping.items():
+            if old in df.columns:
+                df = df.rename(columns={old: new})
+        
+        if "occupation_name" in df.columns:
+            df["occupation"] = df["occupation_name"]
+
+        # Standardize gender
+        if "gender" not in df.columns and "gender_code" in df.columns:
+            gender_map = {"1": "men", "2": "women", "1+2": "total"}
+            df["gender"] = df["gender_code"].map(gender_map)
+            
+        return df
+
+    def process_income_by_education_data(self, df: pd.DataFrame) -> pd.DataFrame:
+        """Process income data by education."""
+        if df.empty:
+            return df
+            
+        logger.info(f"Processing {len(df)} income by education records")
+        df = df.copy()
+        
+        column_mapping = {
+            "Tid": "year", 
+            "Yrke2012": "ssyk_code", 
+            "Kon": "gender_code", 
+            "Utbildningsniva": "education_level", 
+            "value": "monthly_salary",
+            "Sektor": "sector_code"
+        }
+        for old, new in column_mapping.items():
+            if old in df.columns:
+                df = df.rename(columns={old: new})
+                
+        if "occupation_name" in df.columns:
+            df["occupation"] = df["occupation_name"]
+
+        if "gender" not in df.columns and "gender_code" in df.columns:
+            gender_map = {"1": "men", "2": "women", "1+2": "total"}
+            df["gender"] = df["gender_code"].map(gender_map)
+            
         return df
     
     def save_processed_data(
@@ -273,15 +325,19 @@ class DataProcessor:
         jobs_agg_df: pd.DataFrame,
         dispersion_df: Optional[pd.DataFrame] = None,
         skills_df: Optional[pd.DataFrame] = None,
+        age_df: Optional[pd.DataFrame] = None,
+        education_df: Optional[pd.DataFrame] = None,
     ) -> Dict[str, Path]:
         """Save all processed data to parquet files.
         
         Args:
-            income_df: Processed income data
+            income_df: Processed income data (regional)
             jobs_df: Processed job ads (detail)
             jobs_agg_df: Aggregated job ads
             dispersion_df: Optional salary dispersion data
             skills_df: Optional skills data
+            age_df: Optional income by age data
+            education_df: Optional income by education data
             
         Returns:
             Dictionary with paths to saved files
@@ -294,6 +350,8 @@ class DataProcessor:
             "jobs_aggregated": jobs_agg_df,
             "income_dispersion": dispersion_df,
             "skills": skills_df,
+            "income_by_age": age_df,
+            "income_by_education": education_df,
         }
         
         for name, df in files.items():

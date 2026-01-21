@@ -13,7 +13,6 @@ from pathlib import Path
 import time
 import logging
 import hashlib
-import os
 
 logger = logging.getLogger(__name__)
 
@@ -108,7 +107,7 @@ class SCBIngestion:
     def _fetch_metadata(self, endpoint: str) -> Dict:
         self._rate_limit()
         url = f"{self.BASE_URL}{endpoint}"
-        logger.debug(f"Fetching metadata from {url}")
+        logger.info(f"Fetching metadata from {url}")
         try:
             response = self.client.get(url)
             response.raise_for_status()
@@ -117,30 +116,6 @@ class SCBIngestion:
             logger.error(f"Error fetching metadata from {url}: {e}")
             raise
         
-    def _validate_years(self, endpoint: str, requested_years: List[str]) -> List[str]:
-        """Validate requested years against available years in metadata."""
-        try:
-            meta = self._fetch_metadata(endpoint)
-            available_years = []
-            for var in meta.get("variables", []):
-                if var["code"] == "Tid":
-                    available_years = var["values"]
-                    break
-            
-            if not available_years:
-                return requested_years
-
-            valid_years = [y for y in requested_years if y in available_years]
-            if not valid_years:
-                logger.warning(f"No requested years {requested_years} found in {endpoint}. Available: {available_years}")
-            elif len(valid_years) < len(requested_years):
-                logger.debug(f"Filtered years for {endpoint}: requested {len(requested_years)}, valid {len(valid_years)}")
-            
-            return valid_years
-        except Exception as e:
-            logger.warning(f"Failed to validate years for {endpoint}: {e}")
-            return requested_years
-
     def _ensure_ssyk_mapping(self):
         if not self.ssyk_mapping:
             try:
@@ -178,13 +153,6 @@ class SCBIngestion:
             region_codes = ALL_REGION_CODES
         if years is None:
             years = [str(y) for y in range(2014, 2026)]
-        
-        # Validate years against metadata
-        valid_years = self._validate_years(self.INCOME_ENDPOINT, years)
-        if not valid_years:
-            logger.warning("No valid years for income data")
-            return pd.DataFrame()
-
         if genders is None:
             genders = ["1", "2"]
         if sectors is None:
@@ -193,7 +161,7 @@ class SCBIngestion:
         chunks = self._chunk_list(occupation_codes, self.CHUNK_SIZE)
         all_dfs = []
         
-        logger.info(f"Fetching regional income data for {len(occupation_codes)} occupations in {len(chunks)} chunks. Years: {valid_years}")
+        logger.info(f"Fetching regional income data for {len(occupation_codes)} occupations in {len(chunks)} chunks.")
 
         for i, chunk in enumerate(chunks):
             query = {
@@ -203,7 +171,7 @@ class SCBIngestion:
                     {"code": "Yrke2012", "selection": {"filter": "item", "values": chunk}},
                     {"code": "Kon", "selection": {"filter": "item", "values": genders}},
                     {"code": "ContentsCode", "selection": {"filter": "item", "values": ["000007AS", "000007AP"]}},
-                    {"code": "Tid", "selection": {"filter": "item", "values": valid_years}}
+                    {"code": "Tid", "selection": {"filter": "item", "values": years}}
                 ],
                 "response": {"format": "json-stat2"}
             }
@@ -242,12 +210,6 @@ class SCBIngestion:
             occupation_codes = self.get_all_ssyk_codes()
         if years is None:
             years = [str(y) for y in range(2014, 2026)]
-        
-        valid_years = self._validate_years(self.DISPERSION_ENDPOINT, years)
-        if not valid_years:
-            logger.warning("No valid years for dispersion data")
-            return pd.DataFrame()
-
         if genders is None:
             genders = ["1", "2"]
         if sectors is None:
@@ -256,7 +218,7 @@ class SCBIngestion:
         chunks = self._chunk_list(occupation_codes, self.CHUNK_SIZE)
         all_dfs = []
         
-        logger.info(f"Fetching salary dispersion data for {len(occupation_codes)} occupations in {len(chunks)} chunks. Years: {valid_years}")
+        logger.info(f"Fetching salary dispersion data for {len(occupation_codes)} occupations in {len(chunks)} chunks.")
         
         for i, chunk in enumerate(chunks):
             query = {
@@ -265,7 +227,7 @@ class SCBIngestion:
                     {"code": "Yrke2012", "selection": {"filter": "item", "values": chunk}},
                     {"code": "Kon", "selection": {"filter": "item", "values": genders}},
                     {"code": "ContentsCode", "selection": {"filter": "item", "values": list(DISPERSION_CONTENTS_CODES.keys())}},
-                    {"code": "Tid", "selection": {"filter": "item", "values": valid_years}}
+                    {"code": "Tid", "selection": {"filter": "item", "values": years}}
                 ],
                 "response": {"format": "json-stat2"}
             }
@@ -309,31 +271,24 @@ class SCBIngestion:
         if sectors is None:
             sectors = ["0"]
 
-        age_codes = []
-        valid_years = years
         try:
             meta = self._fetch_metadata(self.AGE_ENDPOINT)
+            age_codes = []
             for var in meta.get("variables", []):
                 if var["code"] == "Alder":
                     age_codes = var["values"]
-                elif var["code"] == "Tid":
-                    available_years = var["values"]
-                    valid_years = [y for y in years if y in available_years]
+                    break
         except Exception as e:
             logger.warning(f"Could not fetch Age metadata: {e}")
             age_codes = ["Tot"] 
         
         if not age_codes:
             return pd.DataFrame()
-        
-        if not valid_years:
-            logger.warning("No valid years for age data")
-            return pd.DataFrame()
 
         chunks = self._chunk_list(occupation_codes, self.CHUNK_SIZE)
         all_dfs = []
         
-        logger.info(f"Fetching income by age for {len(occupation_codes)} occupations in {len(chunks)} chunks. Years: {valid_years}")
+        logger.info(f"Fetching income by age for {len(occupation_codes)} occupations in {len(chunks)} chunks.")
 
         for i, chunk in enumerate(chunks):
             query = {
@@ -343,7 +298,7 @@ class SCBIngestion:
                     {"code": "Kon", "selection": {"filter": "item", "values": genders}},
                     {"code": "Alder", "selection": {"filter": "item", "values": age_codes}},
                     {"code": "ContentsCode", "selection": {"filter": "item", "values": ["000007AS"]}},
-                    {"code": "Tid", "selection": {"filter": "item", "values": valid_years}}
+                    {"code": "Tid", "selection": {"filter": "item", "values": years}}
                 ],
                 "response": {"format": "json-stat2"}
             }
@@ -385,31 +340,24 @@ class SCBIngestion:
         if sectors is None:
             sectors = ["0"]
 
-        edu_codes = []
-        valid_years = years
         try:
             meta = self._fetch_metadata(self.EDUCATION_ENDPOINT)
+            edu_codes = []
             for var in meta.get("variables", []):
                 if var["code"] == "Utbildningsniva":
                     edu_codes = var["values"]
-                elif var["code"] == "Tid":
-                    available_years = var["values"]
-                    valid_years = [y for y in years if y in available_years]
+                    break
         except Exception as e:
             logger.warning(f"Could not fetch Education metadata: {e}")
             return pd.DataFrame()
         
         if not edu_codes:
             return pd.DataFrame()
-        
-        if not valid_years:
-            logger.warning("No valid years for education data")
-            return pd.DataFrame()
 
         chunks = self._chunk_list(occupation_codes, self.CHUNK_SIZE)
         all_dfs = []
         
-        logger.info(f"Fetching income by education for {len(occupation_codes)} occupations in {len(chunks)} chunks. Years: {valid_years}")
+        logger.info(f"Fetching income by education for {len(occupation_codes)} occupations in {len(chunks)} chunks.")
 
         for i, chunk in enumerate(chunks):
             query = {
@@ -419,7 +367,7 @@ class SCBIngestion:
                     {"code": "Kon", "selection": {"filter": "item", "values": genders}},
                     {"code": "Utbildningsniva", "selection": {"filter": "item", "values": edu_codes}},
                     {"code": "ContentsCode", "selection": {"filter": "item", "values": ["000007AS"]}},
-                    {"code": "Tid", "selection": {"filter": "item", "values": valid_years}}
+                    {"code": "Tid", "selection": {"filter": "item", "values": years}}
                 ],
                 "response": {"format": "json-stat2"}
             }
@@ -641,4 +589,3 @@ class SCBIngestion:
     
     def __exit__(self, *args):
         self.close()
-

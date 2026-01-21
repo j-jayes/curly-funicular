@@ -1,13 +1,18 @@
 # Data Pipeline Configuration
 
 # GCP settings
-gcp_project_id: "swedish-labor-market"
+gcp_project_id: "mcp-occupation-classifier"
 gcs_bucket_name: "labor-market-data"
 
 # SCB settings
 scb:
   base_url: "https://api.scb.se/OV0104/v1/doris/en/ssd"
-  occupation_table: "AM/AM0110/AM0110A/LoneSpridSektorA"
+  years: ["2014", "2015", "2016", "2017", "2018", "2019", "2020", "2021", "2022", "2023", "2024"]
+  tables:
+    regional: "AM/AM0110/AM0110A/LonYrkeRegion4AN"
+    dispersion: "AM/AM0110/AM0110A/LoneSpridSektYrk4AN"
+    age: "AM/AM0110/AM0110A/LonYrkeAlder4AN"
+    education: "AM/AM0110/AM0110A/LonYrkeUtb4AN"
 
 # Arbetsförmedlingen settings
 arbetsformedlingen:

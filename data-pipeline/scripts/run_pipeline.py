@@ -2,17 +2,19 @@
 
 Runs the complete data pipeline:
 1. Fetch income data from SCB (Statistics Sweden)
-2. Fetch historical job ads from Arbetsförmedlingen
-3. Process and transform data
-4. Save to local Parquet files (and optionally GCS)
+2. Fetch taxonomy data
+3. Fetch historical job ads from Arbetsförmedlingen
+4. Process and transform data
+5. Save to local Parquet files (and optionally GCS)
 
 Usage:
-    python scripts/run_pipeline.py [--local-only] [--years 2022 2023 2024]
+    python scripts/run_pipeline.py --steps scb taxonomy jobs process
 """
 
 import logging
 import sys
 import argparse
+import pandas as pd
 from datetime import datetime
 from pathlib import Path
 
@@ -21,6 +23,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 
 from data_pipeline.ingestion.scb_ingestion import SCBIngestion, DEFAULT_SSYK_CODES
 from data_pipeline.ingestion.arbetsformedlingen_ingestion import ArbetsformedlingenIngestion
+from data_pipeline.ingestion.taxonomy_ingestion import TaxonomyIngestion
 from data_pipeline.processing.data_processor import DataProcessor
 from data_pipeline.utils.config import get_settings
 
@@ -37,6 +40,7 @@ logger = logging.getLogger(__name__)
 
 
 def run_pipeline(
+    steps: list,
     local_only: bool = True,
     years: list = None,
     ssyk_codes: list = None,
@@ -45,172 +49,253 @@ def run_pipeline(
     """Run the complete data pipeline.
     
     Args:
+        steps: List of steps to run ['scb', 'taxonomy', 'jobs', 'process']
         local_only: If True, save only locally. If False, also upload to GCS.
-        years: List of years to fetch (default: 2022-2024)
-        ssyk_codes: List of SSYK codes (default: 2511, 2512)
+        years: List of years to fetch (default: 2014-2025)
+        ssyk_codes: List of SSYK codes (default: All)
         max_job_ads: Maximum job ads per occupation to fetch
     """
     logger.info("="*60)
     logger.info("Starting Swedish Labor Market Data Pipeline")
+    logger.info(f"Steps to run: {steps}")
     logger.info("="*60)
     
     # Load settings
     settings = get_settings()
+    processor = DataProcessor()
     
-    # Set defaults
-    if years is None:
-        years = ["2022", "2023", "2024"]
-    if ssyk_codes is None:
-        ssyk_codes = DEFAULT_SSYK_CODES
-    
-    logger.info(f"Configuration:")
-    logger.info(f"  SSYK codes: {ssyk_codes}")
-    logger.info(f"  Years: {years}")
-    logger.info(f"  Max job ads per occupation: {max_job_ads}")
-    logger.info(f"  Local only: {local_only}")
+    # Initialize data containers
+    income_raw = None
+    dispersion_raw = None
+    age_raw = None
+    education_raw = None
+    jobs_raw = None
+    skills_processed = None
+    taxonomy_path = None
     
     try:
-        # Initialize processor
-        processor = DataProcessor()
-        dispersion_raw = None  # Initialize outside with block
-        
         # ===== STEP 1: Fetch income data from SCB =====
-        logger.info("\n" + "="*40)
-        logger.info("STEP 1: Fetching income data from SCB")
-        logger.info("="*40)
-        
-        with SCBIngestion(api_key=settings.scb_api_key) as scb_client:
-            income_raw = scb_client.fetch_income_data(
-                occupation_codes=ssyk_codes,
-                years=years,
-            )
+        if 'scb' in steps:
+            logger.info("\n" + "="*40)
+            logger.info("STEP 1: Fetching income data from SCB")
+            logger.info("="*40)
             
-            # Save raw data
-            scb_client.save_to_parquet(
-                income_raw,
-                processor.raw_dir / "scb_income_raw.parquet"
-            )
-            
-            # Fetch salary dispersion data (percentiles)
-            logger.info("Fetching salary dispersion data (percentiles)...")
-            try:
-                dispersion_raw = scb_client.fetch_salary_dispersion(
+            with SCBIngestion(api_key=settings.scb_api_key) as scb_client:
+                # 1. Regional Income
+                logger.info("Fetching regional income data...")
+                income_raw = scb_client.fetch_income_data(
                     occupation_codes=ssyk_codes,
                     years=years,
                 )
                 scb_client.save_to_parquet(
-                    dispersion_raw,
-                    processor.raw_dir / "scb_dispersion_raw.parquet"
+                    income_raw,
+                    processor.raw_dir / "scb_income_raw.parquet"
                 )
-                logger.info(f"Fetched {len(dispersion_raw)} dispersion records from SCB")
-            except Exception as e:
-                logger.warning(f"Could not fetch dispersion data: {e}")
-                dispersion_raw = None
-        
-        logger.info(f"Fetched {len(income_raw)} income records from SCB")
-        
-        # ===== STEP 2: Fetch job ads from Arbetsförmedlingen =====
-        logger.info("\n" + "="*40)
-        logger.info("STEP 2: Fetching job ads from Arbetsförmedlingen")
-        logger.info("="*40)
-        
-        skills_processed = None
-        
-        with ArbetsformedlingenIngestion(enable_enrichments=True) as af_client:
-            jobs_raw = af_client.fetch_historical_ads(
-                ssyk_codes=ssyk_codes,
-                max_results_per_occupation=max_job_ads,
-            )
-            
-            # Save raw data
-            af_client.save_to_parquet(
-                jobs_raw,
-                processor.raw_dir / "af_jobs_raw.parquet"
-            )
-            
-            # Enrich with skills
-            if not jobs_raw.empty:
-                logger.info("Enriching job ads with skills (this may take a while)...")
-                skills_raw = af_client.enrich_ads_with_skills(jobs_raw)
                 
-                if not skills_raw.empty:
-                    skills_processed = af_client.aggregate_skills(skills_raw, jobs_raw)
-                    logger.info(f"Aggregated {len(skills_processed)} skill records")
-                    
-                    # Save raw skills
-                    af_client.save_to_parquet(
-                        skills_raw,
-                        processor.raw_dir / "af_skills_raw.parquet"
+                # 2. Salary Dispersion
+                logger.info("Fetching salary dispersion data (percentiles)...")
+                try:
+                    dispersion_raw = scb_client.fetch_salary_dispersion(
+                        occupation_codes=ssyk_codes,
+                        years=years,
                     )
+                    scb_client.save_to_parquet(
+                        dispersion_raw,
+                        processor.raw_dir / "scb_dispersion_raw.parquet"
+                    )
+                    logger.info(f"Fetched {len(dispersion_raw)} dispersion records")
+                except Exception as e:
+                    logger.warning(f"Could not fetch dispersion data: {e}")
+                    
+                # 3. Income by Age
+                logger.info("Fetching income by age data...")
+                try:
+                    age_raw = scb_client.fetch_income_by_age(
+                        occupation_codes=ssyk_codes,
+                        years=years,
+                    )
+                    scb_client.save_to_parquet(
+                        age_raw,
+                        processor.raw_dir / "scb_age_raw.parquet"
+                    )
+                    logger.info(f"Fetched {len(age_raw)} age records")
+                except Exception as e:
+                    logger.warning(f"Could not fetch age data: {e}")
 
-        logger.info(f"Fetched {len(jobs_raw)} job ads from Arbetsförmedlingen")
+                # 4. Income by Education
+                logger.info("Fetching income by education data...")
+                try:
+                    education_raw = scb_client.fetch_income_by_education(
+                        occupation_codes=ssyk_codes,
+                        years=years,
+                    )
+                    scb_client.save_to_parquet(
+                        education_raw,
+                        processor.raw_dir / "scb_education_raw.parquet"
+                    )
+                    logger.info(f"Fetched {len(education_raw)} education records")
+                except Exception as e:
+                    logger.warning(f"Could not fetch education data: {e}")
+            
+            logger.info(f"Fetched {len(income_raw)} income records from SCB")
         
-        # ===== STEP 3: Process data =====
-        logger.info("\n" + "="*40)
-        logger.info("STEP 3: Processing data")
-        logger.info("="*40)
-        
-        # Process income data
-        income_processed = processor.process_income_data(income_raw)
-        logger.info(f"Processed income data: {len(income_processed)} records")
-        
-        # Process job ads
-        jobs_processed = processor.process_jobs_data(jobs_raw)
-        logger.info(f"Processed jobs data: {len(jobs_processed)} records")
-        
-        # Aggregate jobs by region and year
-        jobs_aggregated = processor.aggregate_jobs_by_region(jobs_processed, period="year")
-        logger.info(f"Aggregated jobs data: {len(jobs_aggregated)} records")
-        
-        # Process dispersion data if available
-        dispersion_processed = None
-        if dispersion_raw is not None:
-            dispersion_processed = processor.process_dispersion_data(dispersion_raw)
-            logger.info(f"Processed dispersion data: {len(dispersion_processed)} records")
-        
-        # ===== STEP 4: Save processed data =====
-        logger.info("\n" + "="*40)
-        logger.info("STEP 4: Saving processed data")
-        logger.info("="*40)
-        
-        paths = processor.save_processed_data(
-            income_df=income_processed,
-            jobs_df=jobs_processed,
-            jobs_agg_df=jobs_aggregated,
-            dispersion_df=dispersion_processed,
-            skills_df=skills_processed,
-        )
-        
-        for name, path in paths.items():
-            logger.info(f"  Saved {name}: {path}")
-        
-        # Create summary stats
-        stats = processor.create_summary_stats(income_processed, jobs_processed)
-        logger.info(f"\nSummary Statistics:")
-        logger.info(f"  Income records: {stats['income'].get('record_count', 0)}")
-        logger.info(f"  Job ads: {stats['jobs'].get('total_ads', 0)}")
-        logger.info(f"  Total vacancies: {stats['jobs'].get('total_vacancies', 0)}")
-        
-        # ===== STEP 5: Upload to GCS (optional) =====
-        if not local_only and settings.gcs_bucket_name:
+        # ===== STEP 2: Fetch Taxonomy Data =====
+        if 'taxonomy' in steps:
             logger.info("\n" + "="*40)
-            logger.info("STEP 5: Uploading to GCS")
+            logger.info("STEP 2: Fetching Taxonomy Data")
             logger.info("="*40)
             
-            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            try:
+                taxonomy_client = TaxonomyIngestion(raw_dir=processor.raw_dir)
+                taxonomy_client.fetch_files()
+                taxonomy_processed = taxonomy_client.process_taxonomy()
+                
+                if not taxonomy_processed.empty:
+                    taxonomy_path = taxonomy_client.save_processed(
+                        taxonomy_processed, 
+                        processor.processed_dir
+                    )
+            except Exception as e:
+                logger.warning(f"Taxonomy step failed: {e}")
+
+        # ===== STEP 3: Fetch job ads from Arbetsförmedlingen =====
+        if 'jobs' in steps:
+            logger.info("\n" + "="*40)
+            logger.info("STEP 3: Fetching job ads from Arbetsförmedlingen")
+            logger.info("="*40)
             
-            with SCBIngestion() as scb_client:
-                for name, path in paths.items():
-                    df = pd.read_parquet(path)
-                    blob_name = f"processed/{name}_{timestamp}.parquet"
-                    scb_client.save_to_gcs(df, settings.gcs_bucket_name, blob_name)
-                    logger.info(f"  Uploaded {name} to gs://{settings.gcs_bucket_name}/{blob_name}")
+            with ArbetsformedlingenIngestion(enable_enrichments=True) as af_client:
+                af_ssyk_codes = ssyk_codes if ssyk_codes else DEFAULT_SSYK_CODES
+                
+                jobs_raw = af_client.fetch_historical_ads(
+                    ssyk_codes=af_ssyk_codes,
+                    max_results_per_occupation=max_job_ads,
+                )
+                
+                # Save raw data
+                af_client.save_to_parquet(
+                    jobs_raw,
+                    processor.raw_dir / "af_jobs_raw.parquet"
+                )
+                
+                # Enrich with skills
+                if not jobs_raw.empty:
+                    logger.info("Enriching job ads with skills (this may take a while)...")
+                    skills_raw = af_client.enrich_ads_with_skills(jobs_raw)
+                    
+                    if not skills_raw.empty:
+                        skills_processed = af_client.aggregate_skills(skills_raw, jobs_raw)
+                        logger.info(f"Aggregated {len(skills_processed)} skill records")
+                        
+                        af_client.save_to_parquet(
+                            skills_raw,
+                            processor.raw_dir / "af_skills_raw.parquet"
+                        )
+            logger.info(f"Fetched {len(jobs_raw)} job ads")
+        
+        # ===== STEP 4: Process data =====
+        if 'process' in steps:
+            logger.info("\n" + "="*40)
+            logger.info("STEP 4: Processing data")
+            logger.info("="*40)
+            
+            # Load raw data if missing (skipped steps)
+            if income_raw is None:
+                p = processor.raw_dir / "scb_income_raw.parquet"
+                if p.exists(): income_raw = pd.read_parquet(p)
+            
+            if jobs_raw is None:
+                p = processor.raw_dir / "af_jobs_raw.parquet"
+                if p.exists(): jobs_raw = pd.read_parquet(p)
+                
+            if dispersion_raw is None:
+                p = processor.raw_dir / "scb_dispersion_raw.parquet"
+                if p.exists(): dispersion_raw = pd.read_parquet(p)
+            
+            # Process income data
+            income_processed = pd.DataFrame()
+            if income_raw is not None:
+                income_processed = processor.process_income_data(income_raw)
+                logger.info(f"Processed income data: {len(income_processed)} records")
+            
+            # Process job ads
+            jobs_processed = pd.DataFrame()
+            jobs_aggregated = pd.DataFrame()
+            if jobs_raw is not None:
+                jobs_processed = processor.process_jobs_data(jobs_raw)
+                logger.info(f"Processed jobs data: {len(jobs_processed)} records")
+                jobs_aggregated = processor.aggregate_jobs_by_region(jobs_processed, period="year")
+                logger.info(f"Aggregated jobs data: {len(jobs_aggregated)} records")
+            
+            # Process dispersion
+            dispersion_processed = None
+            if dispersion_raw is not None:
+                dispersion_processed = processor.process_dispersion_data(dispersion_raw)
+            
+            # Process age/education (Attempt load if None)
+            if age_raw is None:
+                p = processor.raw_dir / "scb_age_raw.parquet"
+                if p.exists(): age_raw = pd.read_parquet(p)
+            age_processed = processor.process_income_by_age_data(age_raw) if age_raw is not None else None
+
+            if education_raw is None:
+                p = processor.raw_dir / "scb_education_raw.parquet"
+                if p.exists(): education_raw = pd.read_parquet(p)
+            education_processed = processor.process_income_by_education_data(education_raw) if education_raw is not None else None
+            
+            # Load skills if available and not in memory
+            if skills_processed is None:
+                p = processor.processed_dir / "skills.parquet" # Or logic to process from raw? 
+                # Actually pipeline saves skills in step 2 to raw? No, to processed dir in Step 4.
+                # In Step 2 it is aggregated.
+                # If we skip Step 2, we don't have new skills.
+                # But Step 4 saves all processed data.
+                pass
+
+            # Save processed data
+            paths = processor.save_processed_data(
+                income_df=income_processed,
+                jobs_df=jobs_processed,
+                jobs_agg_df=jobs_aggregated,
+                dispersion_df=dispersion_processed,
+                skills_df=skills_processed,
+                age_df=age_processed,
+                education_df=education_processed,
+            )
+            
+            if taxonomy_path:
+                paths["taxonomy"] = taxonomy_path
+            elif (processor.processed_dir / "taxonomy_enriched.parquet").exists():
+                 paths["taxonomy"] = processor.processed_dir / "taxonomy_enriched.parquet"
+
+            
+            for name, path in paths.items():
+                logger.info(f"  Saved {name}: {path}")
+                
+            # Create summary stats
+            stats = processor.create_summary_stats(income_processed, jobs_processed)
+            logger.info(f"\nSummary Statistics:")
+            logger.info(f"  Income records: {stats['income'].get('record_count', 0)}")
+            logger.info(f"  Job ads: {stats['jobs'].get('total_ads', 0)}")
+        
+        # ===== STEP 5: Upload =====
+            if not local_only and settings.gcs_bucket_name:
+                logger.info("\n" + "="*40)
+                logger.info("STEP 5: Uploading to GCS")
+                logger.info("="*40)
+                
+                timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                
+                with SCBIngestion() as scb_client:
+                    for name, path in paths.items():
+                        df = pd.read_parquet(path)
+                        blob_name = f"processed/{name}_{timestamp}.parquet"
+                        scb_client.save_to_gcs(df, settings.gcs_bucket_name, blob_name)
+                        logger.info(f"  Uploaded {name} to gs://{settings.gcs_bucket_name}/{blob_name}")
         
         logger.info("\n" + "="*60)
         logger.info("Pipeline completed successfully!")
         logger.info("="*60)
-        
-        return paths
         
     except Exception as e:
         logger.error(f"\nPipeline failed: {e}", exc_info=True)
@@ -221,6 +306,13 @@ def main():
     """Main entry point with argument parsing."""
     parser = argparse.ArgumentParser(
         description="Swedish Labor Market Data Pipeline"
+    )
+    parser.add_argument(
+        "--steps",
+        nargs="+",
+        choices=["scb", "taxonomy", "jobs", "process", "all"],
+        default=["all"],
+        help="Pipeline steps to run. 'all' runs everything."
     )
     parser.add_argument(
         "--local-only",
@@ -236,13 +328,13 @@ def main():
     parser.add_argument(
         "--years",
         nargs="+",
-        default=["2023", "2024"],  # Only these years available in SCB table
+        default=None,  # Fetch all available years (start 2014)
         help="Years to fetch data for"
     )
     parser.add_argument(
         "--ssyk-codes",
         nargs="+",
-        default=DEFAULT_SSYK_CODES,
+        default=None,  # Fetch all SSYK codes by default
         help="SSYK occupation codes to fetch"
     )
     parser.add_argument(
@@ -254,7 +346,10 @@ def main():
     
     args = parser.parse_args()
     
+    steps = ["scb", "taxonomy", "jobs", "process"] if "all" in args.steps else args.steps
+    
     run_pipeline(
+        steps=steps,
         local_only=not args.upload_gcs,
         years=args.years,
         ssyk_codes=args.ssyk_codes,
