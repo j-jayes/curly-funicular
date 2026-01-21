@@ -21,7 +21,7 @@ async def get_income_data(
     region: Optional[str] = Query(None, description="Filter by region name (e.g., Stockholm)"),
     gender: Optional[str] = Query(None, description="Filter by gender (men/women)"),
     year: Optional[int] = Query(None, description="Filter by year (2023, 2024)"),
-    limit: int = Query(100, ge=1, le=1000, description="Maximum number of results")
+    limit: int = Query(2000, ge=1, le=5000, description="Maximum number of results")
 ):
     """Get income data with optional filters.
     

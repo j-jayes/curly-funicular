@@ -2,7 +2,7 @@
 
 from fastapi import APIRouter, Query, HTTPException
 from typing import List, Optional
-from api.models.schemas import JobAd, JobsAggregated, TopEmployer
+from api.models.schemas import JobAd, JobsAggregated, TopEmployer, Skill
 from api.utils.database import get_data_access
 
 router = APIRouter()
@@ -75,6 +75,29 @@ async def get_top_employers(
     records = data_access.get_top_employers(
         occupations=occupations,
         region=region,
+        limit=limit,
+    )
+    
+    return records
+
+
+@router.get("/jobs/skills", response_model=List[Skill])
+async def get_skills(
+    occupation: Optional[str] = Query(None, description="Filter by occupation code(s), comma-separated"),
+    skill_type: Optional[str] = Query(None, description="Filter by skill type: competency, trait, or occupation"),
+    limit: int = Query(20, ge=1, le=100, description="Maximum number of skills"),
+):
+    """Get top skills extracted from job advertisements.
+    
+    Returns skills and competencies extracted from job ad descriptions
+    using AI-based text enrichment.
+    Data sourced from JobTech JobAd Enrichments API.
+    """
+    data_access = get_data_access()
+    occupations = parse_occupations(occupation)
+    records = data_access.get_top_skills(
+        occupations=occupations,
+        skill_type=skill_type,
         limit=limit,
     )
     

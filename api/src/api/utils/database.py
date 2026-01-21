@@ -64,6 +64,7 @@ class DataAccess:
         self._jobs_df: Optional[pd.DataFrame] = None
         self._jobs_agg_df: Optional[pd.DataFrame] = None
         self._dispersion_df: Optional[pd.DataFrame] = None
+        self._skills_df: Optional[pd.DataFrame] = None
         
     def _load_income_data(self) -> pd.DataFrame:
         """Load income data from Parquet file."""
@@ -112,6 +113,18 @@ class DataAccess:
                 logger.warning(f"Dispersion file not found at {dispersion_path}")
                 self._dispersion_df = pd.DataFrame()
         return self._dispersion_df
+
+    def _load_skills_data(self) -> pd.DataFrame:
+        """Load skills data extracted from job ads."""
+        if self._skills_df is None:
+            skills_path = self.data_path / "skills.parquet"
+            if skills_path.exists():
+                self._skills_df = pd.read_parquet(skills_path)
+                logger.info(f"Loaded {len(self._skills_df)} skills records")
+            else:
+                logger.warning(f"Skills file not found at {skills_path}")
+                self._skills_df = pd.DataFrame()
+        return self._skills_df
 
     def get_income_data(
         self,
@@ -563,6 +576,73 @@ class DataAccess:
         except Exception as e:
             logger.error(f"Error pivoting dispersion data: {e}")
             return []
+    
+    def get_top_skills(
+        self,
+        occupations: Optional[List[str]] = None,
+        skill_type: Optional[str] = None,
+        limit: int = 20
+    ) -> List[Dict[str, Any]]:
+        """Get top skills extracted from job advertisements.
+        
+        Args:
+            occupations: List of occupation codes to filter by
+            skill_type: Filter by type: "competency", "trait", or "occupation"
+            limit: Maximum number of skills to return
+            
+        Returns:
+            List of skills with occurrence counts
+        """
+        skills_df = self._load_skills_data()
+        
+        if skills_df.empty:
+            return []
+        
+        # Apply filters
+        mask = pd.Series([True] * len(skills_df))
+        
+        if occupations and len(occupations) > 0:
+            if "ssyk_code" in skills_df.columns:
+                occ_mask = pd.Series([False] * len(skills_df))
+                for occ in occupations:
+                    occ_mask |= skills_df["ssyk_code"].str.contains(occ, na=False)
+                mask &= occ_mask
+        
+        if skill_type:
+            if "skill_type" in skills_df.columns:
+                mask &= skills_df["skill_type"] == skill_type
+        
+        filtered = skills_df[mask]
+        
+        if filtered.empty:
+            return []
+        
+        # Aggregate by skill
+        if "skill" in filtered.columns:
+            skill_counts = filtered.groupby(["skill", "skill_type"]).agg({
+                "occurrence_count": "sum" if "occurrence_count" in filtered.columns else "size",
+                "avg_probability": "mean" if "avg_probability" in filtered.columns else lambda x: 0.8
+            }).reset_index()
+            
+            if "occurrence_count" not in skill_counts.columns:
+                skill_counts["occurrence_count"] = filtered.groupby(["skill", "skill_type"]).size().values
+            if "avg_probability" not in skill_counts.columns:
+                skill_counts["avg_probability"] = 0.8
+            
+            skill_counts = skill_counts.sort_values("occurrence_count", ascending=False).head(limit)
+            
+            records = []
+            for _, row in skill_counts.iterrows():
+                records.append({
+                    "skill": row["skill"],
+                    "skill_type": row["skill_type"],
+                    "occurrence_count": int(row["occurrence_count"]),
+                    "avg_probability": float(row["avg_probability"]),
+                })
+            
+            return records
+        
+        return []
 
 
 # Singleton instance

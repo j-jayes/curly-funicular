@@ -21,7 +21,9 @@ const formatOccupations = (occupations) => {
 
 export const fetchIncomeData = async (filters = {}) => {
   try {
-    const params = {};
+    const params = {
+      limit: 2000  // Ensure we get all records across all regions (1800 salary records total)
+    };
     const occupation = formatOccupations(filters.occupations || filters.occupation);
     if (occupation) params.occupation = occupation;
     if (filters.region) params.region = filters.region;
@@ -79,6 +81,22 @@ export const fetchTopEmployers = async (filters = {}) => {
     return response.data;
   } catch (error) {
     console.error('Error fetching top employers:', error);
+    return [];
+  }
+};
+
+export const fetchSkills = async (filters = {}) => {
+  try {
+    const params = {};
+    const occupation = formatOccupations(filters.occupations || filters.occupation);
+    if (occupation) params.occupation = occupation;
+    if (filters.skillType) params.skill_type = filters.skillType;
+    params.limit = 25;
+
+    const response = await api.get('/jobs/skills', { params });
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching skills:', error);
     return [];
   }
 };

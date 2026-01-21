@@ -10,7 +10,8 @@ import IncomeChart from './components/Charts/IncomeChart';
 import GenderScatterPlot from './components/Charts/GenderScatterPlot';
 import JobsChart from './components/Charts/JobsChart';
 import TopEmployersChart from './components/Charts/TopEmployersChart';
-import { fetchIncomeData, fetchIncomeDispersion, fetchJobAds, fetchTopEmployers, fetchOccupations, fetchRegions } from './services/api';
+import SkillsChart from './components/Charts/SkillsChart';
+import { fetchIncomeData, fetchIncomeDispersion, fetchJobAds, fetchTopEmployers, fetchSkills, fetchOccupations, fetchRegions } from './services/api';
 import './App.css';
 
 // Modern Apple-inspired theme with Dark2 palette accents
@@ -57,6 +58,7 @@ function App() {
   const [dispersionData, setDispersionData] = useState([]);
   const [jobsData, setJobsData] = useState([]);
   const [topEmployers, setTopEmployers] = useState([]);
+  const [skills, setSkills] = useState([]);
   const [occupations, setOccupations] = useState([]);
   const [regions, setRegions] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -85,16 +87,18 @@ function App() {
   const loadFilteredData = async () => {
     setLoading(true);
     try {
-      const [income, dispersion, jobs, employers] = await Promise.all([
+      const [income, dispersion, jobs, employers, skillsData] = await Promise.all([
         fetchIncomeData(filters),
         fetchIncomeDispersion(filters),
         fetchJobAds(filters),
-        fetchTopEmployers(filters)
+        fetchTopEmployers(filters),
+        fetchSkills(filters)
       ]);
       setIncomeData(income);
       setDispersionData(dispersion);
       setJobsData(jobs);
       setTopEmployers(employers);
+      setSkills(skillsData);
     } catch (error) {
       console.error('Error loading filtered data:', error);
     } finally {
@@ -163,25 +167,30 @@ function App() {
               />
             </Grid>
 
-            {/* Map - Taller and narrower for Sweden's shape */}
-            <Grid item xs={12} md={4}>
-              <Paper sx={{ p: 3, height: '580px', bgcolor: '#fafffe' }} className="transition-shadow hover:shadow-lg">
+            {/* Map - Full height for Sweden's shape */}
+            <Grid item xs={12} md={5}>
+              <Paper sx={{ p: 3, height: '720px', bgcolor: '#fafffe' }} className="transition-shadow hover:shadow-lg">
                 <SwedenMap data={incomeData} selectedRegion={filters.region} />
               </Paper>
             </Grid>
 
-            {/* Gender Salary Scatter Plot */}
-            <Grid item xs={12} md={8}>
-              <Paper sx={{ p: 3, height: '580px', bgcolor: '#fafffe' }} className="transition-shadow hover:shadow-lg">
-                <GenderScatterPlot data={dispersionData} loading={loading} />
-              </Paper>
-            </Grid>
+            {/* Right column: Scatter Plot + Bar Chart stacked */}
+            <Grid item xs={12} md={7}>
+              <Grid container spacing={3}>
+                {/* Gender Salary Scatter Plot */}
+                <Grid item xs={12}>
+                  <Paper sx={{ p: 3, height: '400px', bgcolor: '#fafffe' }} className="transition-shadow hover:shadow-lg">
+                    <GenderScatterPlot data={dispersionData} loading={loading} />
+                  </Paper>
+                </Grid>
 
-            {/* Income by Region/Occupation Bar Chart */}
-            <Grid item xs={12}>
-              <Paper sx={{ p: 3, height: '400px', bgcolor: '#fafffe' }} className="transition-shadow hover:shadow-lg">
-                <IncomeChart data={incomeData} loading={loading} />
-              </Paper>
+                {/* Income by Region/Occupation Bar Chart */}
+                <Grid item xs={12}>
+                  <Paper sx={{ p: 3, height: '296px', bgcolor: '#fafffe' }} className="transition-shadow hover:shadow-lg">
+                    <IncomeChart data={incomeData} loading={loading} />
+                  </Paper>
+                </Grid>
+              </Grid>
             </Grid>
 
             {/* Divider between sections */}
@@ -200,14 +209,21 @@ function App() {
             </Grid>
 
             {/* Top Employers */}
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} md={4}>
               <Paper sx={{ p: 3, height: '400px', bgcolor: '#fafaff' }} className="transition-shadow hover:shadow-lg">
                 <TopEmployersChart data={topEmployers} loading={loading} />
               </Paper>
             </Grid>
 
+            {/* Skills */}
+            <Grid item xs={12} md={4}>
+              <Paper sx={{ p: 3, height: '400px', bgcolor: '#fafaff' }} className="transition-shadow hover:shadow-lg">
+                <SkillsChart data={skills} loading={loading} />
+              </Paper>
+            </Grid>
+
             {/* Jobs by Region */}
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} md={4}>
               <Paper sx={{ p: 3, height: '400px', bgcolor: '#fafaff' }} className="transition-shadow hover:shadow-lg">
                 <JobsChart data={jobsData} loading={loading} />
               </Paper>

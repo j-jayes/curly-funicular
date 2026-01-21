@@ -108,3 +108,12 @@ class TopEmployer(BaseModel):
     ad_count: int = Field(..., description="Number of job ads posted")
     total_vacancies: int = Field(..., description="Total number of vacancies")
     primary_region: Optional[str] = Field(None, description="Most common region for job ads")
+
+
+class Skill(BaseModel):
+    """Skill extracted from job advertisements."""
+    
+    skill: str = Field(..., description="Skill or competency name")
+    skill_type: str = Field(..., description="Type: competency, trait, or occupation")
+    occurrence_count: int = Field(..., description="Number of job ads mentioning this skill")
+    avg_probability: float = Field(..., description="Average confidence of extraction")

@@ -50,15 +50,18 @@ const GenderScatterPlot = ({ data, loading }) => {
   data.forEach(item => {
     const occupation = item.occupation || 'Unknown';
     const occupationCode = item.occupation_code || '';
+    const year = item.year;
     
     if (!occupationMap[occupation]) {
       occupationMap[occupation] = { 
         occupation,
         occupationCode,
+        year,
         menMedian: null, 
         womenMedian: null,
-        menP10: null, menP90: null,
-        womenP10: null, womenP90: null,
+        menMean: null, womenMean: null,
+        menP10: null, menP25: null, menP75: null, menP90: null,
+        womenP10: null, womenP25: null, womenP75: null, womenP90: null,
       };
     }
     
@@ -66,11 +69,17 @@ const GenderScatterPlot = ({ data, loading }) => {
     
     if (gender === 'men') {
       occupationMap[occupation].menMedian = item.median;
+      occupationMap[occupation].menMean = item.mean;
       occupationMap[occupation].menP10 = item.p10;
+      occupationMap[occupation].menP25 = item.p25;
+      occupationMap[occupation].menP75 = item.p75;
       occupationMap[occupation].menP90 = item.p90;
     } else if (gender === 'women') {
       occupationMap[occupation].womenMedian = item.median;
+      occupationMap[occupation].womenMean = item.mean;
       occupationMap[occupation].womenP10 = item.p10;
+      occupationMap[occupation].womenP25 = item.p25;
+      occupationMap[occupation].womenP75 = item.p75;
       occupationMap[occupation].womenP90 = item.p90;
     }
   });
@@ -113,6 +122,8 @@ const GenderScatterPlot = ({ data, loading }) => {
         ? `Women earn ${Math.abs(genderGapNum)}% more`
         : `Men earn ${Math.abs(genderGapNum)}% more`;
       
+      const formatVal = (val) => val ? val.toLocaleString() : '—';
+      
       return (
         <div style={{
           backgroundColor: 'rgba(255, 255, 255, 0.98)',
@@ -121,44 +132,84 @@ const GenderScatterPlot = ({ data, loading }) => {
           borderRadius: '12px',
           boxShadow: '0 4px 20px rgba(0, 0, 0, 0.15)',
           fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-          maxWidth: '320px'
+          maxWidth: '380px'
         }}>
           <p style={{ 
-            margin: '0 0 8px 0', 
+            margin: '0 0 4px 0', 
             fontWeight: 600, 
             color: '#1f2937', 
             fontSize: '13px',
           }}>
             {data.occupation}
           </p>
-          {data.occupationCode && (
-            <p style={{ margin: '0 0 12px 0', color: '#6b7280', fontSize: '11px' }}>
-              SSYK: {data.occupationCode}
-            </p>
-          )}
+          <p style={{ margin: '0 0 12px 0', color: '#6b7280', fontSize: '11px' }}>
+            {data.occupationCode && `SSYK: ${data.occupationCode} • `}Year: {data.year || 'Latest'}
+          </p>
           
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-            <div>
+            <div style={{ borderRight: '1px solid #e5e7eb', paddingRight: '12px' }}>
               <p style={{ margin: 0, color: COLORS.menHigher, fontWeight: 600, fontSize: '12px' }}>
                 Men
               </p>
-              <p style={{ margin: '4px 0 0 0', fontSize: '14px', fontWeight: 600, color: '#1f2937' }}>
-                {data.menMedian?.toLocaleString()} SEK
+              <p style={{ margin: '6px 0 2px 0', fontSize: '16px', fontWeight: 700, color: '#1f2937' }}>
+                {formatVal(data.menMedian)} SEK
               </p>
-              <p style={{ margin: '2px 0 0 0', fontSize: '10px', color: '#6b7280' }}>
-                P10-P90: {data.menP10?.toLocaleString()} - {data.menP90?.toLocaleString()}
-              </p>
+              <p style={{ margin: 0, fontSize: '10px', color: '#9ca3af' }}>median</p>
+              
+              <div style={{ marginTop: '10px', fontSize: '11px', color: '#4b5563' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2px' }}>
+                  <span>Mean:</span>
+                  <span style={{ fontWeight: 500 }}>{formatVal(data.menMean)}</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2px' }}>
+                  <span>P10:</span>
+                  <span style={{ fontWeight: 500 }}>{formatVal(data.menP10)}</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2px' }}>
+                  <span>P25:</span>
+                  <span style={{ fontWeight: 500 }}>{formatVal(data.menP25)}</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2px' }}>
+                  <span>P75:</span>
+                  <span style={{ fontWeight: 500 }}>{formatVal(data.menP75)}</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <span>P90:</span>
+                  <span style={{ fontWeight: 500 }}>{formatVal(data.menP90)}</span>
+                </div>
+              </div>
             </div>
             <div>
               <p style={{ margin: 0, color: COLORS.womenHigher, fontWeight: 600, fontSize: '12px' }}>
                 Women
               </p>
-              <p style={{ margin: '4px 0 0 0', fontSize: '14px', fontWeight: 600, color: '#1f2937' }}>
-                {data.womenMedian?.toLocaleString()} SEK
+              <p style={{ margin: '6px 0 2px 0', fontSize: '16px', fontWeight: 700, color: '#1f2937' }}>
+                {formatVal(data.womenMedian)} SEK
               </p>
-              <p style={{ margin: '2px 0 0 0', fontSize: '10px', color: '#6b7280' }}>
-                P10-P90: {data.womenP10?.toLocaleString()} - {data.womenP90?.toLocaleString()}
-              </p>
+              <p style={{ margin: 0, fontSize: '10px', color: '#9ca3af' }}>median</p>
+              
+              <div style={{ marginTop: '10px', fontSize: '11px', color: '#4b5563' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2px' }}>
+                  <span>Mean:</span>
+                  <span style={{ fontWeight: 500 }}>{formatVal(data.womenMean)}</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2px' }}>
+                  <span>P10:</span>
+                  <span style={{ fontWeight: 500 }}>{formatVal(data.womenP10)}</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2px' }}>
+                  <span>P25:</span>
+                  <span style={{ fontWeight: 500 }}>{formatVal(data.womenP25)}</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '2px' }}>
+                  <span>P75:</span>
+                  <span style={{ fontWeight: 500 }}>{formatVal(data.womenP75)}</span>
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <span>P90:</span>
+                  <span style={{ fontWeight: 500 }}>{formatVal(data.womenP90)}</span>
+                </div>
+              </div>
             </div>
           </div>
           

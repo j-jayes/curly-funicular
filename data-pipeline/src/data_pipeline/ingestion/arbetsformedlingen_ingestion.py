@@ -138,6 +138,153 @@ class TaxonomyClient:
         self.client.close()
 
 
+class EnrichmentsClient:
+    """Client for Arbetsförmedlingen JobAd Enrichments API.
+    
+    Extracts skills, traits, and competencies from job description text.
+    No API key required, but contact JobTech before production use.
+    """
+    
+    BASE_URL = "https://jobad-enrichments-api.jobtechdev.se"
+    
+    # Rate limiting
+    MIN_REQUEST_INTERVAL = 0.5  # seconds between requests
+    BATCH_SIZE = 10  # Process 10 documents at a time
+    
+    def __init__(self):
+        self._last_request_time = 0.0
+        self.client = httpx.Client(
+            headers={
+                "Accept": "application/json",
+                "Content-Type": "application/json",
+                "User-Agent": "SwedishLaborMarketAnalytics/1.0",
+            },
+            timeout=60.0,
+        )
+    
+    def _rate_limit(self):
+        """Enforce rate limiting between requests."""
+        elapsed = time.time() - self._last_request_time
+        if elapsed < self.MIN_REQUEST_INTERVAL:
+            time.sleep(self.MIN_REQUEST_INTERVAL - elapsed)
+        self._last_request_time = time.time()
+    
+    def enrich_documents(
+        self,
+        documents: List[Dict[str, str]],
+        threshold: float = 0.5,
+    ) -> List[Dict]:
+        """Enrich job ad texts with skills and competencies.
+        
+        Args:
+            documents: List of dicts with 'id' and 'text' keys
+            threshold: Minimum probability threshold for skills (0-1)
+            
+        Returns:
+            List of enriched documents with extracted skills
+        """
+        self._rate_limit()
+        
+        url = f"{self.BASE_URL}/enrichtextdocumentsbinary"
+        
+        payload = {
+            "documents_input": documents,
+            "include_terms_info": True,
+            "include_sentences": False,
+            "classification_threshold": threshold,
+        }
+        
+        try:
+            response = self.client.post(url, json=payload)
+            response.raise_for_status()
+            return response.json()
+        except httpx.HTTPError as e:
+            logger.warning(f"Enrichment API error: {e}")
+            return []
+    
+    def enrich_batch(
+        self,
+        ads_df: pd.DataFrame,
+        text_column: str = "description_text",
+        id_column: str = "id",
+        threshold: float = 0.5,
+    ) -> pd.DataFrame:
+        """Enrich a batch of job ads with skills data.
+        
+        Args:
+            ads_df: DataFrame with job ads
+            text_column: Column containing description text
+            id_column: Column containing ad ID
+            threshold: Minimum probability for skill extraction
+            
+        Returns:
+            DataFrame with ad_id, skill, skill_type, and probability
+        """
+        if ads_df.empty:
+            return pd.DataFrame(columns=["ad_id", "skill", "skill_type", "probability"])
+        
+        all_skills = []
+        
+        # Process in batches
+        for i in range(0, len(ads_df), self.BATCH_SIZE):
+            batch = ads_df.iloc[i:i + self.BATCH_SIZE]
+            
+            # Prepare documents for API
+            documents = []
+            for _, row in batch.iterrows():
+                text = row.get(text_column, "")
+                if text and isinstance(text, str) and len(text.strip()) > 50:
+                    documents.append({
+                        "id": str(row[id_column]),
+                        "text": text[:10000],  # Limit text length
+                    })
+            
+            if not documents:
+                continue
+            
+            logger.info(f"Enriching batch {i // self.BATCH_SIZE + 1}, {len(documents)} documents")
+            
+            # Call API
+            results = self.enrich_documents(documents, threshold)
+            
+            # Parse results
+            for doc_result in results:
+                ad_id = doc_result.get("id")
+                enrichments = doc_result.get("enriched_candidates", {})
+                
+                # Extract skills
+                for skill in enrichments.get("competencies", []):
+                    all_skills.append({
+                        "ad_id": ad_id,
+                        "skill": skill.get("term", ""),
+                        "skill_type": "competency",
+                        "probability": skill.get("prediction", 0),
+                    })
+                
+                # Extract traits (soft skills)
+                for trait in enrichments.get("traits", []):
+                    all_skills.append({
+                        "ad_id": ad_id,
+                        "skill": trait.get("term", ""),
+                        "skill_type": "trait",
+                        "probability": trait.get("prediction", 0),
+                    })
+                
+                # Extract occupation titles
+                for occupation in enrichments.get("occupations", []):
+                    all_skills.append({
+                        "ad_id": ad_id,
+                        "skill": occupation.get("term", ""),
+                        "skill_type": "occupation",
+                        "probability": occupation.get("prediction", 0),
+                    })
+        
+        return pd.DataFrame(all_skills)
+    
+    def close(self):
+        self.client.close()
+
+
 class HistoricalAdsClient:
     """Client for Arbetsförmedlingen Historical Ads API.
     
@@ -273,14 +420,19 @@ class HistoricalAdsClient:
 class ArbetsformedlingenIngestion:
     """Handles data ingestion from Arbetsförmedlingen APIs.
     
-    Combines Historical Ads API and Taxonomy API for comprehensive
-    job market data collection.
+    Combines Historical Ads API, Taxonomy API, and Enrichments API for comprehensive
+    job market data collection including skills extraction.
     """
     
-    def __init__(self):
-        """Initialize ingestion clients."""
+    def __init__(self, enable_enrichments: bool = False):
+        """Initialize ingestion clients.
+        
+        Args:
+            enable_enrichments: Whether to enable skills extraction via Enrichments API
+        """
         self.historical_client = HistoricalAdsClient()
         self.taxonomy_client = TaxonomyClient()
+        self.enrichments_client = EnrichmentsClient() if enable_enrichments else None
     
     def fetch_historical_ads(
         self,
@@ -342,6 +494,7 @@ class ArbetsformedlingenIngestion:
         workplace = ad.get("workplace_address", {}) or {}
         employer = ad.get("employer", {}) or {}
         occupation = ad.get("occupation", {}) or {}
+        description = ad.get("description", {}) or {}
         
         return {
             "id": ad.get("id"),
@@ -364,7 +517,8 @@ class ArbetsformedlingenIngestion:
             "duration": ad.get("duration", {}).get("label") if ad.get("duration") else None,
             "working_hours_type": ad.get("working_hours_type", {}).get("label") if ad.get("working_hours_type") else None,
             "remote_work": ad.get("remote_work"),
-            "description_length": len(ad.get("description", {}).get("text", "") or ""),
+            "description_text": description.get("text", ""),
+            "description_length": len(description.get("text", "") or ""),
         }
     
     def fetch_taxonomy_data(self) -> Dict[str, pd.DataFrame]:
@@ -465,6 +619,74 @@ class ArbetsformedlingenIngestion:
         """Close all clients."""
         self.historical_client.close()
         self.taxonomy_client.close()
+        if self.enrichments_client:
+            self.enrichments_client.close()
+    
+    def enrich_ads_with_skills(
+        self,
+        ads_df: pd.DataFrame,
+        threshold: float = 0.5,
+    ) -> pd.DataFrame:
+        """Enrich job ads DataFrame with skills extracted from descriptions.
+        
+        Args:
+            ads_df: DataFrame with job ads (must have 'id' and 'description_text' columns)
+            threshold: Minimum probability threshold for skill extraction (0-1)
+            
+        Returns:
+            DataFrame with columns: ad_id, skill, skill_type, probability
+        """
+        if self.enrichments_client is None:
+            logger.warning("Enrichments client not enabled. Initialize with enable_enrichments=True")
+            return pd.DataFrame(columns=["ad_id", "skill", "skill_type", "probability"])
+        
+        if "description_text" not in ads_df.columns:
+            logger.warning("No description_text column found in DataFrame")
+            return pd.DataFrame(columns=["ad_id", "skill", "skill_type", "probability"])
+        
+        logger.info(f"Enriching {len(ads_df)} job ads with skills data")
+        return self.enrichments_client.enrich_batch(
+            ads_df,
+            text_column="description_text",
+            id_column="id",
+            threshold=threshold,
+        )
+    
+    def aggregate_skills(
+        self,
+        skills_df: pd.DataFrame,
+        ads_df: pd.DataFrame,
+    ) -> pd.DataFrame:
+        """Aggregate skills by occupation and skill type.
+        
+        Args:
+            skills_df: DataFrame from enrich_ads_with_skills()
+            ads_df: Original ads DataFrame with ssyk_code
+            
+        Returns:
+            DataFrame with skill counts by occupation
+        """
+        if skills_df.empty or ads_df.empty:
+            return pd.DataFrame()
+        
+        # Join skills with ad occupation info
+        merged = skills_df.merge(
+            ads_df[["id", "ssyk_code", "occupation_label"]],
+            left_on="ad_id",
+            right_on="id",
+            how="left",
+        )
+        
+        # Aggregate skill counts
+        agg = merged.groupby(["ssyk_code", "occupation_label", "skill", "skill_type"]).agg({
+            "ad_id": "count",
+            "probability": "mean",
+        }).reset_index()
+        
+        agg.columns = ["ssyk_code", "occupation_label", "skill", "skill_type", "occurrence_count", "avg_probability"]
+        agg = agg.sort_values(["ssyk_code", "occurrence_count"], ascending=[True, False])
+        
+        return agg
     
     def __enter__(self):
         return self
