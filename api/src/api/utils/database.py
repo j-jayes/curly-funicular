@@ -120,6 +120,9 @@ class DataAccess:
             skills_path = self.data_path / "skills.parquet"
             if skills_path.exists():
                 self._skills_df = pd.read_parquet(skills_path)
+                # Ensure ssyk_code is string for filtering
+                if "ssyk_code" in self._skills_df.columns:
+                    self._skills_df["ssyk_code"] = self._skills_df["ssyk_code"].astype(str)
                 logger.info(f"Loaded {len(self._skills_df)} skills records")
             else:
                 logger.warning(f"Skills file not found at {skills_path}")

@@ -114,7 +114,9 @@ def run_pipeline(
         logger.info("STEP 2: Fetching job ads from Arbetsförmedlingen")
         logger.info("="*40)
         
-        with ArbetsformedlingenIngestion() as af_client:
+        skills_processed = None
+        
+        with ArbetsformedlingenIngestion(enable_enrichments=True) as af_client:
             jobs_raw = af_client.fetch_historical_ads(
                 ssyk_codes=ssyk_codes,
                 max_results_per_occupation=max_job_ads,
@@ -125,7 +127,22 @@ def run_pipeline(
                 jobs_raw,
                 processor.raw_dir / "af_jobs_raw.parquet"
             )
-        
+            
+            # Enrich with skills
+            if not jobs_raw.empty:
+                logger.info("Enriching job ads with skills (this may take a while)...")
+                skills_raw = af_client.enrich_ads_with_skills(jobs_raw)
+                
+                if not skills_raw.empty:
+                    skills_processed = af_client.aggregate_skills(skills_raw, jobs_raw)
+                    logger.info(f"Aggregated {len(skills_processed)} skill records")
+                    
+                    # Save raw skills
+                    af_client.save_to_parquet(
+                        skills_raw,
+                        processor.raw_dir / "af_skills_raw.parquet"
+                    )
+
         logger.info(f"Fetched {len(jobs_raw)} job ads from Arbetsförmedlingen")
         
         # ===== STEP 3: Process data =====
@@ -161,6 +178,7 @@ def run_pipeline(
             jobs_df=jobs_processed,
             jobs_agg_df=jobs_aggregated,
             dispersion_df=dispersion_processed,
+            skills_df=skills_processed,
         )
         
         for name, path in paths.items():
@@ -230,7 +248,7 @@ def main():
     parser.add_argument(
         "--max-ads",
         type=int,
-        default=500,  # 500 per occupation × 11 occupations = ~5,500 total
+        default=200,  # 200 per occupation as requested
         help="Maximum job ads per occupation"
     )
     

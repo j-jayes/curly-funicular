@@ -272,6 +272,7 @@ class DataProcessor:
         jobs_df: pd.DataFrame,
         jobs_agg_df: pd.DataFrame,
         dispersion_df: Optional[pd.DataFrame] = None,
+        skills_df: Optional[pd.DataFrame] = None,
     ) -> Dict[str, Path]:
         """Save all processed data to parquet files.
         
@@ -280,6 +281,7 @@ class DataProcessor:
             jobs_df: Processed job ads (detail)
             jobs_agg_df: Aggregated job ads
             dispersion_df: Optional salary dispersion data
+            skills_df: Optional skills data
             
         Returns:
             Dictionary with paths to saved files
@@ -291,6 +293,7 @@ class DataProcessor:
             "jobs_detail": jobs_df,
             "jobs_aggregated": jobs_agg_df,
             "income_dispersion": dispersion_df,
+            "skills": skills_df,
         }
         
         for name, df in files.items():

@@ -235,8 +235,8 @@ class EnrichmentsClient:
                 text = row.get(text_column, "")
                 if text and isinstance(text, str) and len(text.strip()) > 50:
                     documents.append({
-                        "id": str(row[id_column]),
-                        "text": text[:10000],  # Limit text length
+                        "doc_id": str(row[id_column]),
+                        "doc_text": text[:10000],  # Limit text length
                     })
             
             if not documents:
@@ -249,7 +249,7 @@ class EnrichmentsClient:
             
             # Parse results
             for doc_result in results:
-                ad_id = doc_result.get("id")
+                ad_id = doc_result.get("doc_id")
                 enrichments = doc_result.get("enriched_candidates", {})
                 
                 # Extract skills
@@ -458,7 +458,8 @@ class ArbetsformedlingenIngestion:
         if end_date is None:
             end_date = datetime.now().strftime("%Y-%m-%dT00:00:00")
         if start_date is None:
-            start_date = (datetime.now() - timedelta(days=365)).strftime("%Y-%m-%dT00:00:00")
+            # Fetch last 4 months to ensure we get recent ads when limiting count
+            start_date = (datetime.now() - timedelta(days=120)).strftime("%Y-%m-%dT00:00:00")
         
         logger.info(f"Fetching ads for SSYK codes: {ssyk_codes} from {start_date} to {end_date}")
         
