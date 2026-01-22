@@ -24,6 +24,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent / "src"))
 from data_pipeline.ingestion.scb_ingestion import SCBIngestion, DEFAULT_SSYK_CODES
 from data_pipeline.ingestion.arbetsformedlingen_ingestion import ArbetsformedlingenIngestion
 from data_pipeline.ingestion.taxonomy_ingestion import TaxonomyIngestion
+from data_pipeline.ingestion.esco_ingestion import EscoIngestion
 from data_pipeline.processing.data_processor import DataProcessor
 from data_pipeline.utils.config import get_settings
 
@@ -150,6 +151,12 @@ def run_pipeline(
                 taxonomy_client.fetch_files()
                 taxonomy_processed = taxonomy_client.process_taxonomy()
                 
+                # Enrichen with ESCO if requested or by default if taxonomy is run
+                logger.info("Enriching taxonomy with ESCO skills...")
+                esco_client = EscoIngestion(raw_dir=processor.raw_dir)
+                esco_client.fetch_scb_mapping()
+                taxonomy_processed = esco_client.process_esco_mapping(taxonomy_processed)
+                
                 if not taxonomy_processed.empty:
                     taxonomy_path = taxonomy_client.save_processed(
                         taxonomy_processed, 
@@ -165,10 +172,30 @@ def run_pipeline(
             logger.info("="*40)
             
             with ArbetsformedlingenIngestion(enable_enrichments=True) as af_client:
-                af_ssyk_codes = ssyk_codes if ssyk_codes else DEFAULT_SSYK_CODES
+                # determine ssyk codes to fetch
+                af_ssyk_codes = ssyk_codes
+                
+                # If no specific codes requested, try to load ALL from taxonomy
+                if not af_ssyk_codes:
+                    taxonomy_file = processor.processed_dir / "taxonomy_enriched.parquet"
+                    if taxonomy_file.exists():
+                        logger.info(f"Loading SSYK codes from {taxonomy_file}")
+                        tax_df = pd.read_parquet(taxonomy_file)
+                        if "ssyk_code" in tax_df.columns:
+                            af_ssyk_codes = sorted(tax_df["ssyk_code"].astype(str).unique().tolist())
+                            logger.info(f"Found {len(af_ssyk_codes)} unique SSYK codes in taxonomy")
+                    
+                # Fallback to default if still empty
+                if not af_ssyk_codes:
+                    logger.warning("No taxonomy file found and no codes provided. Using default list.")
+                    af_ssyk_codes = DEFAULT_SSYK_CODES
+
+                # Expand time window to ensure we get enough ads (last 2 years)
+                start_date = (datetime.now() - pd.Timedelta(days=365*2)).strftime("%Y-%m-%dT00:00:00")
                 
                 jobs_raw = af_client.fetch_historical_ads(
                     ssyk_codes=af_ssyk_codes,
+                    start_date=start_date,
                     max_results_per_occupation=max_job_ads,
                 )
                 
@@ -340,7 +367,7 @@ def main():
     parser.add_argument(
         "--max-ads",
         type=int,
-        default=200,  # 200 per occupation as requested
+        default=500,  # Increased default to 500
         help="Maximum job ads per occupation"
     )
     
